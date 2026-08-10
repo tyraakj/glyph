@@ -1,29 +1,25 @@
 "use client";
 
-import { useState } from "react";
 import { useParams } from "next/navigation";
 import { EditorNavbar } from "./editor-navbar";
 import { ProjectSidebar } from "./project-sidebar";
 import { AiSidebar } from "./ai-sidebar";
 import { ProjectDialogsProvider } from "@/hooks/use-project-dialogs";
 import { ProjectDialogs } from "./project-dialogs";
+import { SidebarProvider, useSidebar } from "@/hooks/use-sidebar";
 import type { Project } from "@/generated/prisma";
 
-export function EditorShell({ 
-  children,
-  ownedProjects = [],
-  sharedProjects = []
-}: { 
+interface EditorShellProps {
   children: React.ReactNode;
   ownedProjects?: Project[];
   sharedProjects?: Project[];
-}) {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [isAiSidebarOpen, setAiSidebarOpen] = useState(false);
+}
+
+function EditorShellInner({ children, ownedProjects = [], sharedProjects = [] }: EditorShellProps) {
+  const { isSidebarOpen, closeSidebar, toggleSidebar, isAiSidebarOpen, closeAiSidebar, toggleAiSidebar } = useSidebar();
   const params = useParams();
   
   const roomId = typeof params?.roomId === 'string' ? params.roomId : undefined;
-  
   const activeProject = roomId 
     ? [...ownedProjects, ...sharedProjects].find(p => roomId.startsWith(p.id)) 
     : undefined;
@@ -35,7 +31,7 @@ export function EditorShell({
         {/* Left Sidebar */}
         <ProjectSidebar 
           isOpen={isSidebarOpen} 
-          onClose={() => setSidebarOpen(false)} 
+          onClose={closeSidebar} 
           ownedProjects={ownedProjects}
           sharedProjects={sharedProjects}
           activeProjectId={activeProject?.id}
@@ -45,10 +41,10 @@ export function EditorShell({
         <div className="flex flex-col flex-1 h-full min-w-0">
           <EditorNavbar 
             isSidebarOpen={isSidebarOpen} 
-            onToggleSidebar={() => setSidebarOpen(prev => !prev)} 
+            onToggleSidebar={toggleSidebar} 
             activeProject={activeProject}
             isAiSidebarOpen={isAiSidebarOpen}
-            onToggleAiSidebar={() => setAiSidebarOpen(prev => !prev)}
+            onToggleAiSidebar={toggleAiSidebar}
           />
           <main className="flex-1 relative overflow-hidden bg-bg-surface">
             {children}
@@ -58,11 +54,19 @@ export function EditorShell({
         {/* Right Sidebar */}
         <AiSidebar 
           isOpen={isAiSidebarOpen}
-          onClose={() => setAiSidebarOpen(false)}
+          onClose={closeAiSidebar}
         />
       </div>
       
       <ProjectDialogs />
     </ProjectDialogsProvider>
+  );
+}
+
+export function EditorShell(props: EditorShellProps) {
+  return (
+    <SidebarProvider>
+      <EditorShellInner {...props} />
+    </SidebarProvider>
   );
 }
