@@ -28,10 +28,10 @@ const SVGShape = ({
     >
       <g
         fill={color}
-        stroke={selected ? "var(--color-primary)" : "var(--color-border-default)"}
+        stroke={selected ? "var(--color-accent-primary)" : "var(--color-border-subtle)"}
         strokeWidth={2}
         vectorEffect="non-scaling-stroke"
-        className={selected ? "" : "hover:stroke-border-hover transition-colors"}
+        className={selected ? "" : "hover:stroke-text-muted transition-colors"}
       >
         {children}
       </g>
@@ -43,7 +43,7 @@ export function ShapeRenderer({
   shape,
   width,
   height,
-  color = "var(--color-bg-base)",
+  color = "var(--color-bg-elevated)",
   label,
   selected = false,
 }: ShapeRendererProps) {
@@ -54,7 +54,7 @@ export function ShapeRenderer({
 
   // Base classes for CSS shapes
   let cssClasses = `absolute inset-0 flex items-center justify-center border-2 transition-colors ${
-    selected ? "border-primary" : "border-border-default hover:border-border-hover"
+    selected ? "border-accent-primary shadow-[0_0_10px_rgba(0,200,212,0.2)]" : "border-border-subtle hover:border-text-muted"
   }`;
 
   let content: ReactNode = null;
