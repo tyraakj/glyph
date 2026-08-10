@@ -6,6 +6,8 @@ import { useProjectActions } from "@/hooks/use-project-actions";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
+import { useParams } from "next/navigation";
+
 function generateSlug(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
@@ -13,6 +15,7 @@ function generateSlug(name: string) {
 export function ProjectDialogs() {
   const { activeDialog, activeProject, closeDialog } = useProjectDialogs();
   const { createProject, renameProject, deleteProject, isSubmitting, error, setError } = useProjectActions();
+  const { roomId } = useParams() || {};
   
   const [name, setName] = useState("");
 
@@ -42,8 +45,11 @@ export function ProjectDialogs() {
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (!activeProject) return;
-    // We can assume isActiveWorkspace is false for now since workspace isn't fully built yet
-    const success = await deleteProject(activeProject.id, false);
+    
+    // Check if the project being deleted is currently open
+    const isCurrentlyOpen = typeof roomId === "string" && roomId.startsWith(activeProject.id);
+    
+    const success = await deleteProject(activeProject.id, isCurrentlyOpen);
     if (success) closeDialog();
   };
 
