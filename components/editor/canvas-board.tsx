@@ -1,12 +1,19 @@
 "use client";
 
-import { ReactFlow, Background, MiniMap, BackgroundVariant, ConnectionMode } from "@xyflow/react";
+import { useCallback, useRef } from "react";
+import { ReactFlow, Background, MiniMap, BackgroundVariant, ConnectionMode, ReactFlowProvider, useReactFlow } from "@xyflow/react";
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow";
 import type { CanvasNode, CanvasEdge } from "@/types/canvas";
+import { CanvasNodeComponent } from "./nodes/canvas-node";
+import { ShapePanel, type DragPayload } from "./shape-panel";
 
 import "@xyflow/react/dist/style.css";
 
-export function CanvasBoard() {
+const nodeTypes = {
+  canvasNode: CanvasNodeComponent,
+};
+
+function CanvasBoardInner() {
   const {
     nodes,
     edges,
@@ -17,13 +24,55 @@ export function CanvasBoard() {
     isLoading
   } = useLiveblocksFlow<CanvasNode, CanvasEdge>();
 
-  // While Liveblocks initializes the flow state
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const { screenToFlowPosition } = useReactFlow();
+
+  const onDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  }, []);
+
+  const onDrop = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault();
+
+      const payloadStr = event.dataTransfer.getData("application/json");
+      if (!payloadStr) return;
+
+      const payload = JSON.parse(payloadStr) as DragPayload;
+
+      // Convert screen coordinates to React Flow coordinates
+      const position = screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+      const newNode: CanvasNode = {
+        id: `${payload.shape}-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        type: "canvasNode",
+        position,
+        data: {
+          label: "",
+          shape: payload.shape,
+        },
+        style: {
+          width: payload.width,
+          height: payload.height,
+        },
+      };
+
+      // Add the node to Liveblocks via the standard flow change handler
+      onNodesChange([{ type: "add", item: newNode }]);
+    },
+    [screenToFlowPosition, onNodesChange]
+  );
+
   if (isLoading) {
     return null;
   }
 
   return (
-    <div className="flex-1 w-full h-full relative">
+    <div className="flex-1 w-full h-full relative" ref={reactFlowWrapper}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -31,9 +80,12 @@ export function CanvasBoard() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onDelete={onDelete}
+        nodeTypes={nodeTypes}
         fitView
         className="bg-bg-base"
         connectionMode={ConnectionMode.Loose}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
       >
         <Background variant={BackgroundVariant.Dots} gap={24} size={2} color="var(--color-border-subtle)" />
         <MiniMap 
@@ -43,6 +95,16 @@ export function CanvasBoard() {
         />
         <Cursors />
       </ReactFlow>
+      
+      <ShapePanel />
     </div>
+  );
+}
+
+export function CanvasBoard() {
+  return (
+    <ReactFlowProvider>
+      <CanvasBoardInner />
+    </ReactFlowProvider>
   );
 }

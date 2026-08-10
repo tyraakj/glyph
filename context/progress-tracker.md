@@ -30,6 +30,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Implemented Editor Workspace Shell (`/editor/[roomId]`), shifting `EditorShell` to a layout and adding strict Server Component access checks (`08-editor-workspace-shell.md` spec completed)
 - Configured Liveblocks backend, including `liveblocks.config.ts`, `lib/liveblocks.ts` cached client, and strict `POST /api/liveblocks-auth` route matching Prisma projects (`10-liveblocks-setup.md` spec completed)
 - Bootstrapped collaborative Canvas using `@xyflow/react` and Liveblocks synced states (`11-base-canvas.md` spec completed)
+- Implemented Canvas Shape Panel with drag-and-drop node creation mapping screen-to-flow coordinates, plus a default basic custom node renderer (`12-shape-panel.md` spec completed)
 
 ## In Progress
 
