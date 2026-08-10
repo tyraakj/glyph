@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- In Progress: Authentication & Database Setup
+- Completed: Authentication & Database Setup
 
 ## Current Goal
 
-- Setup Prisma and Better Auth (without Shadcn) per `03-auth.md` and `05-prisma.md`.
+- Setup Prisma and Better Auth (without Shadcn) per `03-auth.md` and `05-prisma.md`. (Completed)
 
 ## Completed
 
@@ -16,16 +16,18 @@ Update this file whenever the current phase, active feature, or implementation s
 - Add AI agent guidelines and project documentation
 - Add base application layout and pages
 - Base editor chrome components (`editor-navbar.tsx`, `project-sidebar.tsx`, Dialog Pattern)
-- Prisma setup (`schema.prisma`, `lib/prisma.ts`)
-- Better Auth setup (`lib/auth.ts`, custom HTML/Tailwind pages, route protection via `proxy.ts`)
+- Prisma Postgres E2E Integration (`schema.prisma` Prisma 7 formatting, `prisma.config.ts`, `lib/prisma.ts`, migrations applied, db seeded & verified)
+- Better Auth Infrastructure Alignment (`@better-auth/prisma-adapter` integration, client and server hooks synced)
+- Better Auth Dashboard Connection (Mounted `@better-auth/infra` plugins `dash` and `sentinelClient`, secured `BETTER_AUTH_SECRET`, and linked `BETTER_AUTH_API_KEY` via localhost tunnel)
 
 ## In Progress
 
-- None yet.
+- Reviewing upcoming feature work for the Project API endpoints.
 
 ## Next Up
 
 - Project API endpoints and database hooks.
+- Connecting the UI (Editor, Project Sidebar) to live data using the authenticated Prisma client.
 
 ## Open Questions
 
@@ -33,8 +35,10 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Architecture Decisions
 
-- None yet.
+- Use `proxy.ts` strictly as middleware instead of `middleware.ts` for route protection as specified in the auth spec.
+- Kept UI auth pages using standard Tailwind CSS without pre-built Shadcn UI components.
+- Prisma 7 configuration requires `datasource` URL to be placed in `prisma.config.ts` rather than directly in `schema.prisma`.
 
 ## Session Notes
 
-- None yet.
+- Configured a local tunnel (ngrok) for the Better Auth dashboard to verify the backend server setup securely.
