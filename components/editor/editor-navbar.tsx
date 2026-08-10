@@ -9,9 +9,11 @@ interface EditorNavbarProps {
   isSidebarOpen: boolean
   onToggleSidebar: () => void
   activeProject?: Project
+  isAiSidebarOpen?: boolean
+  onToggleAiSidebar?: () => void
 }
 
-export function EditorNavbar({ isSidebarOpen, onToggleSidebar, activeProject }: EditorNavbarProps) {
+export function EditorNavbar({ isSidebarOpen, onToggleSidebar, activeProject, isAiSidebarOpen, onToggleAiSidebar }: EditorNavbarProps) {
   const [showTemplates, setShowTemplates] = React.useState(false)
 
   return (
@@ -59,7 +61,12 @@ export function EditorNavbar({ isSidebarOpen, onToggleSidebar, activeProject }: 
                 <Share2 className="mr-2 h-4 w-4" />
                 Share
               </Button>
-              <Button variant="ghost" size="icon" className="text-text-secondary hover:text-text-primary hidden sm:flex">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className={`text-text-secondary hover:text-text-primary hidden sm:flex ${isAiSidebarOpen ? 'bg-accent-primary/10 text-accent-primary hover:text-accent-primary' : ''}`}
+                onClick={onToggleAiSidebar}
+              >
                 <Sparkles className="h-5 w-5" />
               </Button>
               <div className="h-6 w-px bg-border-subtle mx-2" />

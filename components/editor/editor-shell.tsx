@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { EditorNavbar } from "./editor-navbar";
 import { ProjectSidebar } from "./project-sidebar";
+import { AiSidebar } from "./ai-sidebar";
 import { ProjectDialogsProvider } from "@/hooks/use-project-dialogs";
 import { ProjectDialogs } from "./project-dialogs";
 import type { Project } from "@/generated/prisma";
@@ -18,6 +19,7 @@ export function EditorShell({
   sharedProjects?: Project[];
 }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isAiSidebarOpen, setAiSidebarOpen] = useState(false);
   const params = useParams();
   
   const roomId = typeof params?.roomId === 'string' ? params.roomId : undefined;
@@ -48,15 +50,22 @@ export function EditorShell({
           activeProjectId={activeProject?.id}
         />
         
-        <div className="flex flex-col flex-1 h-full min-w-0">
+        <div className="flex flex-col flex-1 h-full min-w-0 relative">
           <EditorNavbar 
             isSidebarOpen={isSidebarOpen} 
             onToggleSidebar={() => setSidebarOpen(!isSidebarOpen)} 
             activeProject={activeProject}
+            isAiSidebarOpen={isAiSidebarOpen}
+            onToggleAiSidebar={() => setAiSidebarOpen(!isAiSidebarOpen)}
           />
           <main className="flex-1 relative overflow-hidden bg-bg-surface">
             {children}
           </main>
+          
+          <AiSidebar 
+            isOpen={isAiSidebarOpen}
+            onClose={() => setAiSidebarOpen(false)}
+          />
         </div>
       </div>
       

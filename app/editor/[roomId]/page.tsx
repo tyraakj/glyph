@@ -36,17 +36,6 @@ export default async function WorkspacePage(props: WorkspacePageProps) {
         </CanvasWrapper>
       </div>
 
-      {/* Right AI Sidebar Placeholder */}
-      <div className="w-80 h-full border-l border-border-subtle bg-bg-surface hidden lg:flex flex-col">
-        <div className="flex h-14 items-center px-4 border-b border-border-subtle">
-          <span className="text-sm font-semibold text-text-primary">AI Assistant</span>
-        </div>
-        <div className="flex-1 flex items-center justify-center p-4">
-          <p className="text-sm text-text-muted text-center">
-            AI Chat will be implemented here.
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
