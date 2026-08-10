@@ -1,6 +1,7 @@
 import * as React from "react"
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { UserMenu } from "./user-menu"
 
 interface EditorNavbarProps {
   isSidebarOpen: boolean
@@ -34,7 +35,7 @@ export function EditorNavbar({ isSidebarOpen, onToggleSidebar }: EditorNavbarPro
 
       {/* Right Section */}
       <div className="flex items-center space-x-2">
-        {/* Right section empty for now */}
+        <UserMenu />
       </div>
     </nav>
   )
