@@ -3,33 +3,32 @@ import { X, Plus, FolderGit2, Edit2, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-import { useProjectDialogs, MockProject } from "@/hooks/use-project-dialogs"
+import { useProjectDialogs } from "@/hooks/use-project-dialogs"
+import type { Project } from "@/generated/prisma"
 
 interface ProjectSidebarProps {
   isOpen: boolean
   onClose: () => void
+  ownedProjects?: Project[]
+  sharedProjects?: Project[]
 }
 
-const MOCK_OWNED_PROJECTS: MockProject[] = [
-  { id: "1", name: "Core Services API", slug: "core-services-api", role: "owner" },
-  { id: "2", name: "Frontend Architecture", slug: "frontend-architecture", role: "owner" },
-]
-
-const MOCK_SHARED_PROJECTS: MockProject[] = [
-  { id: "3", name: "Authentication Flow", slug: "authentication-flow", role: "editor" },
-]
-
-export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
+export function ProjectSidebar({ 
+  isOpen, 
+  onClose, 
+  ownedProjects = [], 
+  sharedProjects = [] 
+}: ProjectSidebarProps) {
   const { openDialog } = useProjectDialogs();
 
-  const renderProjectItem = (project: MockProject) => (
+  const renderProjectItem = (project: Project, isOwner: boolean) => (
     <div key={project.id} className="group flex items-center justify-between p-2 rounded-lg hover:bg-bg-subtle cursor-pointer transition-colors">
       <div className="flex items-center gap-3 overflow-hidden">
         <FolderGit2 className="h-4 w-4 text-text-muted flex-shrink-0" />
         <span className="text-sm font-medium text-text-primary truncate">{project.name}</span>
       </div>
       
-      {project.role === "owner" && (
+      {isOwner && (
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button 
             onClick={(e) => { e.stopPropagation(); openDialog("rename", project); }}
@@ -80,9 +79,9 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
           </TabsList>
           
           <TabsContent value="my-projects" className="flex-1 mt-4 overflow-y-auto">
-            {MOCK_OWNED_PROJECTS.length > 0 ? (
+            {ownedProjects.length > 0 ? (
               <div className="flex flex-col gap-1">
-                {MOCK_OWNED_PROJECTS.map(renderProjectItem)}
+                {ownedProjects.map(p => renderProjectItem(p, true))}
               </div>
             ) : (
               <div className="flex h-full flex-col items-center justify-center space-y-3 text-center rounded-xl border border-dashed border-border-subtle p-8">
@@ -98,9 +97,9 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
           </TabsContent>
 
           <TabsContent value="shared" className="flex-1 mt-4 overflow-y-auto">
-            {MOCK_SHARED_PROJECTS.length > 0 ? (
+            {sharedProjects.length > 0 ? (
               <div className="flex flex-col gap-1">
-                {MOCK_SHARED_PROJECTS.map(renderProjectItem)}
+                {sharedProjects.map(p => renderProjectItem(p, false))}
               </div>
             ) : (
               <div className="flex h-full flex-col items-center justify-center space-y-3 text-center rounded-xl border border-dashed border-border-subtle p-8">

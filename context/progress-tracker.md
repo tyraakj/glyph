@@ -26,10 +26,11 @@ Update this file whenever the current phase, active feature, or implementation s
 - Re-architected `components/ui/dialog.tsx` to utilize React Portals, ensuring dialogs cleanly break out of Next.js layout clipping contexts
 - Configured Prisma Schema, `@prisma/adapter-pg`, and generated the Data Layer (`05-prisma.md` spec completed)
 - Built Project API Endpoints (`GET`, `POST`, `PATCH`, `DELETE`) with strict auth checks and detailed user error messages (`06-project-apis.md` spec completed)
+- Wired Editor Home UI to backend APIs using `useProjectActions` hook and server-side data fetching (`07-wire-editor-home.md` spec completed)
 
 ## In Progress
 
-- Next up: Wiring the Editor Home and Sidebar UI to the API (`07-wire-editor-home.md`).
+- Reviewing the upcoming features for the Canvas Workspace.
 
 ## Next Up
 

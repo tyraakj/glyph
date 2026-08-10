@@ -2,19 +2,14 @@
 
 import { createContext, useContext, useState, ReactNode } from "react";
 
-export type DialogType = "create" | "rename" | "delete" | null;
+import type { Project } from "@/generated/prisma";
 
-export interface MockProject {
-  id: string;
-  name: string;
-  slug: string;
-  role: "owner" | "editor" | "viewer";
-}
+export type DialogType = "create" | "rename" | "delete" | null;
 
 interface ProjectDialogsContextType {
   activeDialog: DialogType;
-  activeProject: MockProject | null;
-  openDialog: (type: DialogType, project?: MockProject) => void;
+  activeProject: Project | null;
+  openDialog: (type: DialogType, project?: Project) => void;
   closeDialog: () => void;
 }
 
@@ -22,10 +17,9 @@ const ProjectDialogsContext = createContext<ProjectDialogsContextType | undefine
 
 export function ProjectDialogsProvider({ children }: { children: ReactNode }) {
   const [activeDialog, setActiveDialog] = useState<DialogType>(null);
-  const [activeProject, setActiveProject] = useState<MockProject | null>(null);
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
 
-  const openDialog = (type: DialogType, project?: MockProject) => {
-    window.alert(`openDialog triggered with type: ${type}`);
+  const openDialog = (type: DialogType, project?: Project) => {
     setActiveDialog(type);
     if (project) {
       setActiveProject(project);
