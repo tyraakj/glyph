@@ -11,7 +11,7 @@ function getSessionCookie(request: NextRequest) {
 export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route));
+  const isPublicRoute = pathname === "/" || publicRoutes.some((route) => pathname.startsWith(route));
   
   if (isPublicRoute) {
     return NextResponse.next();

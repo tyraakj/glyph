@@ -1,3 +1,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@theme {
+  /* Backgrounds */
+  --color-bg-base: #080809;
+  --color-bg-surface: #111114;
+  --color-bg-elevated: #18181c;
+  --color-bg-subtle: #1e1e23;
+  --color-base: #080809; /* Alias for components using bg-base */
+  --color-surface: #111114; /* Alias for components using bg-surface */
+
+  /* Borders */
+  --color-border-default: #2a2a30;
+  --color-border-subtle: #3a3a42;
+  --color-surface-border: #2a2a30; /* Alias for border-surface-border */
+
+  /* Text */
+  --color-text-primary: #f0f0f4;
+  --color-text-secondary: #c0c0cc;
+  --color-text-muted: #808090;
+  --color-text-faint: #505060;
+  
+  /* Text Aliases (Copy) */
+  --color-copy-primary: #f0f0f4;
+  --color-copy-secondary: #c0c0cc;
+  --color-copy-muted: #808090;
+
+  /* Accents */
+  --color-brand: #00c8d4;
+  --color-accent-primary: #00c8d4;
+  --color-accent-primary-dim: rgba(0, 200, 212, 0.12);
+  --color-accent-ai: #6457f9;
+  --color-accent-ai-text: #8b82ff;
+
+  /* States */
+  --color-state-error: #ff4d4f;
+  --color-state-success: #34d399;
+  --color-state-warning: #fbbf24;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  body {
+    background-color: var(--color-bg-base);
+    color: var(--color-text-primary);
+  }
+}
