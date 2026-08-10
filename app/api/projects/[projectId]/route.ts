@@ -65,10 +65,10 @@ export async function PATCH(
     });
 
     return NextResponse.json(updatedProject);
-  } catch (error) {
+  } catch (error: any) {
     console.error(`PATCH /api/projects/[projectId] error:`, error);
     return NextResponse.json(
-      { error: "An unexpected error occurred while renaming the project." },
+      { error: error?.message || "Failed to rename project." },
       { status: 500 }
     );
   }
@@ -117,10 +117,10 @@ export async function DELETE(
     });
 
     return new NextResponse(null, { status: 204 });
-  } catch (error) {
+  } catch (error: any) {
     console.error(`DELETE /api/projects/[projectId] error:`, error);
     return NextResponse.json(
-      { error: "An unexpected error occurred while deleting the project." },
+      { error: error?.message || "Failed to delete project." },
       { status: 500 }
     );
   }

@@ -26,10 +26,10 @@ export async function GET() {
     });
 
     return NextResponse.json(projects);
-  } catch (error) {
+  } catch (error: any) {
     console.error("GET /api/projects error:", error);
     return NextResponse.json(
-      { error: "An unexpected error occurred while fetching your projects." },
+      { error: error?.message || "Failed to fetch projects." },
       { status: 500 }
     );
   }
@@ -69,10 +69,10 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(project, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("POST /api/projects error:", error);
     return NextResponse.json(
-      { error: "An unexpected error occurred while creating the project." },
+      { error: error?.message || "Failed to create project." },
       { status: 500 }
     );
   }

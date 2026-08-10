@@ -24,10 +24,12 @@ Update this file whenever the current phase, active feature, or implementation s
 - Resolved Tailwind CSS v4 `@theme` token mappings in `globals.css` to restore `ui-context.md` styling
 - Implemented Editor Home view and Project Management Dialogs (`04-project-dialogs.md` spec completed)
 - Re-architected `components/ui/dialog.tsx` to utilize React Portals, ensuring dialogs cleanly break out of Next.js layout clipping contexts
+- Configured Prisma Schema, `@prisma/adapter-pg`, and generated the Data Layer (`05-prisma.md` spec completed)
+- Built Project API Endpoints (`GET`, `POST`, `PATCH`, `DELETE`) with strict auth checks and detailed user error messages (`06-project-apis.md` spec completed)
 
 ## In Progress
 
-- Reviewing upcoming feature work for the Project API endpoints and database hooks.
+- Next up: Wiring the Editor Home and Sidebar UI to the API (`07-wire-editor-home.md`).
 
 ## Next Up
 
