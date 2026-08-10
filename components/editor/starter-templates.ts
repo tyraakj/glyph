@@ -27,8 +27,8 @@ const createEdge = (source: string, target: string, sourceHandle?: string, targe
     id: `e-${source}-${target}`,
     source,
     target,
-    sourceHandle,
-    targetHandle,
+    sourceHandle: sourceHandle ? `${sourceHandle}-source` : undefined,
+    targetHandle: targetHandle ? `${targetHandle}-target` : undefined,
     type: "canvasEdge",
     data: label ? { label } : undefined,
   };

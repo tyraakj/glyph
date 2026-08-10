@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useEffect } from "react";
+import { useCallback, useRef, useEffect, useMemo } from "react";
 import { ReactFlow, Background, MiniMap, BackgroundVariant, ConnectionMode, ReactFlowProvider, useReactFlow, Panel, MarkerType } from "@xyflow/react";
 import type { CanvasTemplate } from "./starter-templates";
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow";
@@ -115,6 +115,14 @@ function CanvasBoardInner() {
     updateMyPresence({ cursor: null });
   }, [updateMyPresence]);
 
+  const mappedEdges = useMemo(() => {
+    return edges?.map(e => ({
+      ...e,
+      sourceHandle: e.sourceHandle ? (e.sourceHandle.includes('-source') ? e.sourceHandle : `${e.sourceHandle}-source`) : undefined,
+      targetHandle: e.targetHandle ? (e.targetHandle.includes('-target') ? e.targetHandle : `${e.targetHandle}-target`) : undefined,
+    })) || [];
+  }, [edges]);
+
   if (isLoading) {
     return null;
   }
@@ -128,7 +136,7 @@ function CanvasBoardInner() {
     >
       <ReactFlow
         nodes={nodes}
-        edges={edges}
+        edges={mappedEdges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
