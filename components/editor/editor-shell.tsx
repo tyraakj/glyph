@@ -34,11 +34,14 @@ export function EditorShell({
     <ProjectDialogsProvider>
       <div className="flex h-screen w-full bg-bg-base overflow-hidden relative text-text-primary">
         
-        {/* Mobile Scrim */}
-        {isSidebarOpen && (
+        {/* Mobile Scrims */}
+        {(isSidebarOpen || isAiSidebarOpen) && (
           <div 
             className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
-            onClick={() => setSidebarOpen(false)}
+            onClick={() => {
+              setSidebarOpen(false);
+              setAiSidebarOpen(false);
+            }}
           />
         )}
 
