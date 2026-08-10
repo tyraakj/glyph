@@ -72,12 +72,12 @@ export function ProjectSidebar({
   return (
     <div
       className={cn(
-        "fixed inset-y-0 left-0 z-40 w-80 transform bg-bg-elevated/95 backdrop-blur-md shadow-2xl transition-transform duration-300 ease-in-out border-r border-border-subtle flex flex-col",
-        isOpen ? "translate-x-0" : "-translate-x-full"
+        "relative shrink-0 z-40 h-full bg-bg-elevated/95 backdrop-blur-md shadow-2xl transition-all duration-300 ease-in-out border-r border-border-subtle flex flex-col overflow-hidden",
+        isOpen ? "w-80" : "w-0"
       )}
     >
       {/* Header */}
-      <div className="flex h-14 items-center justify-between border-b border-border-subtle px-4">
+      <div className="flex h-14 items-center justify-between border-b border-border-subtle px-4 min-w-[320px]">
         <h2 className="text-sm font-semibold text-text-primary">Projects</h2>
         <Button
           variant="ghost"

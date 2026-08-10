@@ -36,12 +36,12 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
 
   return (
     <div
-      className={`fixed inset-y-0 right-0 z-40 w-80 transform bg-bg-surface border-l border-border-subtle shadow-2xl transition-transform duration-300 ease-in-out flex flex-col ${
-        isOpen ? "translate-x-0" : "translate-x-full"
+      className={`relative shrink-0 z-40 h-full bg-bg-surface border-l border-border-subtle shadow-2xl transition-all duration-300 ease-in-out overflow-hidden flex flex-col ${
+        isOpen ? "w-80" : "w-0"
       }`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between h-14 px-4 border-b border-border-subtle shrink-0">
+      <div className="flex items-center justify-between h-14 px-4 border-b border-border-subtle shrink-0 min-w-[320px]">
         <div className="flex items-center gap-2">
           <Bot className="w-5 h-5 text-accent-primary" />
           <div className="flex flex-col">
