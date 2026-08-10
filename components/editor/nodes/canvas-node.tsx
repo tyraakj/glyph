@@ -1,8 +1,9 @@
 "use client";
 
 import { memo } from "react";
-import { Handle, Position, NodeProps, NodeResizer, useReactFlow } from "@xyflow/react";
+import { Handle, Position, NodeProps, NodeResizer, useReactFlow, NodeToolbar } from "@xyflow/react";
 import type { CanvasNode } from "@/types/canvas";
+import { NODE_COLORS } from "@/types/canvas";
 import { ShapeRenderer } from "../shape-renderers";
 
 export const CanvasNodeComponent = memo(({ id, data, selected }: NodeProps<CanvasNode>) => {
@@ -14,6 +15,44 @@ export const CanvasNodeComponent = memo(({ id, data, selected }: NodeProps<Canva
 
   return (
     <>
+      <NodeToolbar isVisible={selected} position={Position.Top} className="nodrag nopan mb-2">
+        <div className="flex items-center gap-1.5 bg-bg-elevated/95 backdrop-blur-md border border-border-subtle p-1.5 rounded-xl shadow-xl">
+          {NODE_COLORS.map(colorPair => {
+            const isActive = data.color === colorPair.background;
+            return (
+              <button
+                key={colorPair.background}
+                type="button"
+                className={`w-6 h-6 rounded-full transition-all duration-200 border-2 ${
+                  isActive ? "border-text-primary scale-110" : "border-transparent hover:scale-105"
+                }`}
+                style={{
+                  backgroundColor: colorPair.text,
+                  boxShadow: isActive ? `0 0 12px ${colorPair.text}60` : "none"
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.boxShadow = `0 0 8px ${colorPair.text}60`;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.boxShadow = "none";
+                  }
+                }}
+                onClick={() => {
+                  updateNodeData(id, {
+                    color: colorPair.background,
+                    textColor: colorPair.text,
+                  });
+                }}
+                title={colorPair.name}
+              />
+            );
+          })}
+        </div>
+      </NodeToolbar>
+
       <NodeResizer 
         color="var(--color-accent-primary)" 
         isVisible={selected} 
@@ -30,6 +69,7 @@ export const CanvasNodeComponent = memo(({ id, data, selected }: NodeProps<Canva
         width="100%"
         height="100%"
         color={data.color}
+        textColor={data.textColor}
         label={data.label}
         selected={selected}
         onLabelChange={handleLabelChange}
