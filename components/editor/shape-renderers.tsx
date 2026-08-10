@@ -2,8 +2,8 @@ import { CSSProperties, ReactNode } from "react";
 
 interface ShapeRendererProps {
   shape: string;
-  width: number;
-  height: number;
+  width: number | string;
+  height: number | string;
   color?: string;
   label?: string;
   selected?: boolean;
@@ -48,8 +48,8 @@ export function ShapeRenderer({
   selected = false,
 }: ShapeRendererProps) {
   const containerStyle: CSSProperties = {
-    width: `${width}px`,
-    height: `${height}px`,
+    width: typeof width === "number" ? `${width}px` : width,
+    height: typeof height === "number" ? `${height}px` : height,
   };
 
   // Base classes for CSS shapes

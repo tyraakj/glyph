@@ -12,8 +12,8 @@ export const CanvasNodeComponent = memo(({ data, selected }: NodeProps<CanvasNod
       
       <ShapeRenderer
         shape={data.shape || "rectangle"}
-        width={data.width || 150} // Fallback sizes if not provided (though handled by style width/height usually)
-        height={data.height || 100}
+        width="100%"
+        height="100%"
         color={data.color}
         label={data.label}
         selected={selected}
