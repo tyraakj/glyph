@@ -5,6 +5,7 @@ interface ShapeRendererProps {
   width: number | string;
   height: number | string;
   color?: string;
+  textColor?: string;
   label?: string;
   selected?: boolean;
   onLabelChange?: (label: string) => void;
@@ -45,6 +46,7 @@ export function ShapeRenderer({
   width,
   height,
   color = "var(--color-bg-elevated)",
+  textColor = "var(--color-text-primary)",
   label,
   selected = false,
   onLabelChange,
@@ -136,7 +138,7 @@ export function ShapeRenderer({
       {isEditing ? (
         <textarea
           ref={textareaRef}
-          className="relative z-10 w-[90%] text-sm font-medium text-text-primary text-center bg-transparent outline-none resize-none overflow-hidden nodrag nopan"
+          className="relative z-10 w-[90%] text-sm font-medium text-center bg-transparent outline-none resize-none overflow-hidden nodrag nopan"
           value={localLabel}
           onChange={(e) => {
             setLocalLabel(e.target.value);
@@ -147,11 +149,14 @@ export function ShapeRenderer({
             if (e.key === "Escape") setIsEditing(false);
           }}
           placeholder={shape}
-          style={{ height: 'auto', minHeight: '1.5em' }}
+          style={{ color: textColor, height: 'auto', minHeight: '1.5em' }}
           rows={1}
         />
       ) : (
-        <span className="relative z-10 text-sm font-medium text-text-primary text-center pointer-events-none select-none max-w-[90%] break-words">
+        <span 
+          className="relative z-10 text-sm font-medium text-center pointer-events-none select-none max-w-[90%] break-words"
+          style={{ color: textColor }}
+        >
           {label || shape}
         </span>
       )}

@@ -14,7 +14,7 @@ export const CanvasNodeComponent = memo(({ id, data, selected }: NodeProps<Canva
   };
 
   return (
-    <>
+    <div className="group w-full h-full relative">
       <NodeToolbar isVisible={selected} position={Position.Top} className="nodrag nopan mb-2">
         <div className="flex items-center gap-2 bg-bg-elevated/95 backdrop-blur-md border border-border-subtle p-2 rounded-2xl shadow-xl">
           {NODE_COLORS.map(colorPair => {
@@ -62,7 +62,7 @@ export const CanvasNodeComponent = memo(({ id, data, selected }: NodeProps<Canva
         lineClassName="!border-accent-primary"
       />
       
-      <Handle type="target" position={Position.Top} className="w-2 h-2 !bg-primary border-none" />
+      <Handle type="target" position={Position.Top} className="w-2.5 h-2.5 !bg-text-primary !border-2 !border-bg-surface opacity-0 group-hover:opacity-100 transition-opacity" />
       
       <ShapeRenderer
         shape={data.shape || "rectangle"}
@@ -75,10 +75,10 @@ export const CanvasNodeComponent = memo(({ id, data, selected }: NodeProps<Canva
         onLabelChange={handleLabelChange}
       />
 
-      <Handle type="source" position={Position.Bottom} className="w-2 h-2 !bg-primary border-none" />
-      <Handle type="source" position={Position.Left} className="w-2 h-2 !bg-primary border-none" />
-      <Handle type="source" position={Position.Right} className="w-2 h-2 !bg-primary border-none" />
-    </>
+      <Handle type="source" position={Position.Bottom} className="w-2.5 h-2.5 !bg-text-primary !border-2 !border-bg-surface opacity-0 group-hover:opacity-100 transition-opacity" />
+      <Handle type="source" position={Position.Left} className="w-2.5 h-2.5 !bg-text-primary !border-2 !border-bg-surface opacity-0 group-hover:opacity-100 transition-opacity" />
+      <Handle type="source" position={Position.Right} className="w-2.5 h-2.5 !bg-text-primary !border-2 !border-bg-surface opacity-0 group-hover:opacity-100 transition-opacity" />
+    </div>
   );
 });
 

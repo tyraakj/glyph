@@ -32,15 +32,15 @@ Update this file whenever the current phase, active feature, or implementation s
 - Bootstrapped collaborative Canvas using `@xyflow/react` and Liveblocks synced states (`11-base-canvas.md` spec completed)
 - Implemented Canvas Shape Panel with drag-and-drop node creation mapping screen-to-flow coordinates, plus a default basic custom node renderer (`12-shape-panel.md` spec completed)
 - Built precise Canvas SVG and CSS Node Geometries, replacing the placeholder node renderer, complete with a 1:1 scale HTML5 Drag Ghost Preview (`13-node-shape.md` spec completed)
+- Added node resizing using `@xyflow/react` NodeResizer and implemented inline text editing for canvas shapes, syncing labels instantly across Liveblocks (`14-node-editing.md` spec completed)
 
 ## In Progress
 
-- Next up is configuring canvas controls and UI overlays.
+- Next up is configuring canvas controls, selection UI, or the Node Properties panel.
 
 ## Next Up
 
-- Project API endpoints and database hooks.
-- Connecting the UI (Editor, Project Sidebar) to live data using the authenticated Prisma client.
+- `15-node-properties.md` for Node Properties styling panel.
 
 ## Open Questions
 

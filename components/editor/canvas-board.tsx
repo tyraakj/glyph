@@ -1,16 +1,21 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import { ReactFlow, Background, MiniMap, BackgroundVariant, ConnectionMode, ReactFlowProvider, useReactFlow, Panel } from "@xyflow/react";
+import { ReactFlow, Background, MiniMap, BackgroundVariant, ConnectionMode, ReactFlowProvider, useReactFlow, Panel, MarkerType } from "@xyflow/react";
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow";
 import type { CanvasNode, CanvasEdge } from "@/types/canvas";
 import { CanvasNodeComponent } from "./nodes/canvas-node";
+import { CanvasEdgeComponent } from "./edges/canvas-edge";
 import { ShapePanel, type DragPayload } from "./shape-panel";
 
 import "@xyflow/react/dist/style.css";
 
 const nodeTypes = {
   canvasNode: CanvasNodeComponent,
+};
+
+const edgeTypes = {
+  canvasEdge: CanvasEdgeComponent,
 };
 
 function CanvasBoardInner() {
@@ -81,6 +86,16 @@ function CanvasBoardInner() {
         onConnect={onConnect}
         onDelete={onDelete}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        defaultEdgeOptions={{ 
+          type: 'canvasEdge', 
+          markerEnd: { 
+            type: MarkerType.ArrowClosed, 
+            width: 20, 
+            height: 20, 
+            color: 'var(--color-border-subtle)' 
+          } 
+        }}
         fitView
         className="bg-bg-base"
         connectionMode={ConnectionMode.Loose}
