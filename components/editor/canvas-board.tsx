@@ -7,6 +7,7 @@ import type { CanvasNode, CanvasEdge } from "@/types/canvas";
 import { CanvasNodeComponent } from "./nodes/canvas-node";
 import { CanvasEdgeComponent } from "./edges/canvas-edge";
 import { ShapePanel, type DragPayload } from "./shape-panel";
+import { CanvasControls } from "./canvas-controls";
 
 import "@xyflow/react/dist/style.css";
 
@@ -111,6 +112,9 @@ function CanvasBoardInner() {
         <Cursors />
         <Panel position="bottom-center" className="mb-6">
           <ShapePanel />
+        </Panel>
+        <Panel position="bottom-left" className="ml-4 mb-6">
+          <CanvasControls />
         </Panel>
       </ReactFlow>
     </div>
