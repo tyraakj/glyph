@@ -4,15 +4,18 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Not started
+- In Progress: Editor Chrome (Navbar, Sidebar, Dialog Pattern)
 
 ## Current Goal
 
-- Define the immediate implementation goal here.
+- Implement base editor chrome components as per `context/feature-spec/02-editor-chrome.md`.
 
 ## Completed
 
-- None yet.
+- Initial project setup (dependencies, Next.js config)
+- Add AI agent guidelines and project documentation
+- Add base application layout and pages
+- Base editor chrome components (`editor-navbar.tsx`, `project-sidebar.tsx`, Dialog Pattern)
 
 ## In Progress
 
@@ -20,16 +23,16 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- Add the next planned feature unit here.
+- Check when done steps (compiles without TypeScript errors, no lint errors, dialog pattern ready for future use).
 
 ## Open Questions
 
-- Add unresolved product or implementation questions here.
+- None yet.
 
 ## Architecture Decisions
 
-- Add decisions that affect the system design or data model.
+- None yet.
 
 ## Session Notes
 
-- Add context needed to resume work in the next session.
+- None yet.
