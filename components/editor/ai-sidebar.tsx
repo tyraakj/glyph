@@ -46,7 +46,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
           <Bot className="w-5 h-5 text-accent-primary" />
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-text-primary leading-tight">AI Workspace</span>
-            <span className="text-[10px] text-text-muted leading-tight">Collaborate with Ghost AI</span>
+            <span className="text-[10px] text-text-muted leading-tight">Collaborate with Glyph AI</span>
           </div>
         </div>
         <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-text-muted hover:text-text-primary">
@@ -104,7 +104,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask Ghost AI..."
+                placeholder="Ask Glyph AI..."
                 className="flex-1 max-h-[160px] min-h-[40px] resize-none bg-transparent outline-none text-sm text-text-primary placeholder:text-text-muted py-2 px-2 scrollbar-thin"
                 rows={1}
               />
@@ -116,7 +116,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
               </Button>
             </div>
             <div className="text-[10px] text-text-faint text-center mt-2">
-              Ghost AI can make mistakes. Consider verifying important information.
+              Glyph AI can make mistakes. Consider verifying important information.
             </div>
           </div>
         </TabsContent>
