@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import { ReactFlow, Background, MiniMap, BackgroundVariant, ConnectionMode, ReactFlowProvider, useReactFlow } from "@xyflow/react";
+import { ReactFlow, Background, MiniMap, BackgroundVariant, ConnectionMode, ReactFlowProvider, useReactFlow, Panel } from "@xyflow/react";
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow";
 import type { CanvasNode, CanvasEdge } from "@/types/canvas";
 import { CanvasNodeComponent } from "./nodes/canvas-node";
@@ -94,9 +94,10 @@ function CanvasBoardInner() {
           className="bg-bg-surface border-border-default rounded-lg shadow-sm"
         />
         <Cursors />
+        <Panel position="bottom-center" className="mb-6">
+          <ShapePanel />
+        </Panel>
       </ReactFlow>
-      
-      <ShapePanel />
     </div>
   );
 }

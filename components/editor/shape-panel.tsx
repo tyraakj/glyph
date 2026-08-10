@@ -29,7 +29,7 @@ export function ShapePanel() {
   };
 
   return (
-    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 p-2 rounded-full bg-bg-elevated/80 backdrop-blur-md border border-border-default shadow-lg">
+    <div className="flex items-center gap-2 p-2 rounded-full bg-bg-elevated/80 backdrop-blur-md border border-border-default shadow-lg">
       {SHAPES.map((shape) => {
         const Icon = shape.icon;
         return (
