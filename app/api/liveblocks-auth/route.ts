@@ -7,9 +7,16 @@ export async function POST(req: Request) {
   try {
     const { room } = await req.json();
 
-    if (!room) {
+    if (!room || typeof room !== "string") {
       return NextResponse.json(
-        { error: "Room ID is required" },
+        { error: "Invalid room ID" },
+        { status: 400 }
+      );
+    }
+
+    if (room.includes("*")) {
+      return NextResponse.json(
+        { error: "Wildcards are not permitted" },
         { status: 400 }
       );
     }
