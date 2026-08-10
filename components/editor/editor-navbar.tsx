@@ -64,7 +64,7 @@ export function EditorNavbar({ isSidebarOpen, onToggleSidebar, activeProject, is
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className={`text-text-secondary hover:text-text-primary hidden sm:flex ${isAiSidebarOpen ? 'bg-accent-primary/10 text-accent-primary hover:text-accent-primary' : ''}`}
+                className={`text-text-secondary hover:text-text-primary flex ${isAiSidebarOpen ? 'bg-accent-primary/10 text-accent-primary hover:text-accent-primary' : ''}`}
                 onClick={onToggleAiSidebar}
               >
                 <Sparkles className="h-5 w-5" />
