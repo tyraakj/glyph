@@ -23,9 +23,9 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
   const toggleSidebar = useCallback(() => setSidebarOpen(p => !p), []);
 
-  const openAiSidebar = useCallback(() => setAiSidebarOpen(true), []);
-  const closeAiSidebar = useCallback(() => setAiSidebarOpen(false), []);
-  const toggleAiSidebar = useCallback(() => setAiSidebarOpen(p => !p), []);
+  const openAiSidebar = useCallback(() => { console.log("[SidebarContext] openAiSidebar called"); setAiSidebarOpen(true); }, []);
+  const closeAiSidebar = useCallback(() => { console.log("[SidebarContext] closeAiSidebar called"); setAiSidebarOpen(false); }, []);
+  const toggleAiSidebar = useCallback(() => { console.log("[SidebarContext] toggleAiSidebar called"); setAiSidebarOpen(p => !p); }, []);
 
   return (
     <SidebarContext.Provider value={{

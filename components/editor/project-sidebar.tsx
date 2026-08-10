@@ -69,6 +69,10 @@ export function ProjectSidebar({
     </Link>
   )};
 
+  useEffect(() => {
+    console.log("[ProjectSidebar] Rendered with isOpen:", isOpen);
+  }, [isOpen]);
+
   return (
     <div
       className={cn(
@@ -84,7 +88,11 @@ export function ProjectSidebar({
         <Button
           variant="ghost"
           size="icon"
-          onPointerDown={(e) => { e.stopPropagation(); onClose(); }}
+          onPointerDown={(e) => { 
+            console.log("[ProjectSidebar] Close button onPointerDown fired!");
+            e.stopPropagation(); 
+            onClose(); 
+          }}
           className="h-8 w-8 text-text-muted hover:text-text-primary"
         >
           <X className="h-4 w-4" />

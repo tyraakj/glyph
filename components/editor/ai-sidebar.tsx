@@ -45,6 +45,10 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
     "Build a CI/CD pipeline",
   ];
 
+  useEffect(() => {
+    console.log("[AiSidebar] Rendered with isOpen:", isOpen);
+  }, [isOpen]);
+
   return (
     <div
       className={`relative shrink-0 z-40 h-full bg-bg-surface border-l border-border-subtle shadow-2xl transition-all duration-300 ease-in-out overflow-hidden ${
@@ -65,7 +69,11 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
           <Button
             variant="ghost"
             size="icon"
-            onPointerDown={(e) => { e.stopPropagation(); onClose(); }}
+            onPointerDown={(e) => { 
+              console.log("[AiSidebar] Close button onPointerDown fired!");
+              e.stopPropagation(); 
+              onClose(); 
+            }}
             className="h-8 w-8 text-text-muted hover:text-text-primary"
           >
             <X className="h-4 w-4" />
