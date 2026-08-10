@@ -51,21 +51,21 @@ export function EditorNavbar({ isSidebarOpen, onToggleSidebar, activeProject }: 
         <div className="flex items-center space-x-2">
           {activeProject && (
             <>
-              <Button variant="outline" size="sm" onClick={() => setShowTemplates(true)} className="hidden sm:flex border-border-subtle text-text-secondary hover:text-text-primary">
+              <Button variant="outline" size="sm" onClick={() => setShowTemplates(true)} className="flex border-border-subtle text-text-secondary hover:text-text-primary">
                 <Library className="mr-2 h-4 w-4" />
                 Templates
               </Button>
-              <Button variant="default" size="sm" className="hidden sm:flex">
+              <Button variant="default" size="sm" className="flex">
                 <Share2 className="mr-2 h-4 w-4" />
                 Share
               </Button>
-              <Button variant="ghost" size="icon" className="text-text-secondary hover:text-text-primary">
+              <Button variant="ghost" size="icon" className="text-text-secondary hover:text-text-primary hidden sm:flex">
                 <Sparkles className="h-5 w-5" />
               </Button>
               <div className="h-6 w-px bg-border-subtle mx-2" />
             </>
           )}
-          <UserMenu />
+          {!activeProject && <UserMenu />}
         </div>
       </nav>
 

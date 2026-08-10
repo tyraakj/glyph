@@ -4,11 +4,13 @@ import { useCallback, useRef, useEffect } from "react";
 import { ReactFlow, Background, MiniMap, BackgroundVariant, ConnectionMode, ReactFlowProvider, useReactFlow, Panel, MarkerType } from "@xyflow/react";
 import type { CanvasTemplate } from "./starter-templates";
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow";
+import { useUpdateMyPresence } from "@liveblocks/react/suspense";
 import type { CanvasNode, CanvasEdge } from "@/types/canvas";
 import { CanvasNodeComponent } from "./nodes/canvas-node";
 import { CanvasEdgeComponent } from "./edges/canvas-edge";
 import { ShapePanel, type DragPayload } from "./shape-panel";
 import { CanvasControls } from "./canvas-controls";
+import { ParticipantGroup } from "./participant-group";
 
 import "@xyflow/react/dist/style.css";
 
@@ -96,12 +98,34 @@ function CanvasBoardInner() {
     [screenToFlowPosition, onNodesChange]
   );
 
+  const updateMyPresence = useUpdateMyPresence();
+
+  const handlePointerMove = useCallback(
+    (event: React.PointerEvent) => {
+      const position = screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+      updateMyPresence({ cursor: position });
+    },
+    [screenToFlowPosition, updateMyPresence]
+  );
+
+  const handlePointerLeave = useCallback(() => {
+    updateMyPresence({ cursor: null });
+  }, [updateMyPresence]);
+
   if (isLoading) {
     return null;
   }
 
   return (
-    <div className="flex-1 w-full h-full relative" ref={reactFlowWrapper}>
+    <div 
+      className="flex-1 w-full h-full relative" 
+      ref={reactFlowWrapper}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+    >
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -133,6 +157,9 @@ function CanvasBoardInner() {
           className="bg-bg-surface border-border-default rounded-lg shadow-sm"
         />
         <Cursors />
+        <Panel position="top-right" className="mt-4 mr-4 pointer-events-none">
+          <ParticipantGroup />
+        </Panel>
         <Panel position="bottom-center" className="mb-6">
           <ShapePanel />
         </Panel>
