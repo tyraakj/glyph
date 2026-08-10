@@ -3,24 +3,21 @@
 import { memo } from "react";
 import { Handle, Position, NodeProps } from "@xyflow/react";
 import type { CanvasNode } from "@/types/canvas";
+import { ShapeRenderer } from "../shape-renderers";
 
 export const CanvasNodeComponent = memo(({ data, selected }: NodeProps<CanvasNode>) => {
   return (
     <>
       <Handle type="target" position={Position.Top} className="w-2 h-2 !bg-primary border-none" />
       
-      <div 
-        className={`w-full h-full flex items-center justify-center p-2 rounded-md border-2 bg-bg-base shadow-sm transition-colors ${
-          selected ? "border-primary" : "border-border-default hover:border-border-hover"
-        }`}
-        style={{
-          backgroundColor: data.color || "var(--color-bg-base)",
-        }}
-      >
-        <span className="text-sm font-medium text-text-primary text-center pointer-events-none select-none">
-          {data.label || data.shape}
-        </span>
-      </div>
+      <ShapeRenderer
+        shape={data.shape || "rectangle"}
+        width={data.width || 150} // Fallback sizes if not provided (though handled by style width/height usually)
+        height={data.height || 100}
+        color={data.color}
+        label={data.label}
+        selected={selected}
+      />
 
       <Handle type="source" position={Position.Bottom} className="w-2 h-2 !bg-primary border-none" />
       <Handle type="source" position={Position.Left} className="w-2 h-2 !bg-primary border-none" />
