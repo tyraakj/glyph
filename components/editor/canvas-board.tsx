@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import { ReactFlow, Background, MiniMap, BackgroundVariant, ConnectionMode, ReactFlowProvider, useReactFlow, Panel, MarkerType } from "@xyflow/react";
+import type { CanvasTemplate } from "./starter-templates";
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow";
 import type { CanvasNode, CanvasEdge } from "@/types/canvas";
 import { CanvasNodeComponent } from "./nodes/canvas-node";
@@ -31,7 +32,29 @@ function CanvasBoardInner() {
   } = useLiveblocksFlow<CanvasNode, CanvasEdge>();
 
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const { screenToFlowPosition } = useReactFlow();
+  const { screenToFlowPosition, fitView } = useReactFlow();
+
+  useEffect(() => {
+    const handleImport = (e: Event) => {
+      const customEvent = e as CustomEvent<CanvasTemplate>;
+      const template = customEvent.detail;
+      if (!template) return;
+
+      // 1. Clear existing nodes and edges
+      onNodesChange((nodes || []).map(n => ({ type: "remove", id: n.id })));
+      onEdgesChange((edges || []).map(e => ({ type: "remove", id: e.id })));
+
+      // 2. Add new nodes and edges
+      onNodesChange(template.nodes.map(n => ({ type: "add", item: n })));
+      onEdgesChange(template.edges.map(e => ({ type: "add", item: e })));
+
+      // 3. Fit view after slight delay to allow rendering
+      setTimeout(() => fitView({ duration: 500, padding: 0.2 }), 50);
+    };
+
+    window.addEventListener("import-starter-template", handleImport);
+    return () => window.removeEventListener("import-starter-template", handleImport);
+  }, [nodes, edges, onNodesChange, onEdgesChange, fitView]);
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
