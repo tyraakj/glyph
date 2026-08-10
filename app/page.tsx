@@ -1,7 +1,7 @@
+import { redirect } from "next/navigation";
+
 export default function Home() {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <h1 className="text-4xl font-bold">glyph ai</h1>
-    </div>
-  );
+  // If the user reaches this page, it means proxy.ts already confirmed they are authenticated
+  // (since "/" is not a public route and unauthenticated users are redirected to /sign-in).
+  redirect("/editor");
 }
