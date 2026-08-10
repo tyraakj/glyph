@@ -53,7 +53,7 @@ export function ShapeRenderer({
   };
 
   // Base classes for CSS shapes
-  let cssClasses = `absolute inset-0 flex items-center justify-center border-2 transition-colors ${
+  let cssClasses = `absolute inset-0 w-full h-full flex items-center justify-center border-2 transition-colors ${
     selected ? "border-accent-primary shadow-[0_0_10px_rgba(0,200,212,0.2)]" : "border-border-subtle hover:border-text-muted"
   }`;
 
@@ -107,7 +107,7 @@ export function ShapeRenderer({
   }
 
   return (
-    <div className="relative flex items-center justify-center shadow-sm" style={containerStyle}>
+    <div className="relative flex items-center justify-center shadow-sm w-full h-full" style={containerStyle}>
       {content}
       <span className="relative z-10 text-sm font-medium text-text-primary text-center pointer-events-none select-none max-w-[90%] break-words">
         {label || shape}
