@@ -16,14 +16,14 @@ export const CanvasNodeComponent = memo(({ id, data, selected }: NodeProps<Canva
   return (
     <>
       <NodeToolbar isVisible={selected} position={Position.Top} className="nodrag nopan mb-2">
-        <div className="flex items-center gap-1.5 bg-bg-elevated/95 backdrop-blur-md border border-border-subtle p-1.5 rounded-xl shadow-xl">
+        <div className="flex items-center gap-2 bg-bg-elevated/95 backdrop-blur-md border border-border-subtle p-2 rounded-2xl shadow-xl">
           {NODE_COLORS.map(colorPair => {
             const isActive = data.color === colorPair.background;
             return (
               <button
                 key={colorPair.background}
                 type="button"
-                className={`w-6 h-6 rounded-full transition-all duration-200 border-2 ${
+                className={`w-8 h-8 rounded-full transition-all duration-200 border-2 ${
                   isActive ? "border-text-primary scale-110" : "border-transparent hover:scale-105"
                 }`}
                 style={{
