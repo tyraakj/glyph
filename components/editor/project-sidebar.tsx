@@ -84,7 +84,7 @@ export function ProjectSidebar({
         <Button
           variant="ghost"
           size="icon"
-          onClick={onClose}
+          onPointerDown={(e) => { e.stopPropagation(); onClose(); }}
           className="h-8 w-8 text-text-muted hover:text-text-primary"
         >
           <X className="h-4 w-4" />

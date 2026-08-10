@@ -62,14 +62,15 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
               <span className="text-[10px] text-text-muted leading-tight">Collaborate with Glyph AI</span>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onClose(); }}
-            className="h-8 w-8 flex items-center justify-center rounded-md text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-colors"
-            aria-label="Close AI Sidebar"
+          <Button
+            variant="ghost"
+            size="icon"
+            onPointerDown={(e) => { e.stopPropagation(); onClose(); }}
+            className="h-8 w-8 text-text-muted hover:text-text-primary"
           >
-            <X className="w-4 h-4" />
-          </button>
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close sidebar</span>
+          </Button>
         </div>
 
         <Tabs defaultValue="architect" className="flex flex-col flex-1 overflow-hidden">
