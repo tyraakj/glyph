@@ -77,8 +77,8 @@ export function ProjectSidebar({
   return (
     <div
       className={cn(
-        "relative shrink-0 z-40 h-full bg-bg-elevated/95 backdrop-blur-md shadow-2xl transition-all duration-300 ease-in-out border-r border-border-subtle overflow-hidden",
-        isOpen ? "w-80" : "w-0"
+        "relative shrink-0 min-w-0 z-40 h-full bg-bg-elevated/95 backdrop-blur-md shadow-2xl transition-all duration-300 ease-in-out border-border-subtle overflow-hidden",
+        isOpen ? "w-80 border-r opacity-100" : "w-0 border-none opacity-0"
       )}
     >
       {/* Inner wrapper: fixed width so content never squishes */}

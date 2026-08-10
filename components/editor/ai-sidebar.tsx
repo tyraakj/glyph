@@ -4,6 +4,7 @@ import { X, Bot, FileText, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useState, useRef, useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 interface AiSidebarProps {
   isOpen: boolean;
@@ -51,9 +52,10 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
 
   return (
     <div
-      className={`relative shrink-0 z-40 h-full bg-bg-surface border-l border-border-subtle shadow-2xl transition-all duration-300 ease-in-out overflow-hidden ${
-        isOpen ? "w-80" : "w-0"
-      }`}
+      className={cn(
+        "relative shrink-0 min-w-0 z-40 h-full bg-bg-surface border-border-subtle shadow-2xl transition-all duration-300 ease-in-out overflow-hidden",
+        isOpen ? "w-80 border-l opacity-100" : "w-0 border-none opacity-0"
+      )}
     >
       {/* Inner wrapper: fixed width so content never squishes */}
       <div className="w-80 h-full flex flex-col">
