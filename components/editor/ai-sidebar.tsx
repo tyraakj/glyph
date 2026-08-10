@@ -36,7 +36,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
 
   return (
     <div
-      className={`absolute top-0 right-0 h-full w-80 bg-bg-surface border-l border-border-subtle shadow-2xl transition-transform duration-300 ease-in-out z-20 flex flex-col ${
+      className={`fixed top-14 right-0 bottom-0 w-80 bg-bg-surface border-l border-border-subtle shadow-2xl transition-transform duration-300 ease-in-out z-40 flex flex-col ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
