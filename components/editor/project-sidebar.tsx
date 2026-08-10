@@ -1,4 +1,5 @@
 import * as React from "react"
+import Link from "next/link"
 import { X, Plus, FolderGit2, Edit2, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
@@ -11,24 +12,43 @@ interface ProjectSidebarProps {
   onClose: () => void
   ownedProjects?: Project[]
   sharedProjects?: Project[]
+  activeProjectId?: string
+}
+
+function generateSlug(name: string) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
 export function ProjectSidebar({ 
   isOpen, 
   onClose, 
   ownedProjects = [], 
-  sharedProjects = [] 
+  sharedProjects = [],
+  activeProjectId
 }: ProjectSidebarProps) {
   const { openDialog } = useProjectDialogs();
 
-  const renderProjectItem = (project: Project, isOwner: boolean) => (
-    <div key={project.id} className="group flex items-center justify-between p-2 rounded-lg hover:bg-bg-subtle cursor-pointer transition-colors">
-      <div className="flex items-center gap-3 overflow-hidden">
-        <FolderGit2 className="h-4 w-4 text-text-muted flex-shrink-0" />
-        <span className="text-sm font-medium text-text-primary truncate">{project.name}</span>
-      </div>
-      
-      {isOwner && (
+  const renderProjectItem = (project: Project, isOwner: boolean) => {
+    const isActive = project.id === activeProjectId;
+    const href = `/editor/${project.id}-${generateSlug(project.name)}`;
+
+    return (
+      <Link 
+        key={project.id} 
+        href={href}
+        className={cn(
+          "group flex items-center justify-between p-2 rounded-lg cursor-pointer transition-colors",
+          isActive ? "bg-bg-subtle" : "hover:bg-bg-subtle"
+        )}
+      >
+        <div className="flex items-center gap-3 overflow-hidden">
+          <FolderGit2 className={cn("h-4 w-4 flex-shrink-0", isActive ? "text-brand-primary" : "text-text-muted")} />
+          <span className={cn("text-sm truncate", isActive ? "font-semibold text-brand-primary" : "font-medium text-text-primary")}>
+            {project.name}
+          </span>
+        </div>
+        
+        {isOwner && (
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button 
             onClick={(e) => { e.stopPropagation(); openDialog("rename", project); }}
@@ -46,8 +66,8 @@ export function ProjectSidebar({
           </button>
         </div>
       )}
-    </div>
-  );
+    </Link>
+  )};
 
   return (
     <div
