@@ -1,4 +1,7 @@
+"use client"
+
 import * as React from "react"
+import { createPortal } from "react-dom"
 import { cn } from "@/lib/utils"
 
 export function Dialog({
@@ -10,10 +13,16 @@ export function Dialog({
   onClose: () => void
   children: React.ReactNode
 }) {
-  if (!isOpen) return null
+  const [mounted, setMounted] = React.useState(false)
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!isOpen || !mounted) return null
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center">
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
@@ -21,10 +30,11 @@ export function Dialog({
       />
       
       {/* Dialog Content */}
-      <div className="relative z-50 w-full max-w-lg rounded-3xl border border-border-default bg-bg-surface p-6 shadow-xl">
+      <div className="relative z-[100] w-full max-w-lg rounded-3xl border border-border-default bg-bg-surface p-6 shadow-xl">
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
