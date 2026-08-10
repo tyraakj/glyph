@@ -72,12 +72,14 @@ export function ProjectSidebar({
   return (
     <div
       className={cn(
-        "relative shrink-0 z-40 h-full bg-bg-elevated/95 backdrop-blur-md shadow-2xl transition-all duration-300 ease-in-out border-r border-border-subtle flex flex-col overflow-hidden",
+        "relative shrink-0 z-40 h-full bg-bg-elevated/95 backdrop-blur-md shadow-2xl transition-all duration-300 ease-in-out border-r border-border-subtle overflow-hidden",
         isOpen ? "w-80" : "w-0"
       )}
     >
+      {/* Inner wrapper: fixed width so content never squishes */}
+      <div className="w-80 h-full flex flex-col">
       {/* Header */}
-      <div className="flex h-14 items-center justify-between border-b border-border-subtle px-4 min-w-[320px]">
+      <div className="flex h-14 items-center justify-between border-b border-border-subtle px-4">
         <h2 className="text-sm font-semibold text-text-primary">Projects</h2>
         <Button
           variant="ghost"
@@ -143,6 +145,7 @@ export function ProjectSidebar({
           New Project
         </Button>
       </div>
+      </div>{/* end inner wrapper */}
     </div>
   )
 }
