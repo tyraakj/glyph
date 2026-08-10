@@ -45,10 +45,10 @@ export function EditorShell({
         <div className="flex flex-col flex-1 h-full min-w-0">
           <EditorNavbar 
             isSidebarOpen={isSidebarOpen} 
-            onToggleSidebar={() => setSidebarOpen(!isSidebarOpen)} 
+            onToggleSidebar={() => setSidebarOpen(prev => !prev)} 
             activeProject={activeProject}
             isAiSidebarOpen={isAiSidebarOpen}
-            onToggleAiSidebar={() => setAiSidebarOpen(!isAiSidebarOpen)}
+            onToggleAiSidebar={() => setAiSidebarOpen(prev => !prev)}
           />
           <main className="flex-1 relative overflow-hidden bg-bg-surface">
             {children}

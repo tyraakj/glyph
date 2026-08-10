@@ -21,6 +21,17 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
     }
   }, [input]);
 
+  // Close on ESC key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -51,9 +62,14 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
               <span className="text-[10px] text-text-muted leading-tight">Collaborate with Glyph AI</span>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-text-muted hover:text-text-primary">
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onClose(); }}
+            className="h-8 w-8 flex items-center justify-center rounded-md text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-colors"
+            aria-label="Close AI Sidebar"
+          >
             <X className="w-4 h-4" />
-          </Button>
+          </button>
         </div>
 
         <Tabs defaultValue="architect" className="flex flex-col flex-1 overflow-hidden">
