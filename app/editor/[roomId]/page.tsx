@@ -1,5 +1,7 @@
 import { getProjectAccess } from "@/lib/project-access";
 import { AccessDenied } from "@/components/editor/access-denied";
+import { CanvasWrapper } from "@/components/editor/canvas-wrapper";
+import { CanvasBoard } from "@/components/editor/canvas-board";
 import { redirect } from "next/navigation";
 
 interface WorkspacePageProps {
@@ -27,17 +29,11 @@ export default async function WorkspacePage(props: WorkspacePageProps) {
 
   return (
     <div className="flex h-full w-full bg-bg-base relative overflow-hidden">
-      {/* Central Canvas Placeholder */}
-      <div className="flex-1 flex items-center justify-center relative">
-        <div className="absolute inset-0 pattern-dots text-border-subtle opacity-50" />
-        <div className="relative z-10 text-center space-y-2 p-6 rounded-2xl bg-bg-elevated/80 backdrop-blur-md border border-border-default shadow-xl">
-          <h2 className="text-xl font-semibold text-text-primary">
-            {project.name} Workspace
-          </h2>
-          <p className="text-sm text-text-secondary max-w-sm">
-            The interactive canvas engine will be mounted here in a future update.
-          </p>
-        </div>
+      {/* Central Canvas Area */}
+      <div className="flex-1 flex flex-col relative">
+        <CanvasWrapper roomId={roomId}>
+          <CanvasBoard />
+        </CanvasWrapper>
       </div>
 
       {/* Right AI Sidebar Placeholder */}

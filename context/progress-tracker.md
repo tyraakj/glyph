@@ -29,10 +29,11 @@ Update this file whenever the current phase, active feature, or implementation s
 - Wired Editor Home UI to backend APIs using `useProjectActions` hook and server-side data fetching (`07-wire-editor-home.md` spec completed)
 - Implemented Editor Workspace Shell (`/editor/[roomId]`), shifting `EditorShell` to a layout and adding strict Server Component access checks (`08-editor-workspace-shell.md` spec completed)
 - Configured Liveblocks backend, including `liveblocks.config.ts`, `lib/liveblocks.ts` cached client, and strict `POST /api/liveblocks-auth` route matching Prisma projects (`10-liveblocks-setup.md` spec completed)
+- Bootstrapped collaborative Canvas using `@xyflow/react` and Liveblocks synced states (`11-base-canvas.md` spec completed)
 
 ## In Progress
 
-- Reviewing the upcoming features for Canvas implementation.
+- Next up is configuring canvas controls and custom nodes.
 
 ## Next Up
 
