@@ -19,8 +19,11 @@ import { useAutosave } from "@/hooks/use-autosave";
 
 import "@xyflow/react/dist/style.css";
 
+import { GroupNode } from "./nodes/group-node";
+
 const nodeTypes = {
   canvasNode: CanvasNodeComponent,
+  groupNode: GroupNode,
 };
 
 const edgeTypes = {

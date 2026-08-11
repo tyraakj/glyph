@@ -1,5 +1,5 @@
 import { useReactFlow } from "@xyflow/react";
-import { ZoomIn, ZoomOut, Maximize, Undo2, Redo2, Cloud, CloudOff, Loader2, CloudAlert, History, Map } from "lucide-react";
+import { ZoomIn, ZoomOut, Maximize, Undo2, Redo2, Cloud, CloudOff, Loader2, CloudAlert, History, Map, Group } from "lucide-react";
 import { useUndo, useRedo, useCanUndo, useCanRedo } from "@liveblocks/react/suspense";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import type { SaveStatus } from "@/hooks/use-autosave";
@@ -77,6 +77,19 @@ export function CanvasControls({
         title="Redo (Cmd/Ctrl + Shift + Z)"
       >
         <Redo2 className="w-5 h-5" />
+      </button>
+
+      <div className="w-[1px] h-5 bg-border-subtle mx-1" />
+      
+      <button
+        onClick={() => {
+          const e = new KeyboardEvent('keydown', { key: 'g', ctrlKey: true });
+          window.dispatchEvent(e);
+        }}
+        className="p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-bg-subtle transition-colors"
+        title="Group Selected (Ctrl+G)"
+      >
+        <Group className="w-5 h-5" />
       </button>
 
       {onHistoryClick && (
