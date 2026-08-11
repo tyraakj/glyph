@@ -57,7 +57,7 @@ export async function POST(
     const timestamp = Date.now();
     const blobName = `projects/${projectId}/versions/${timestamp}.json`;
     const blob = await put(blobName, jsonString, {
-      access: 'public',
+      access: 'private',
       contentType: 'application/json',
       addRandomSuffix: true
     });

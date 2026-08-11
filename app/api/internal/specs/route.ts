@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
     // Upload to Vercel Blob
     const blobName = `projects/${projectId}/specs/${filename}`;
     const blob = await put(blobName, content, {
+      access: 'private',
       contentType: 'text/markdown',
       addRandomSuffix: true
     });
