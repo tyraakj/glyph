@@ -12,7 +12,12 @@ declare global {
 
     // The Storage tree for the room, for example, an array of notes
     Storage: {
-      // We will define this later when building the canvas
+      chatHistory: import("@liveblocks/client").LiveList<{
+        role: "user" | "ai";
+        content: string;
+        timestamp: number;
+        sender?: string;
+      }>;
     };
 
     // Custom user info set when authenticating with a secret key

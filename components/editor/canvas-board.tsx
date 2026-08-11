@@ -490,6 +490,8 @@ function CanvasBoardInner() {
       {previewVersion && (
         <VersionPreviewCanvas
           version={previewVersion}
+          currentNodes={nodes}
+          currentEdges={edges}
           onClose={() => setPreviewVersion(null)}
           onRestore={handleRestoreVersion}
         />

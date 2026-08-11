@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { UserMenu } from "./user-menu"
 import type { Project } from "@/generated/prisma"
 import { StarterTemplatesModal } from "./starter-templates-modal"
+import { ShareDialog } from "./share-dialog"
 
 interface EditorNavbarProps {
   isSidebarOpen: boolean
@@ -15,6 +16,7 @@ interface EditorNavbarProps {
 
 export function EditorNavbar({ isSidebarOpen, onToggleSidebar, activeProject, isAiSidebarOpen, onToggleAiSidebar }: EditorNavbarProps) {
   const [showTemplates, setShowTemplates] = React.useState(false)
+  const [showShare, setShowShare] = React.useState(false)
 
   return (
     <>
@@ -57,7 +59,7 @@ export function EditorNavbar({ isSidebarOpen, onToggleSidebar, activeProject, is
                 <Library className="mr-2 h-4 w-4" />
                 Templates
               </Button>
-              <Button variant="default" size="sm" className="flex">
+              <Button variant="default" size="sm" onClick={() => setShowShare(true)} className="flex">
                 <Share2 className="mr-2 h-4 w-4" />
                 Share
               </Button>
@@ -77,6 +79,14 @@ export function EditorNavbar({ isSidebarOpen, onToggleSidebar, activeProject, is
       </nav>
 
       <StarterTemplatesModal open={showTemplates} onOpenChange={setShowTemplates} />
+      
+      {activeProject && (
+        <ShareDialog 
+          open={showShare} 
+          onOpenChange={setShowShare} 
+          project={activeProject} 
+        />
+      )}
     </>
   )
 }

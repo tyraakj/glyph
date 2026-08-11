@@ -1,6 +1,7 @@
 "use client";
 
 import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from "@liveblocks/react";
+import { LiveList } from "@liveblocks/client";
 import { Loader2 } from "lucide-react";
 import { ReactNode } from "react";
 import { ReactFlowProvider } from "@xyflow/react";
@@ -18,6 +19,9 @@ export function CanvasWrapper({ roomId, children }: CanvasWrapperProps) {
         initialPresence={{
           cursor: null,
           isThinking: false,
+        }}
+        initialStorage={{
+          chatHistory: new LiveList([]),
         }}
       >
         <ClientSideSuspense

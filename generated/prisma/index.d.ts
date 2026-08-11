@@ -1754,6 +1754,7 @@ export namespace Prisma {
     description: string | null
     status: string | null
     canvasJsonPath: string | null
+    publicShareToken: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1765,6 +1766,7 @@ export namespace Prisma {
     description: string | null
     status: string | null
     canvasJsonPath: string | null
+    publicShareToken: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1776,6 +1778,7 @@ export namespace Prisma {
     description: number
     status: number
     canvasJsonPath: number
+    publicShareToken: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1789,6 +1792,7 @@ export namespace Prisma {
     description?: true
     status?: true
     canvasJsonPath?: true
+    publicShareToken?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1800,6 +1804,7 @@ export namespace Prisma {
     description?: true
     status?: true
     canvasJsonPath?: true
+    publicShareToken?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1811,6 +1816,7 @@ export namespace Prisma {
     description?: true
     status?: true
     canvasJsonPath?: true
+    publicShareToken?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1895,6 +1901,7 @@ export namespace Prisma {
     description: string | null
     status: string
     canvasJsonPath: string | null
+    publicShareToken: string | null
     createdAt: Date
     updatedAt: Date
     _count: ProjectCountAggregateOutputType | null
@@ -1923,6 +1930,7 @@ export namespace Prisma {
     description?: boolean
     status?: boolean
     canvasJsonPath?: boolean
+    publicShareToken?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -1940,6 +1948,7 @@ export namespace Prisma {
     description?: boolean
     status?: boolean
     canvasJsonPath?: boolean
+    publicShareToken?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -1952,6 +1961,7 @@ export namespace Prisma {
     description?: boolean
     status?: boolean
     canvasJsonPath?: boolean
+    publicShareToken?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -1964,11 +1974,12 @@ export namespace Prisma {
     description?: boolean
     status?: boolean
     canvasJsonPath?: boolean
+    publicShareToken?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ownerId" | "name" | "description" | "status" | "canvasJsonPath" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ownerId" | "name" | "description" | "status" | "canvasJsonPath" | "publicShareToken" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     collaborators?: boolean | Project$collaboratorsArgs<ExtArgs>
@@ -2000,6 +2011,7 @@ export namespace Prisma {
       description: string | null
       status: string
       canvasJsonPath: string | null
+      publicShareToken: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["project"]>
@@ -2436,6 +2448,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Project", 'String'>
     readonly status: FieldRef<"Project", 'String'>
     readonly canvasJsonPath: FieldRef<"Project", 'String'>
+    readonly publicShareToken: FieldRef<"Project", 'String'>
     readonly createdAt: FieldRef<"Project", 'DateTime'>
     readonly updatedAt: FieldRef<"Project", 'DateTime'>
   }
@@ -11817,6 +11830,7 @@ export namespace Prisma {
     description: 'description',
     status: 'status',
     canvasJsonPath: 'canvasJsonPath',
+    publicShareToken: 'publicShareToken',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -12037,6 +12051,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Project"> | string | null
     status?: StringFilter<"Project"> | string
     canvasJsonPath?: StringNullableFilter<"Project"> | string | null
+    publicShareToken?: StringNullableFilter<"Project"> | string | null
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -12053,6 +12068,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     status?: SortOrder
     canvasJsonPath?: SortOrderInput | SortOrder
+    publicShareToken?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -12064,6 +12080,7 @@ export namespace Prisma {
 
   export type ProjectWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    publicShareToken?: string
     AND?: ProjectWhereInput | ProjectWhereInput[]
     OR?: ProjectWhereInput[]
     NOT?: ProjectWhereInput | ProjectWhereInput[]
@@ -12079,7 +12096,7 @@ export namespace Prisma {
     taskRuns?: TaskRunListRelationFilter
     specs?: ProjectSpecListRelationFilter
     versions?: CanvasVersionListRelationFilter
-  }, "id">
+  }, "id" | "publicShareToken">
 
   export type ProjectOrderByWithAggregationInput = {
     id?: SortOrder
@@ -12088,6 +12105,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     status?: SortOrder
     canvasJsonPath?: SortOrderInput | SortOrder
+    publicShareToken?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ProjectCountOrderByAggregateInput
@@ -12105,6 +12123,7 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Project"> | string | null
     status?: StringWithAggregatesFilter<"Project"> | string
     canvasJsonPath?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    publicShareToken?: StringNullableWithAggregatesFilter<"Project"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
   }
@@ -12667,6 +12686,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutProjectsInput
@@ -12683,6 +12703,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     collaborators?: ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
@@ -12697,6 +12718,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProjectsNestedInput
@@ -12713,6 +12735,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     collaborators?: ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
@@ -12728,6 +12751,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12738,6 +12762,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12749,6 +12774,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13448,6 +13474,7 @@ export namespace Prisma {
     description?: SortOrder
     status?: SortOrder
     canvasJsonPath?: SortOrder
+    publicShareToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13459,6 +13486,7 @@ export namespace Prisma {
     description?: SortOrder
     status?: SortOrder
     canvasJsonPath?: SortOrder
+    publicShareToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13470,6 +13498,7 @@ export namespace Prisma {
     description?: SortOrder
     status?: SortOrder
     canvasJsonPath?: SortOrder
+    publicShareToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14837,6 +14866,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutProjectsInput
@@ -14852,6 +14882,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     collaborators?: ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
@@ -14881,6 +14912,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProjectsNestedInput
@@ -14896,6 +14928,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     collaborators?: ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
@@ -14909,6 +14942,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutProjectsInput
@@ -14924,6 +14958,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     collaborators?: ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
@@ -14953,6 +14988,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProjectsNestedInput
@@ -14968,6 +15004,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     collaborators?: ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
@@ -14981,6 +15018,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutProjectsInput
@@ -14996,6 +15034,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     taskRuns?: TaskRunUncheckedCreateNestedManyWithoutProjectInput
@@ -15025,6 +15064,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProjectsNestedInput
@@ -15040,6 +15080,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taskRuns?: TaskRunUncheckedUpdateManyWithoutProjectNestedInput
@@ -15123,6 +15164,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     collaborators?: ProjectCollaboratorCreateNestedManyWithoutProjectInput
@@ -15137,6 +15179,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     collaborators?: ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
@@ -15272,6 +15315,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Project"> | string | null
     status?: StringFilter<"Project"> | string
     canvasJsonPath?: StringNullableFilter<"Project"> | string | null
+    publicShareToken?: StringNullableFilter<"Project"> | string | null
     createdAt?: DateTimeFilter<"Project"> | Date | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
   }
@@ -15434,6 +15478,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutProjectsInput
@@ -15449,6 +15494,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     collaborators?: ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
@@ -15509,6 +15555,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProjectsNestedInput
@@ -15524,6 +15571,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     collaborators?: ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
@@ -15735,6 +15783,7 @@ export namespace Prisma {
     description?: string | null
     status?: string
     canvasJsonPath?: string | null
+    publicShareToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15828,6 +15877,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     collaborators?: ProjectCollaboratorUpdateManyWithoutProjectNestedInput
@@ -15842,6 +15892,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     collaborators?: ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
@@ -15856,6 +15907,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    publicShareToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { ReactFlow, Background, BackgroundVariant, MiniMap, ConnectionMode } from "@xyflow/react";
-import { Loader2, ArrowLeft, RotateCcw } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { ReactFlow, Background, BackgroundVariant, MiniMap, ConnectionMode, ReactFlowProvider } from "@xyflow/react";
+import { Loader2, ArrowLeft, RotateCcw, GitCompare } from "lucide-react";
 import { CanvasNodeComponent } from "@/components/editor/nodes/canvas-node";
 import { CanvasEdgeComponent } from "@/components/editor/edges/canvas-edge";
 
@@ -27,18 +27,23 @@ type CanvasVersion = {
 
 export function VersionPreviewCanvas({ 
   version, 
+  currentNodes = [],
+  currentEdges = [],
   onClose,
   onRestore
 }: { 
   version: CanvasVersion;
+  currentNodes?: any[];
+  currentEdges?: any[];
   onClose: () => void;
   onRestore: (versionId: string) => Promise<void>;
 }) {
-  const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
+  const [nodes, setNodes] = useState<any[]>([]);
+  const [edges, setEdges] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [restoring, setRestoring] = useState(false);
   const [error, setError] = useState("");
+  const [diffMode, setDiffMode] = useState(false);
 
   useEffect(() => {
     async function loadVersion() {
@@ -74,6 +79,40 @@ export function VersionPreviewCanvas({
     }
   };
 
+  const displayNodes = useMemo(() => {
+    if (!diffMode) return nodes;
+
+    const currentNodesMap = new Map(currentNodes.map(n => [n.id, n]));
+    const previewNodesMap = new Map(nodes.map(n => [n.id, n]));
+
+    const mergedNodesMap = new Map();
+
+    // From current canvas
+    for (const cn of currentNodes) {
+      const pn = previewNodesMap.get(cn.id);
+      if (!pn) {
+        // Node is in current but not in preview => Added since snapshot
+        mergedNodesMap.set(cn.id, { ...cn, data: { ...cn.data, diffStatus: 'added' } });
+      } else {
+        // In both
+        const isModified = JSON.stringify(cn.data) !== JSON.stringify(pn.data) || 
+                           cn.position.x !== pn.position.x || 
+                           cn.position.y !== pn.position.y;
+        mergedNodesMap.set(cn.id, { ...cn, data: { ...cn.data, diffStatus: isModified ? 'modified' : 'unchanged' } });
+      }
+    }
+
+    // From preview canvas
+    for (const pn of nodes) {
+      if (!currentNodesMap.has(pn.id)) {
+        // Node is in preview but not in current => Removed since snapshot
+        mergedNodesMap.set(pn.id, { ...pn, data: { ...pn.data, diffStatus: 'removed' } });
+      }
+    }
+
+    return Array.from(mergedNodesMap.values());
+  }, [nodes, currentNodes, diffMode]);
+
   return (
     <div className="absolute inset-0 z-[60] bg-bg-base flex flex-col pointer-events-auto">
       {/* Top Banner */}
@@ -91,12 +130,24 @@ export function VersionPreviewCanvas({
           
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-text-primary">
-              Previewing version from {new Date(version.createdAt).toLocaleString()}
+              Previewing {version.label ? `"${version.label}"` : `version from ${new Date(version.createdAt).toLocaleString()}`}
             </span>
             <span className="text-sm text-text-muted">
               by {version.userName}
             </span>
           </div>
+
+          <div className="h-6 w-[1px] bg-border-subtle mx-2" />
+
+          <button
+            onClick={() => setDiffMode(!diffMode)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+              diffMode ? "bg-accent-primary/20 text-accent-primary" : "bg-bg-subtle text-text-secondary hover:text-text-primary hover:bg-bg-default"
+            }`}
+          >
+            <GitCompare className="w-3.5 h-3.5" />
+            Diff Mode {diffMode ? "ON" : "OFF"}
+          </button>
         </div>
         
         <button
@@ -124,29 +175,31 @@ export function VersionPreviewCanvas({
             </div>
           </div>
         ) : (
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            fitView
-            fitViewOptions={{ padding: 0.2 }}
-            nodesDraggable={false}
-            nodesConnectable={false}
-            elementsSelectable={false}
-            panOnDrag={true}
-            zoomOnScroll={true}
-            zoomOnDoubleClick={false}
-            connectionMode={ConnectionMode.Loose}
-            className="pointer-events-auto"
-          >
-            <Background variant={BackgroundVariant.Dots} gap={24} size={2} color="var(--color-border-subtle)" />
-            <MiniMap 
-              nodeColor="var(--color-primary)" 
-              maskColor="var(--color-bg-base-alpha-80)" 
-              className="bg-bg-surface border-border-default rounded-lg shadow-sm"
-            />
-          </ReactFlow>
+          <ReactFlowProvider>
+            <ReactFlow
+              nodes={displayNodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
+              fitView
+              fitViewOptions={{ padding: 0.2 }}
+              nodesDraggable={false}
+              nodesConnectable={false}
+              elementsSelectable={false}
+              panOnDrag={true}
+              zoomOnScroll={true}
+              zoomOnDoubleClick={false}
+              connectionMode={ConnectionMode.Loose}
+              className="pointer-events-auto"
+            >
+              <Background variant={BackgroundVariant.Dots} gap={24} size={2} color="var(--color-border-subtle)" />
+              <MiniMap 
+                nodeColor="var(--color-primary)" 
+                maskColor="var(--color-bg-base-alpha-80)" 
+                className="bg-bg-surface border-border-default rounded-lg shadow-sm"
+              />
+            </ReactFlow>
+          </ReactFlowProvider>
         )}
       </div>
     </div>

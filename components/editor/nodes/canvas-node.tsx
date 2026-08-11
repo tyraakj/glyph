@@ -62,6 +62,15 @@ export const CanvasNodeComponent = memo(({ id, data, selected }: NodeProps<Canva
         lineClassName="!border-accent-primary"
       />
       
+      {data.diffStatus && (
+        <div className={`absolute -inset-1.5 rounded-lg z-[-1] ${
+          data.diffStatus === 'added' ? 'bg-emerald-500/20 border-2 border-emerald-500/80 animate-pulse' :
+          data.diffStatus === 'removed' ? 'bg-red-500/20 border-2 border-red-500/80' :
+          data.diffStatus === 'modified' ? 'bg-amber-500/20 border-2 border-amber-500/80 animate-pulse' :
+          ''
+        }`} />
+      )}
+      
       {/* Top Handles */}
       <Handle id="top-target" type="target" position={Position.Top} className="w-2.5 h-2.5 !bg-text-primary !border-2 !border-bg-surface opacity-0 group-hover:opacity-100 transition-opacity" />
       <Handle id="top-source" type="source" position={Position.Top} className="w-2.5 h-2.5 !bg-text-primary !border-2 !border-bg-surface opacity-0 group-hover:opacity-100 transition-opacity" />

@@ -27,6 +27,7 @@ async def process_job(job_data: dict):
     prompt = job_data.get("prompt")
     room_id = job_data.get("roomId")
     api_key = job_data.get("apiKey")
+    chat_history = job_data.get("chatHistory", [])
     
     if not all([run_id, prompt, room_id]):
         print(f"Invalid job payload: {job_data}")
@@ -42,7 +43,7 @@ async def process_job(job_data: dict):
         
         # 3. Call Gemini to generate the UI mutations
         await update_status(run_id, "generating", "Generating layout components...")
-        result = await generate_design_operations(prompt, current_state, api_key=api_key)
+        result = await generate_design_operations(prompt, current_state, api_key=api_key, chat_history=chat_history)
         operations = result.get("operations", [])
         ai_message = result.get("message", "I've completed the design updates on the canvas! Check out the changes.")
         

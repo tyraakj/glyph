@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Loader2, X, History, Sparkles, Bot, Save, Copy, Undo2 } from "lucide-react";
+import { Loader2, X, History, Sparkles, Bot, Save, Copy, Undo2, Camera } from "lucide-react";
+import { useReactFlow } from "@xyflow/react";
 
 type CanvasVersion = {
   id: string;
@@ -46,27 +47,61 @@ export function VersionHistoryPanel({
   onClose: () => void;
   onSelectVersion: (version: CanvasVersion) => void;
 }) {
+  const { getNodes, getEdges } = useReactFlow();
   const [versions, setVersions] = useState<CanvasVersion[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  
+  const [newSnapshotName, setNewSnapshotName] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  async function fetchVersions() {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/projects/${projectId}/versions`);
+      if (!res.ok) throw new Error("Failed to load history");
+      const data = await res.json();
+      setVersions(data.versions || []);
+    } catch (err: any) {
+      setError(err.message || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function fetchVersions() {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/projects/${projectId}/versions`);
-        if (!res.ok) throw new Error("Failed to load history");
-        const data = await res.json();
-        setVersions(data.versions || []);
-      } catch (err: any) {
-        setError(err.message || "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    }
-    
     fetchVersions();
   }, [projectId]);
+
+  const handleCreateSnapshot = async () => {
+    if (!newSnapshotName.trim() || isSaving) return;
+    
+    setIsSaving(true);
+    try {
+      const res = await fetch(`/api/projects/${projectId}/canvas`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nodes: getNodes(),
+          edges: getEdges(),
+          source: "manual",
+          label: newSnapshotName.trim()
+        })
+      });
+      
+      if (res.ok) {
+        setNewSnapshotName("");
+        await fetchVersions();
+      } else {
+        alert("Failed to save snapshot.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error saving snapshot.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   // Group by date
   const grouped = versions.reduce((acc, version) => {
@@ -99,6 +134,28 @@ export function VersionHistoryPanel({
         >
           <X className="w-4 h-4" />
         </button>
+      </div>
+
+      <div className="p-4 border-b border-border-subtle bg-bg-elevated/50 shrink-0">
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-medium text-text-primary">Create Named Snapshot</label>
+          <div className="flex gap-2">
+            <input 
+              type="text" 
+              value={newSnapshotName}
+              onChange={(e) => setNewSnapshotName(e.target.value)}
+              placeholder="e.g. Before refactoring auth..." 
+              className="flex-1 bg-bg-base border border-border-default rounded-md px-2 py-1.5 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent-primary transition-colors"
+            />
+            <button 
+              onClick={handleCreateSnapshot}
+              disabled={isSaving || !newSnapshotName.trim()}
+              className="bg-accent-primary text-bg-base px-3 py-1.5 rounded-md text-xs font-medium hover:bg-accent-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[60px]"
+            >
+              {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Save"}
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 scrollbar-thin flex flex-col gap-6">

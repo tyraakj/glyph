@@ -127,6 +127,7 @@ exports.Prisma.ProjectScalarFieldEnum = {
   description: 'description',
   status: 'status',
   canvasJsonPath: 'canvasJsonPath',
+  publicShareToken: 'publicShareToken',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

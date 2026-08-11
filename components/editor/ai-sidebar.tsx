@@ -5,7 +5,7 @@ import { useReactFlow } from "@xyflow/react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useState, useRef, useEffect } from "react";
-import { useEventListener, useUpdateMyPresence, useSelf, useBroadcastEvent } from "@liveblocks/react/suspense";
+import { useEventListener, useUpdateMyPresence, useSelf, useBroadcastEvent, useStorage, useMutation } from "@liveblocks/react/suspense";
 import { type AiStatusFeedPayload, type AiChatFeedPayload, AiChatFeedPayloadSchema } from "@/types/tasks";
 import { cn } from "@/lib/utils";
 import { useParams } from "next/navigation";
@@ -20,7 +20,10 @@ interface AiSidebarProps {
 
 export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<AiChatFeedPayload[]>([]);
+  const messages = useStorage((root) => root.chatHistory) || [];
+  const addMessage = useMutation(({ storage }, message: AiChatFeedPayload) => {
+    storage.get("chatHistory").push(message);
+  }, []);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { apiKey, setApiKey } = useApiKey();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -37,15 +40,6 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
   const broadcast = useBroadcastEvent();
   const me = useSelf();
   const isThinking = me.presence.isThinking;
-
-  useEventListener(({ event }) => {
-    if (event.type === "ai-chat") {
-      const parsed = AiChatFeedPayloadSchema.safeParse(event);
-      if (parsed.success) {
-        setMessages((prev) => [...prev, parsed.data]);
-      }
-    }
-  });
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -86,11 +80,10 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
         timestamp: new Date().toISOString(),
       };
       
-      setMessages((prev) => [...prev, finalMsg]);
-      broadcast(finalMsg);
+      addMessage(finalMsg);
       setRunId(null);
     }
-  }, [runId, isRunning, runStatus, runMessage, broadcast]);
+  }, [runId, isRunning, runStatus, runMessage, addMessage]);
 
   const handleSend = async () => {
     if (!input.trim() || isRunning) return;
@@ -108,16 +101,27 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
     };
 
     // Add locally instantly
-    setMessages((prev) => [...prev, chatMsg]);
-    
-    // Broadcast to room
-    broadcast(chatMsg);
+    addMessage(chatMsg);
 
     try {
+      // Pass the chat history to the API so the AI has context
+      const currentHistory = Array.from(messages);
+      // Take last 20 messages for context (excluding the one we just added)
+      const contextMessages = currentHistory.slice(0, -1).slice(-20).map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
+
       const res = await fetch("/api/ai/design", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: promptText, roomId, projectId, apiKey: apiKey || undefined }),
+        body: JSON.stringify({ 
+          prompt: promptText, 
+          roomId, 
+          projectId, 
+          apiKey: apiKey || undefined,
+          chatHistory: contextMessages
+        }),
       });
       const data = await res.json();
       if (data.runId) {
@@ -133,7 +137,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
         content: err.message,
         timestamp: new Date().toISOString(),
       };
-      setMessages((prev) => [...prev, errorMsg]);
+      addMessage(errorMsg);
     }
   };
 

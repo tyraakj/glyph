@@ -49,3 +49,15 @@
     color: var(--color-text-primary);
   }
 }
+
+@layer utilities {
+  /* Hide Liveblocks watermark */
+  a[href^="https://liveblocks.io"] {
+    display: none !important;
+  }
+  
+  /* Hide React Flow attribution */
+  .react-flow__attribution {
+    display: none !important;
+  }
+}
