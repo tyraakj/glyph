@@ -1,6 +1,7 @@
 "use client";
 
-import { X, Bot, FileText, Send, Loader2 } from "lucide-react";
+import { X, Bot, FileText, Send, Loader2, Settings, ShieldAlert, AlertTriangle, Info } from "lucide-react";
+import { useReactFlow } from "@xyflow/react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useState, useRef, useEffect } from "react";
@@ -9,6 +10,8 @@ import { type AiStatusFeedPayload, type AiChatFeedPayload, AiChatFeedPayloadSche
 import { cn } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { useDesignStream } from "@/hooks/use-design-stream";
+import { useCritiqueStream } from "@/hooks/use-critique-stream";
+import { useApiKey } from "@/hooks/use-api-key";
 
 interface AiSidebarProps {
   isOpen: boolean;
@@ -18,6 +21,8 @@ interface AiSidebarProps {
 export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<AiChatFeedPayload[]>([]);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { apiKey, setApiKey } = useApiKey();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
@@ -112,7 +117,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
       const res = await fetch("/api/ai/design", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: promptText, roomId, projectId }),
+        body: JSON.stringify({ prompt: promptText, roomId, projectId, apiKey: apiKey || undefined }),
       });
       const data = await res.json();
       if (data.runId) {
@@ -167,19 +172,53 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
               <span className="text-[10px] text-text-muted leading-tight">Collaborate with Glyph AI</span>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onPointerDown={(e) => { 
-              console.log("[AiSidebar] Close button onPointerDown fired!");
-              e.stopPropagation(); 
-              onClose(); 
-            }}
-            className="h-8 w-8 text-text-muted hover:text-text-primary"
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close sidebar</span>
-          </Button>
+          <div className="flex items-center gap-1 relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                setIsSettingsOpen(!isSettingsOpen);
+              }}
+              className="h-8 w-8 text-text-muted hover:text-text-primary"
+              title="Settings"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onPointerDown={(e) => { 
+                console.log("[AiSidebar] Close button onPointerDown fired!");
+                e.stopPropagation(); 
+                onClose(); 
+              }}
+              className="h-8 w-8 text-text-muted hover:text-text-primary"
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close sidebar</span>
+            </Button>
+            
+            {/* Settings Popover */}
+            {isSettingsOpen && (
+              <div className="absolute top-10 right-0 w-64 bg-bg-surface border border-border-subtle shadow-xl rounded-xl p-4 z-50">
+                <h3 className="text-sm font-semibold text-text-primary mb-2">AI Settings</h3>
+                <label className="text-xs text-text-secondary block mb-1">
+                  Bring Your Own API Key
+                </label>
+                <input
+                  type="password"
+                  placeholder="Gemini API Key"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="w-full bg-bg-base border border-border-default rounded-md px-3 py-1.5 text-sm text-text-primary placeholder:text-text-faint focus:outline-none focus:border-accent-primary transition-colors"
+                />
+                <p className="text-[10px] text-text-muted mt-2 leading-tight">
+                  Optional. Overrides default limits. Stored securely in your local browser storage.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
         <Tabs defaultValue="architect" className="flex flex-col flex-1 overflow-hidden">
@@ -196,6 +235,12 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
                 className="flex-1 data-[state=active]:bg-accent-primary/10 data-[state=active]:text-accent-primary text-text-muted"
               >
                 Specs
+              </TabsTrigger>
+              <TabsTrigger 
+                value="critique" 
+                className="flex-1 data-[state=active]:bg-accent-primary/10 data-[state=active]:text-accent-primary text-text-muted"
+              >
+                Critique
               </TabsTrigger>
             </TabsList>
           </div>
@@ -295,7 +340,11 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
           </TabsContent>
 
           <TabsContent value="specs" className="flex flex-col flex-1 overflow-hidden m-0 p-4 outline-none">
-            <SpecListTab roomId={roomId} projectId={projectId} />
+            <SpecListTab roomId={roomId} projectId={projectId} apiKey={apiKey} />
+          </TabsContent>
+
+          <TabsContent value="critique" className="flex flex-col flex-1 overflow-hidden m-0 p-4 outline-none">
+            <CritiqueTab roomId={roomId} projectId={projectId} apiKey={apiKey} />
           </TabsContent>
         </Tabs>
       </div>
@@ -304,7 +353,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
 }
 
 // Subcomponent for Specs Tab to manage its own state
-function SpecListTab({ roomId, projectId }: { roomId: string, projectId: string }) {
+function SpecListTab({ roomId, projectId, apiKey }: { roomId: string, projectId: string, apiKey: string }) {
   const [specs, setSpecs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -317,7 +366,7 @@ function SpecListTab({ roomId, projectId }: { roomId: string, projectId: string 
   const fetchSpecs = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/projects/${roomId}/specs`);
+      const res = await fetch(`/api/projects/${projectId}/specs`);
       if (res.ok) {
         const data = await res.json();
         setSpecs(data.specs || []);
@@ -341,13 +390,9 @@ function SpecListTab({ roomId, projectId }: { roomId: string, projectId: string 
       const res = await fetch("/api/ai/spec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ roomId, projectId }),
+        body: JSON.stringify({ roomId, projectId, apiKey: apiKey || undefined }),
       });
       if (res.ok) {
-        // Here we could listen to SSE for spec generation status,
-        // but for now we just wait a bit and refresh, or let the user know it's generating.
-        // The worker will eventually save it to the DB via our internal route.
-        // We can poll or just alert the user.
         alert("Spec generation started in the background. It will appear here shortly.");
       }
     } catch (e) {
@@ -362,7 +407,7 @@ function SpecListTab({ roomId, projectId }: { roomId: string, projectId: string 
     setPreviewSpec(spec);
     setPreviewLoading(true);
     try {
-      const res = await fetch(`/api/projects/${roomId}/specs/${spec.id}/download?preview=true`);
+      const res = await fetch(`/api/projects/${projectId}/specs/${spec.id}/download?preview=true`);
       if (res.ok) {
         const text = await res.text();
         setPreviewContent(text);
@@ -377,7 +422,7 @@ function SpecListTab({ roomId, projectId }: { roomId: string, projectId: string 
   };
 
   const handleDownload = (spec: any) => {
-    window.open(`/api/projects/${roomId}/specs/${spec.id}/download`, "_blank");
+    window.open(`/api/projects/${projectId}/specs/${spec.id}/download`, "_blank");
   };
 
   return (
@@ -460,6 +505,154 @@ function SpecListTab({ roomId, projectId }: { roomId: string, projectId: string 
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// Subcomponent for Critique Tab
+function CritiqueTab({ roomId, projectId, apiKey }: { roomId: string, projectId: string, apiKey: string }) {
+  const { getNodes, getEdges, setNodes } = useReactFlow();
+  const [runId, setRunId] = useState<string | null>(null);
+  
+  const { status, message, findings, summary, isRunning } = useCritiqueStream(runId);
+
+  const handleCritique = async () => {
+    if (isRunning) return;
+    
+    try {
+      const nodes = getNodes();
+      const edges = getEdges();
+      
+      const res = await fetch("/api/ai/critique", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ roomId, nodes, edges, apiKey: apiKey || undefined }),
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setRunId(data.runId);
+      } else {
+        alert("Failed to start critique.");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Error triggering critique.");
+    }
+  };
+
+  const handleMouseEnter = (nodeId: string) => {
+    setNodes((nds) => 
+      nds.map(n => n.id === nodeId ? { ...n, selected: true } : n)
+    );
+  };
+
+  const handleMouseLeave = (nodeId: string) => {
+    setNodes((nds) => 
+      nds.map(n => n.id === nodeId ? { ...n, selected: false } : n)
+    );
+  };
+
+  return (
+    <div className="flex flex-col h-full overflow-hidden">
+      <div className="mb-4 shrink-0">
+        <h3 className="text-sm font-semibold text-text-primary mb-1">Architecture Critique</h3>
+        <p className="text-xs text-text-muted mb-4">
+          Have Glyph AI review your current canvas for anti-patterns, missing components, and scaling bottlenecks.
+        </p>
+        <Button 
+          onClick={handleCritique} 
+          disabled={isRunning}
+          className="w-full bg-accent-primary hover:bg-accent-primary/90 text-bg-base"
+        >
+          {isRunning ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Analyzing Architecture...
+            </>
+          ) : (
+            <>
+              <ShieldAlert className="w-4 h-4 mr-2" />
+              Review Architecture
+            </>
+          )}
+        </Button>
+      </div>
+
+      {isRunning && (
+        <div className="p-3 shrink-0 bg-bg-elevated border border-border-subtle rounded-lg mb-4 text-xs text-text-primary flex items-center gap-2">
+          <Loader2 className="w-4 h-4 animate-spin text-accent-primary" />
+          {message}
+        </div>
+      )}
+
+      {!isRunning && status === "error" && (
+        <div className="p-3 shrink-0 bg-error-default/10 border border-error-default/20 rounded-lg mb-4 text-xs text-error-default flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 shrink-0" />
+          {message}
+        </div>
+      )}
+
+      {status === "complete" && summary && (
+        <div className="mb-4 shrink-0 text-sm text-text-primary p-3 bg-bg-elevated border border-border-subtle rounded-lg">
+          <span className="font-semibold block mb-1">Summary</span>
+          <span className="text-xs text-text-secondary">{summary}</span>
+        </div>
+      )}
+
+      <div className="flex-1 overflow-y-auto pr-1 space-y-3 scrollbar-thin pb-4">
+        {findings.map((finding, idx) => {
+          const isError = finding.severity === "error";
+          const isWarning = finding.severity === "warning";
+          
+          return (
+            <div 
+              key={idx} 
+              onMouseEnter={() => handleMouseEnter(finding.nodeId)}
+              onMouseLeave={() => handleMouseLeave(finding.nodeId)}
+              className={cn(
+                "p-3 rounded-lg border flex flex-col gap-1 text-left transition-colors cursor-default",
+                isError ? "bg-error-default/5 border-error-default/20 hover:border-error-default/50 hover:bg-error-default/10" :
+                isWarning ? "bg-warning-default/5 border-warning-default/20 hover:border-warning-default/50 hover:bg-warning-default/10" :
+                "bg-info-default/5 border-info-default/20 hover:border-info-default/50 hover:bg-info-default/10"
+              )}
+            >
+              <div className="flex items-start gap-2 mb-1">
+                {isError ? (
+                  <ShieldAlert className="w-4 h-4 text-error-default shrink-0 mt-0.5" />
+                ) : isWarning ? (
+                  <AlertTriangle className="w-4 h-4 text-warning-default shrink-0 mt-0.5" />
+                ) : (
+                  <Info className="w-4 h-4 text-info-default shrink-0 mt-0.5" />
+                )}
+                <span className={cn(
+                  "font-semibold text-xs leading-tight",
+                  isError ? "text-error-default" :
+                  isWarning ? "text-warning-default" :
+                  "text-info-default"
+                )}>
+                  {finding.title}
+                </span>
+              </div>
+              <p className="text-[11px] text-text-secondary leading-relaxed ml-6">
+                {finding.description}
+              </p>
+              <div className="mt-2 ml-6 text-[11px] font-medium text-text-primary bg-bg-base/50 p-2 rounded border border-border-subtle">
+                <span className="opacity-70 mr-1">Suggestion:</span> {finding.suggestion}
+              </div>
+            </div>
+          );
+        })}
+        
+        {status === "complete" && findings.length === 0 && (
+          <div className="text-center text-sm text-text-muted mt-8">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-success-default/10 text-success-default mb-2">
+              <ShieldAlert className="w-6 h-6" />
+            </div>
+            <p>Looking good! No major issues found.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -104,46 +104,49 @@ def load_skills() -> str:
             
     return skills_context
 
-async def generate_design_operations(prompt: str, current_storage: dict) -> dict:
+async def generate_design_operations(prompt: str, current_storage: dict, api_key: str = None) -> dict:
     """
     Calls Gemini to interpret the user prompt and generate a set of canvas mutations and a conversational reply.
     """
     # Load all architectural skills dynamically
     skills_context = load_skills()
 
+    # Determine which client to use
+    active_client = client
+    if api_key:
+        active_client = genai.Client(api_key=api_key)
+        
+    if not active_client:
+        return {"message": "Error: API key is not configured.", "operations": []}
+
     # Create the model payload
     context_message = f"{skills_context}Current canvas storage state (if any):\n{json.dumps(current_storage, indent=2)}\n\nUser Request: {prompt}"
 
-    try:
-        response = client.models.generate_content(
-            model='models/gemini-3.6-flash',
-            contents=[
-                types.Content(role="user", parts=[types.Part.from_text(text=context_message)])
-            ],
-            config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
-                temperature=0.2,
-                response_mime_type="application/json"
-            )
+    response = active_client.models.generate_content(
+        model='models/gemini-3.6-flash',
+        contents=[
+            types.Content(role="user", parts=[types.Part.from_text(text=context_message)])
+        ],
+        config=types.GenerateContentConfig(
+            system_instruction=SYSTEM_PROMPT,
+            temperature=0.2,
+            response_mime_type="application/json"
         )
+    )
+    
+    # Parse the JSON response
+    result_text = response.text
+    # Safety cleanup for any markdown wrappers
+    if result_text.startswith("```json"):
+        result_text = result_text[7:]
+    if result_text.endswith("```"):
+        result_text = result_text[:-3]
         
-        # Parse the JSON response
-        result_text = response.text
-        # Safety cleanup for any markdown wrappers
-        if result_text.startswith("```json"):
-            result_text = result_text[7:]
-        if result_text.endswith("```"):
-            result_text = result_text[:-3]
-            
-        data = json.loads(result_text.strip())
-        # Make sure it returns a dict with 'operations'
-        if isinstance(data, list):
-            return {"message": "Here's what I built.", "operations": data}
-        return data
-        
-    except Exception as e:
-        print(f"Error generating design from Gemini: {e}")
-        return {"message": f"Error: {str(e)}", "operations": []}
+    data = json.loads(result_text.strip())
+    # Make sure it returns a dict with 'operations'
+    if isinstance(data, list):
+        return {"message": "Here's what I built.", "operations": data}
+    return data
 
 SPEC_SYSTEM_PROMPT = """
 You are an expert software architect.
@@ -159,10 +162,18 @@ Structure the spec with the following sections:
 Be detailed, professional, and clear. Expand on the nodes and edges to explain the system's purpose and functionality.
 """
 
-async def generate_spec(chat_history: list, nodes: list, edges: list) -> str:
+async def generate_spec(chat_history: list, nodes: list, edges: list, api_key: str = None) -> str:
     """
     Calls Gemini to generate a Markdown technical spec from the canvas context.
     """
+    # Determine which client to use
+    active_client = client
+    if api_key:
+        active_client = genai.Client(api_key=api_key)
+        
+    if not active_client:
+        raise Exception("API key is not configured.")
+
     context_message = (
         f"Canvas Nodes:\n{json.dumps(nodes, indent=2)}\n\n"
         f"Canvas Edges:\n{json.dumps(edges, indent=2)}\n\n"
@@ -171,7 +182,7 @@ async def generate_spec(chat_history: list, nodes: list, edges: list) -> str:
     )
 
     try:
-        response = client.models.generate_content(
+        response = active_client.models.generate_content(
             model='models/gemini-3.6-flash',
             contents=[
                 types.Content(role="user", parts=[types.Part.from_text(text=context_message)])
@@ -196,3 +207,60 @@ async def generate_spec(chat_history: list, nodes: list, edges: list) -> str:
     except Exception as e:
         print(f"Error generating spec from Gemini: {e}")
         raise e
+
+CRITIQUE_SYSTEM_PROMPT = """
+You are an expert software architect providing a design review of a system architecture.
+Analyze the provided canvas nodes and edges. Identify any anti-patterns, missing components, single points of failure, scaling bottlenecks, or security risks.
+
+Return a JSON object with this exact structure:
+{
+  "findings": [
+    {
+      "severity": "error", // "error", "warning", or "info"
+      "nodeId": "node_123", // The ID of the primary node this issue relates to (must exist in the provided nodes)
+      "title": "Short title of issue",
+      "description": "Detailed explanation of the problem.",
+      "suggestion": "Actionable advice to fix the issue."
+    }
+  ],
+  "summary": "Overall 1-2 sentence assessment of the architecture."
+}
+Only output the JSON object. Do not wrap in ```json or include conversational text.
+"""
+
+async def generate_critique(nodes: list, edges: list, api_key: str = None) -> dict:
+    """
+    Calls Gemini to critique the architecture and return structured findings.
+    """
+    active_client = client
+    if api_key:
+        active_client = genai.Client(api_key=api_key)
+        
+    if not active_client:
+        raise Exception("API key is not configured.")
+
+    context_message = (
+        f"Canvas Nodes:\n{json.dumps(nodes, indent=2)}\n\n"
+        f"Canvas Edges:\n{json.dumps(edges, indent=2)}\n\n"
+        "Critique this architecture."
+    )
+
+    response = active_client.models.generate_content(
+        model='models/gemini-3.6-flash',
+        contents=[
+            types.Content(role="user", parts=[types.Part.from_text(text=context_message)])
+        ],
+        config=types.GenerateContentConfig(
+            system_instruction=CRITIQUE_SYSTEM_PROMPT,
+            temperature=0.2,
+            response_mime_type="application/json"
+        )
+    )
+    
+    result_text = response.text
+    if result_text.startswith("```json"):
+        result_text = result_text[7:]
+    if result_text.endswith("```"):
+        result_text = result_text[:-3]
+        
+    return json.loads(result_text.strip())

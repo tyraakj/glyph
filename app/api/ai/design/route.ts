@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { prompt, roomId, projectId } = body;
+    const { prompt, roomId, projectId, apiKey } = body;
 
     if (!prompt || !roomId || !projectId) {
       return NextResponse.json(
@@ -66,7 +66,8 @@ export async function POST(request: NextRequest) {
       prompt,
       roomId,
       projectId,
-      userId: session.user.id
+      userId: session.user.id,
+      apiKey
     }));
 
     return NextResponse.json({ success: true, runId });

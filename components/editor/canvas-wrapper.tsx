@@ -3,6 +3,7 @@
 import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from "@liveblocks/react";
 import { Loader2 } from "lucide-react";
 import { ReactNode } from "react";
+import { ReactFlowProvider } from "@xyflow/react";
 
 interface CanvasWrapperProps {
   roomId: string;
@@ -32,7 +33,9 @@ export function CanvasWrapper({ roomId, children }: CanvasWrapperProps) {
             </div>
           }
         >
-          {children}
+          <ReactFlowProvider>
+            {children}
+          </ReactFlowProvider>
         </ClientSideSuspense>
       </RoomProvider>
     </LiveblocksProvider>

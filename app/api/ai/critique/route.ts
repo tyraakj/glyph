@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { roomId, chatHistory, nodes, edges, apiKey } = body;
+    const { roomId, nodes, edges, apiKey } = body;
 
     if (!roomId) {
       return NextResponse.json(
@@ -50,19 +50,18 @@ export async function POST(request: NextRequest) {
     });
 
     // Set the initial status in Redis (expires in 1 hour)
-    await redis.setex(`spec:status:${runId}`, 3600, JSON.stringify({
+    await redis.setex(`critique:status:${runId}`, 3600, JSON.stringify({
       status: "queued",
-      message: "Spec generation task is queued...",
+      message: "Architecture review task is queued...",
       timestamp: Date.now()
     }));
 
     // Push the job payload to the Redis queue for the FastAPI worker
-    await redis.lpush("spec:queue", JSON.stringify({
+    await redis.lpush("critique:queue", JSON.stringify({
       runId,
       roomId,
       projectId,
       userId: session.user.id,
-      chatHistory: chatHistory || [],
       nodes: nodes || [],
       edges: edges || [],
       apiKey
@@ -70,7 +69,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, runId });
   } catch (error: any) {
-    console.error("Failed to trigger spec generation:", error);
+    console.error("Failed to trigger critique agent:", error);
     return NextResponse.json(
       { error: error?.message || "Internal server error" },
       { status: 500 }
