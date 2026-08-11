@@ -76,8 +76,8 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
         sender: "Glyph AI",
         role: "assistant",
         content: isError 
-          ? `Failed to process your request: ${runMessage}` 
-          : "I've completed the design updates on the canvas! Check out the changes.",
+          ? runMessage || "An error occurred."
+          : runMessage || "I've completed the design updates on the canvas! Check out the changes.",
         timestamp: new Date().toISOString(),
       };
       
@@ -152,12 +152,12 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
   return (
     <div
       className={cn(
-        "relative shrink-0 min-w-0 z-40 h-full bg-bg-surface border-border-subtle shadow-2xl transition-all duration-300 ease-in-out overflow-hidden",
-        isOpen ? "w-80 border-l opacity-100" : "w-0 border-none opacity-0"
+        "relative shrink-0 z-40 h-full bg-bg-surface border-border-subtle shadow-2xl transition-all duration-300 ease-in-out overflow-hidden",
+        isOpen ? "w-[320px] min-w-[320px] border-l opacity-100" : "w-0 min-w-0 border-none opacity-0"
       )}
     >
       {/* Inner wrapper: fixed width so content never squishes */}
-      <div className="w-80 h-full flex flex-col">
+      <div className="w-[320px] min-w-[320px] h-full flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between h-14 px-4 border-b border-border-subtle shrink-0">
           <div className="flex items-center gap-2">
@@ -237,7 +237,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
                       <span className="text-[10px] text-text-muted">{msg.sender}</span>
                       <div 
                         className={cn(
-                          "px-3 py-2 rounded-2xl text-sm shadow-sm", 
+                          "px-3 py-2 rounded-2xl text-sm shadow-sm break-words whitespace-pre-wrap", 
                           msg.role === "user" 
                             ? "bg-accent-primary text-bg-base rounded-tr-sm" 
                             : "bg-bg-elevated border border-border-subtle text-text-primary rounded-tl-sm"

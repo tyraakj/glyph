@@ -11,9 +11,16 @@ export function ParticipantGroup() {
 
   return (
     <div className="flex items-center gap-2 bg-bg-elevated/95 backdrop-blur-md border border-border-subtle p-1.5 rounded-2xl shadow-xl pointer-events-auto">
-      {others.length > 0 && (
-        <div className="flex items-center -space-x-2 mr-1">
-          {visibleCollaborators.map((collaborator) => {
+      <div className="flex items-center -space-x-2 mr-1">
+        {/* Always render Glyph AI as the permanent co-pilot */}
+        <div 
+          className="relative w-8 h-8 rounded-full border-2 border-bg-elevated flex items-center justify-center bg-accent-primary text-bg-base z-[11] shadow-sm"
+          title="Glyph AI Co-pilot"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+        </div>
+        
+        {visibleCollaborators.map((collaborator) => {
             const { name, avatar, color } = collaborator.info;
             return (
               <div 
@@ -41,11 +48,8 @@ export function ParticipantGroup() {
             </div>
           )}
         </div>
-      )}
 
-      {others.length > 0 && (
-        <div className="w-[1px] h-5 bg-border-subtle" />
-      )}
+      <div className="w-[1px] h-5 bg-border-subtle" />
 
       {/* Current User */}
       <div className="flex items-center z-20">

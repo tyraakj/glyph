@@ -34,3 +34,11 @@ export const AiChatFeedPayloadSchema = z.object({
 });
 
 export type AiChatFeedPayload = z.infer<typeof AiChatFeedPayloadSchema>;
+
+// Payload broadcast by the Python worker when AI generates canvas operations
+export const AiDesignUpdatePayloadSchema = z.object({
+  type: z.literal("ai-design-update"),
+  operations: z.array(z.record(z.unknown())),
+});
+
+export type AiDesignUpdatePayload = z.infer<typeof AiDesignUpdatePayloadSchema>;

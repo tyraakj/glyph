@@ -40,25 +40,38 @@ async def process_job(job_data: dict):
         
         # 3. Call Gemini to generate the UI mutations
         await update_status(run_id, "generating", "Generating layout components...")
-        operations = await generate_design_operations(prompt, current_state)
+        result = await generate_design_operations(prompt, current_state)
+        operations = result.get("operations", [])
+        ai_message = result.get("message", "I've completed the design updates on the canvas! Check out the changes.")
         
-        # 4. Apply to Liveblocks
-        if not operations:
-            await update_status(run_id, "error", "Failed to generate design operations.")
-            return
-            
+        # 4. Apply to Liveblocks (even if operations is empty, we still broadcast the message)
         await update_status(run_id, "applying", "Applying design to canvas...")
         
         # We broadcast the design as an event instead of raw CRDT mutation to keep things stable
         # The frontend will listen to 'ai-design-update' and add the nodes to the React Flow instance
-        await liveblocks.broadcast_event(room_id, operations)
+        await liveblocks.broadcast_event(room_id, {
+            "type": "ai-design-update",
+            "operations": operations
+        })
         
         # 5. Mark complete
-        await update_status(run_id, "complete", "Design generated successfully!")
+        await update_status(run_id, "complete", ai_message)
         
     except Exception as e:
-        print(f"Error processing job {run_id}: {e}")
-        await update_status(run_id, "error", f"An error occurred: {str(e)}")
+        error_str = str(e)
+        print(f"Error processing job {run_id}: {error_str}")
+        
+        # Format user-friendly error messages
+        if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str or "Quota exceeded" in error_str:
+            user_msg = "I've hit my usage limits for now! Please wait a few minutes before trying again."
+        elif "400" in error_str:
+            user_msg = "I couldn't quite understand that request. Could you try rephrasing?"
+        elif "503" in error_str or "500" in error_str:
+            user_msg = "The AI service is temporarily unavailable. Please try again later."
+        else:
+            user_msg = "An unexpected error occurred while trying to process your request."
+            
+        await update_status(run_id, "error", user_msg)
 
 
 async def worker_loop():

@@ -28,20 +28,19 @@ class LiveblocksClient:
     async def broadcast_event(self, room_id: str, event_data: Dict[str, Any]) -> None:
         """
         Broadcast a custom room event to all connected clients.
-        Since mutating complex LiveMap CRDTs via REST can be brittle,
-        an alternative pattern is broadcasting the generated design
-        and letting the React frontend apply it natively.
+        Liveblocks REST API expects: { "data": { ...payload... } }
+        The payload is delivered directly to client useEventListener callbacks.
         """
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             response = await client.post(
                 f"{BASE_URL}/rooms/{room_id}/broadcast_event",
                 headers=self.headers,
                 json={
-                    "name": "ai-design-update",
                     "data": event_data
                 }
             )
             response.raise_for_status()
+            print(f"Broadcast to {room_id}: {response.status_code}")
             
     async def mutate_storage(self, room_id: str, operations: List[Dict[str, Any]]) -> None:
         """

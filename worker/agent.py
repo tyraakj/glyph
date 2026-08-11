@@ -29,18 +29,45 @@ Nodes have the following structure:
     "data": {
       "shape": "rectangle", // "rectangle", "ellipse", "diamond", "hexagon", "cylinder", "database"
       "label": "My Node",
-      "backgroundColor": "bg-bg-elevated", // Use standard tailwind tokens
-      "textColor": "text-text-primary"
+      "color": "#10233D", // MUST be one of the backgrounds below
+      "textColor": "#52A8FF" // MUST be the matching text color below
     }
   }
 }
 
-You must return a JSON array of operations. The operations will be sent directly to the Liveblocks REST API.
-Valid operation types for the array:
+Use ONLY the following exact background/text pairs for colors (they are optimized for our dark theme):
+- Neutral: bg #1F1F1F, text #EDEDED
+- Blue: bg #10233D, text #52A8FF
+- Purple: bg #2E1938, text #BF7AF0
+- Orange: bg #331B00, text #FF990A
+- Red: bg #3C1618, text #FF6166
+- Pink: bg #3A1726, text #F75F8F
+- Green: bg #0F2E18, text #62C073
+- Teal: bg #062822, text #0AC7B4
+    }
+  }
+}
+
+Edges have the following structure:
+{
+  "type": "UpdateObject",
+  "id": "edge_id",
+  "data": {
+    "source": "source_node_id",
+    "target": "target_node_id",
+    "label": "Optional edge label"
+  }
+}
+
+You must return a JSON object with two fields:
+- "message": A short, conversational reply acknowledging the user's request as a helpful AI co-pilot. Keep it under 2 sentences.
+- "operations": A JSON array of the operations.
+
+Valid operation types for the operations array:
 - UpdateObject: Creates or updates a node or edge.
 - DeleteObject: Removes a node or edge by ID.
 
-Ensure your response is valid, parseable JSON containing ONLY the array of operations.
+Ensure your response is valid, parseable JSON containing ONLY the object.
 Do NOT wrap the response in markdown blocks like ```json.
 """
 
@@ -77,9 +104,9 @@ def load_skills() -> str:
             
     return skills_context
 
-async def generate_design_operations(prompt: str, current_storage: dict) -> list[dict]:
+async def generate_design_operations(prompt: str, current_storage: dict) -> dict:
     """
-    Calls Gemini to interpret the user prompt and generate a set of canvas mutations.
+    Calls Gemini to interpret the user prompt and generate a set of canvas mutations and a conversational reply.
     """
     # Load all architectural skills dynamically
     skills_context = load_skills()
@@ -89,9 +116,9 @@ async def generate_design_operations(prompt: str, current_storage: dict) -> list
 
     try:
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='models/gemini-3.6-flash',
             contents=[
-                types.Content(role="user", parts=[types.Part.from_text(context_message)])
+                types.Content(role="user", parts=[types.Part.from_text(text=context_message)])
             ],
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_PROMPT,
@@ -102,14 +129,18 @@ async def generate_design_operations(prompt: str, current_storage: dict) -> list
         
         # Parse the JSON response
         result_text = response.text
-        if result_text:
-            operations = json.loads(result_text)
-            if isinstance(operations, list):
-                return operations
-            elif isinstance(operations, dict) and "operations" in operations:
-                return operations["operations"]
+        # Safety cleanup for any markdown wrappers
+        if result_text.startswith("```json"):
+            result_text = result_text[7:]
+        if result_text.endswith("```"):
+            result_text = result_text[:-3]
+            
+        data = json.loads(result_text.strip())
+        # Make sure it returns a dict with 'operations'
+        if isinstance(data, list):
+            return {"message": "Here's what I built.", "operations": data}
+        return data
         
-        return []
     except Exception as e:
-        print(f"Error generating design with Gemini: {e}")
-        raise e
+        print(f"Error generating design from Gemini: {e}")
+        return {"message": f"Error: {str(e)}", "operations": []}
