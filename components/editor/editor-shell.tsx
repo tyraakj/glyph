@@ -3,7 +3,6 @@
 import { useParams } from "next/navigation";
 import { EditorNavbar } from "./editor-navbar";
 import { ProjectSidebar } from "./project-sidebar";
-import { AiSidebar } from "./ai-sidebar";
 import { ProjectDialogsProvider } from "@/hooks/use-project-dialogs";
 import { ProjectDialogs } from "./project-dialogs";
 import { SidebarProvider, useSidebar } from "@/hooks/use-sidebar";
@@ -51,11 +50,6 @@ function EditorShellInner({ children, ownedProjects = [], sharedProjects = [] }:
           </main>
         </div>
 
-        {/* Right Sidebar */}
-        <AiSidebar 
-          isOpen={isAiSidebarOpen}
-          onClose={closeAiSidebar}
-        />
       </div>
       
       <ProjectDialogs />

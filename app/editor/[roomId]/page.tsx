@@ -2,6 +2,7 @@ import { getProjectAccess } from "@/lib/project-access";
 import { AccessDenied } from "@/components/editor/access-denied";
 import { CanvasWrapper } from "@/components/editor/canvas-wrapper";
 import { CanvasBoard } from "@/components/editor/canvas-board";
+import { AiSidebarContainer } from "@/components/editor/ai-sidebar-container";
 import { redirect } from "next/navigation";
 
 interface WorkspacePageProps {
@@ -32,10 +33,14 @@ export default async function WorkspacePage(props: WorkspacePageProps) {
       {/* Central Canvas Area */}
       <div className="flex-1 flex flex-col relative">
         <CanvasWrapper roomId={roomId}>
-          <CanvasBoard />
+          <div className="flex h-full w-full relative">
+            <div className="flex-1 relative">
+              <CanvasBoard />
+            </div>
+            <AiSidebarContainer />
+          </div>
         </CanvasWrapper>
       </div>
-
     </div>
   );
 }
