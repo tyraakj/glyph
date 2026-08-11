@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const session = await auth.api.getSession({
       headers: await headers()
@@ -16,9 +16,13 @@ export async function GET() {
       );
     }
 
+    const { searchParams } = new URL(req.url);
+    const includeArchived = searchParams.get('includeArchived') === 'true';
+
     const projects = await prisma.project.findMany({
       where: {
         ownerId: session.user.id,
+        ...(includeArchived ? {} : { archivedAt: null })
       },
       orderBy: {
         createdAt: "desc",

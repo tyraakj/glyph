@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useEffect } from "react"
 import Link from "next/link"
-import { X, Plus, FolderGit2, Edit2, Trash2 } from "lucide-react"
+import { X, Plus, FolderGit2, Edit2, Trash2, Search, Archive, ArchiveRestore } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
@@ -28,6 +28,42 @@ export function ProjectSidebar({
   activeProjectId
 }: ProjectSidebarProps) {
   const { openDialog } = useProjectDialogs();
+  
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [showArchived, setShowArchived] = React.useState(false);
+
+  // Debounced search query
+  const [debouncedSearch, setDebouncedSearch] = React.useState("");
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const handleArchive = async (projectId: string, isArchived: boolean) => {
+    try {
+      const endpoint = isArchived ? "unarchive" : "archive";
+      await fetch(`/api/projects/${projectId}/${endpoint}`, {
+        method: "PATCH",
+      });
+      // In a real app we'd mutate SWR/React Query here or refresh the page.
+      // For now, we'll just reload the page to get fresh data
+      window.location.reload();
+    } catch (e) {
+      console.error("Failed to toggle archive state:", e);
+    }
+  };
+
+  const filterProjects = (projects: Project[]) => {
+    return projects.filter(p => {
+      const matchesSearch = p.name.toLowerCase().includes(debouncedSearch.toLowerCase()) || 
+                            (p.description?.toLowerCase().includes(debouncedSearch.toLowerCase()) || false);
+      const isArchived = !!p.archivedAt;
+      return matchesSearch && (showArchived ? isArchived : !isArchived);
+    });
+  };
+
+  const filteredOwned = filterProjects(ownedProjects);
+  const filteredShared = filterProjects(sharedProjects);
 
   const renderProjectItem = (project: Project, isOwner: boolean) => {
     const isActive = project.id === activeProjectId;
@@ -51,6 +87,13 @@ export function ProjectSidebar({
         
         {isOwner && (
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button 
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleArchive(project.id, !!project.archivedAt); }}
+            className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-surface rounded-md transition-colors"
+            title={project.archivedAt ? "Unarchive Project" : "Archive Project"}
+          >
+            {project.archivedAt ? <ArchiveRestore className="h-3.5 w-3.5" /> : <Archive className="h-3.5 w-3.5" />}
+          </button>
           <button 
             onClick={(e) => { e.stopPropagation(); openDialog("rename", project); }}
             className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-surface rounded-md transition-colors"
@@ -103,16 +146,42 @@ export function ProjectSidebar({
 
       {/* Tabs */}
       <div className="flex-1 overflow-hidden flex flex-col p-4">
+        {/* Search & Filter */}
+        <div className="flex flex-col gap-2 mb-4">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted" />
+            <input 
+              type="text" 
+              placeholder="Search projects..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-1.5 text-sm bg-bg-surface border border-border-subtle rounded-md text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent-primary transition-colors"
+            />
+          </div>
+          <div className="flex items-center gap-2 px-1">
+            <input 
+              type="checkbox" 
+              id="show-archived" 
+              checked={showArchived}
+              onChange={(e) => setShowArchived(e.target.checked)}
+              className="rounded border-border-subtle bg-bg-surface text-accent-primary"
+            />
+            <label htmlFor="show-archived" className="text-xs text-text-secondary cursor-pointer">
+              Show Archived
+            </label>
+          </div>
+        </div>
+
         <Tabs defaultValue="my-projects" className="flex h-full flex-col">
           <TabsList className="w-full grid grid-cols-2">
             <TabsTrigger value="my-projects">My Projects</TabsTrigger>
             <TabsTrigger value="shared">Shared</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="my-projects" className="flex-1 mt-4 overflow-y-auto">
-            {ownedProjects.length > 0 ? (
+          <TabsContent value="my-projects" className="flex-1 mt-4 overflow-y-auto pr-1">
+            {filteredOwned.length > 0 ? (
               <div className="flex flex-col gap-1">
-                {ownedProjects.map(p => renderProjectItem(p, true))}
+                {filteredOwned.map(p => renderProjectItem(p, true))}
               </div>
             ) : (
               <div className="flex h-full flex-col items-center justify-center space-y-3 text-center rounded-xl border border-dashed border-border-subtle p-8">
@@ -127,10 +196,10 @@ export function ProjectSidebar({
             )}
           </TabsContent>
 
-          <TabsContent value="shared" className="flex-1 mt-4 overflow-y-auto">
-            {sharedProjects.length > 0 ? (
+          <TabsContent value="shared" className="flex-1 mt-4 overflow-y-auto pr-1">
+            {filteredShared.length > 0 ? (
               <div className="flex flex-col gap-1">
-                {sharedProjects.map(p => renderProjectItem(p, false))}
+                {filteredShared.map(p => renderProjectItem(p, false))}
               </div>
             ) : (
               <div className="flex h-full flex-col items-center justify-center space-y-3 text-center rounded-xl border border-dashed border-border-subtle p-8">
