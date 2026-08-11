@@ -12,6 +12,9 @@ import { ShapePanel, type DragPayload } from "./shape-panel";
 import { CanvasControls } from "./canvas-controls";
 import { ParticipantGroup } from "./participant-group";
 
+import { useParams } from "next/navigation";
+import { useAutosave } from "@/hooks/use-autosave";
+
 import "@xyflow/react/dist/style.css";
 
 const nodeTypes = {
@@ -35,6 +38,50 @@ function CanvasBoardInner() {
 
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { screenToFlowPosition, fitView } = useReactFlow();
+  
+  const params = useParams();
+  const roomId = typeof params?.roomId === 'string' ? params.roomId : '';
+  const projectId = useMemo(() => {
+    const idMatch = roomId.match(/^([^-]+)-/);
+    return idMatch ? idMatch[1] : roomId;
+  }, [roomId]);
+
+  const saveStatus = useAutosave(projectId, nodes, edges);
+  
+  // Track if we've attempted to load to prevent infinite loops
+  const hasAttemptedLoad = useRef(false);
+
+  useEffect(() => {
+    if (isLoading || hasAttemptedLoad.current || !projectId) return;
+    
+    // Only load if the room is completely empty
+    if ((nodes === undefined || nodes.length === 0) && (edges === undefined || edges.length === 0)) {
+      hasAttemptedLoad.current = true;
+      
+      const loadSavedCanvas = async () => {
+        try {
+          const res = await fetch(`/api/projects/${projectId}/canvas`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.nodes && data.nodes.length > 0) {
+              onNodesChange(data.nodes.map((n: CanvasNode) => ({ type: "add", item: n })));
+            }
+            if (data.edges && data.edges.length > 0) {
+              onEdgesChange(data.edges.map((e: CanvasEdge) => ({ type: "add", item: e })));
+            }
+            setTimeout(() => fitView({ duration: 500, padding: 0.2 }), 100);
+          }
+        } catch (error) {
+          console.error("Failed to load saved canvas", error);
+        }
+      };
+      
+      loadSavedCanvas();
+    } else {
+      // Room already has data, no need to load
+      hasAttemptedLoad.current = true;
+    }
+  }, [isLoading, nodes, edges, projectId, onNodesChange, onEdgesChange, fitView]);
 
   useEffect(() => {
     const handleImport = (e: Event) => {
@@ -172,7 +219,7 @@ function CanvasBoardInner() {
           <ShapePanel />
         </Panel>
         <Panel position="bottom-left" className="ml-4 mb-6">
-          <CanvasControls />
+          <CanvasControls saveStatus={saveStatus} />
         </Panel>
       </ReactFlow>
     </div>

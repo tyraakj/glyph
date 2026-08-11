@@ -16,6 +16,7 @@
     "@liveblocks/react-flow": "^3.23.1",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
+    "@vercel/blob": "^2.7.0",
     "@xyflow/react": "^12.11.2",
     "better-auth": "^1.6.26",
     "clsx": "^2.1.1",
