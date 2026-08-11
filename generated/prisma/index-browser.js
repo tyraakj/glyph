@@ -184,6 +184,15 @@ exports.Prisma.VerificationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.TaskRunScalarFieldEnum = {
+  id: 'id',
+  runId: 'runId',
+  projectId: 'projectId',
+  userId: 'userId',
+  status: 'status',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -206,7 +215,8 @@ exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  TaskRun: 'TaskRun'
 };
 
 /**

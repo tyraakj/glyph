@@ -43,6 +43,11 @@ export type Account = $Result.DefaultSelection<Prisma.$AccountPayload>
  * 
  */
 export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
+/**
+ * Model TaskRun
+ * 
+ */
+export type TaskRun = $Result.DefaultSelection<Prisma.$TaskRunPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -224,6 +229,16 @@ export class PrismaClient<
     * ```
     */
   get verification(): Prisma.VerificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.taskRun`: Exposes CRUD operations for the **TaskRun** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TaskRuns
+    * const taskRuns = await prisma.taskRun.findMany()
+    * ```
+    */
+  get taskRun(): Prisma.TaskRunDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -676,7 +691,8 @@ export namespace Prisma {
     User: 'User',
     Session: 'Session',
     Account: 'Account',
-    Verification: 'Verification'
+    Verification: 'Verification',
+    TaskRun: 'TaskRun'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -692,7 +708,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "project" | "projectCollaborator" | "user" | "session" | "account" | "verification"
+      modelProps: "project" | "projectCollaborator" | "user" | "session" | "account" | "verification" | "taskRun"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1140,6 +1156,80 @@ export namespace Prisma {
           }
         }
       }
+      TaskRun: {
+        payload: Prisma.$TaskRunPayload<ExtArgs>
+        fields: Prisma.TaskRunFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TaskRunFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskRunPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TaskRunFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskRunPayload>
+          }
+          findFirst: {
+            args: Prisma.TaskRunFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskRunPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TaskRunFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskRunPayload>
+          }
+          findMany: {
+            args: Prisma.TaskRunFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskRunPayload>[]
+          }
+          create: {
+            args: Prisma.TaskRunCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskRunPayload>
+          }
+          createMany: {
+            args: Prisma.TaskRunCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TaskRunCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskRunPayload>[]
+          }
+          delete: {
+            args: Prisma.TaskRunDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskRunPayload>
+          }
+          update: {
+            args: Prisma.TaskRunUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskRunPayload>
+          }
+          deleteMany: {
+            args: Prisma.TaskRunDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TaskRunUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TaskRunUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskRunPayload>[]
+          }
+          upsert: {
+            args: Prisma.TaskRunUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskRunPayload>
+          }
+          aggregate: {
+            args: Prisma.TaskRunAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTaskRun>
+          }
+          groupBy: {
+            args: Prisma.TaskRunGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TaskRunGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TaskRunCountArgs<ExtArgs>
+            result: $Utils.Optional<TaskRunCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1269,6 +1359,7 @@ export namespace Prisma {
     session?: SessionOmit
     account?: AccountOmit
     verification?: VerificationOmit
+    taskRun?: TaskRunOmit
   }
 
   /* Types for Logging */
@@ -1350,10 +1441,12 @@ export namespace Prisma {
 
   export type ProjectCountOutputType = {
     collaborators: number
+    taskRuns: number
   }
 
   export type ProjectCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     collaborators?: boolean | ProjectCountOutputTypeCountCollaboratorsArgs
+    taskRuns?: boolean | ProjectCountOutputTypeCountTaskRunsArgs
   }
 
   // Custom InputTypes
@@ -1374,6 +1467,13 @@ export namespace Prisma {
     where?: ProjectCollaboratorWhereInput
   }
 
+  /**
+   * ProjectCountOutputType without action
+   */
+  export type ProjectCountOutputTypeCountTaskRunsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskRunWhereInput
+  }
+
 
   /**
    * Count Type UserCountOutputType
@@ -1383,12 +1483,14 @@ export namespace Prisma {
     sessions: number
     accounts: number
     projects: number
+    taskRuns: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     projects?: boolean | UserCountOutputTypeCountProjectsArgs
+    taskRuns?: boolean | UserCountOutputTypeCountTaskRunsArgs
   }
 
   // Custom InputTypes
@@ -1421,6 +1523,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountProjectsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProjectWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTaskRunsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskRunWhereInput
   }
 
 
@@ -1618,6 +1727,7 @@ export namespace Prisma {
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     collaborators?: boolean | Project$collaboratorsArgs<ExtArgs>
+    taskRuns?: boolean | Project$taskRunsArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["project"]>
 
@@ -1660,6 +1770,7 @@ export namespace Prisma {
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     collaborators?: boolean | Project$collaboratorsArgs<ExtArgs>
+    taskRuns?: boolean | Project$taskRunsArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProjectIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1674,6 +1785,7 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       collaborators: Prisma.$ProjectCollaboratorPayload<ExtArgs>[]
+      taskRuns: Prisma.$TaskRunPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2080,6 +2192,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     collaborators<T extends Project$collaboratorsArgs<ExtArgs> = {}>(args?: Subset<T, Project$collaboratorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectCollaboratorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    taskRuns<T extends Project$taskRunsArgs<ExtArgs> = {}>(args?: Subset<T, Project$taskRunsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2539,6 +2652,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ProjectCollaboratorScalarFieldEnum | ProjectCollaboratorScalarFieldEnum[]
+  }
+
+  /**
+   * Project.taskRuns
+   */
+  export type Project$taskRunsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunInclude<ExtArgs> | null
+    where?: TaskRunWhereInput
+    orderBy?: TaskRunOrderByWithRelationInput | TaskRunOrderByWithRelationInput[]
+    cursor?: TaskRunWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TaskRunScalarFieldEnum | TaskRunScalarFieldEnum[]
   }
 
   /**
@@ -3793,6 +3930,7 @@ export namespace Prisma {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     projects?: boolean | User$projectsArgs<ExtArgs>
+    taskRuns?: boolean | User$taskRunsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3831,6 +3969,7 @@ export namespace Prisma {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     projects?: boolean | User$projectsArgs<ExtArgs>
+    taskRuns?: boolean | User$taskRunsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3842,6 +3981,7 @@ export namespace Prisma {
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       projects: Prisma.$ProjectPayload<ExtArgs>[]
+      taskRuns: Prisma.$TaskRunPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4248,6 +4388,7 @@ export namespace Prisma {
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     projects<T extends User$projectsArgs<ExtArgs> = {}>(args?: Subset<T, User$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    taskRuns<T extends User$taskRunsArgs<ExtArgs> = {}>(args?: Subset<T, User$taskRunsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4746,6 +4887,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ProjectScalarFieldEnum | ProjectScalarFieldEnum[]
+  }
+
+  /**
+   * User.taskRuns
+   */
+  export type User$taskRunsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunInclude<ExtArgs> | null
+    where?: TaskRunWhereInput
+    orderBy?: TaskRunOrderByWithRelationInput | TaskRunOrderByWithRelationInput[]
+    cursor?: TaskRunWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TaskRunScalarFieldEnum | TaskRunScalarFieldEnum[]
   }
 
   /**
@@ -8050,6 +8215,1090 @@ export namespace Prisma {
 
 
   /**
+   * Model TaskRun
+   */
+
+  export type AggregateTaskRun = {
+    _count: TaskRunCountAggregateOutputType | null
+    _min: TaskRunMinAggregateOutputType | null
+    _max: TaskRunMaxAggregateOutputType | null
+  }
+
+  export type TaskRunMinAggregateOutputType = {
+    id: string | null
+    runId: string | null
+    projectId: string | null
+    userId: string | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type TaskRunMaxAggregateOutputType = {
+    id: string | null
+    runId: string | null
+    projectId: string | null
+    userId: string | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type TaskRunCountAggregateOutputType = {
+    id: number
+    runId: number
+    projectId: number
+    userId: number
+    status: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type TaskRunMinAggregateInputType = {
+    id?: true
+    runId?: true
+    projectId?: true
+    userId?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type TaskRunMaxAggregateInputType = {
+    id?: true
+    runId?: true
+    projectId?: true
+    userId?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type TaskRunCountAggregateInputType = {
+    id?: true
+    runId?: true
+    projectId?: true
+    userId?: true
+    status?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type TaskRunAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TaskRun to aggregate.
+     */
+    where?: TaskRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaskRuns to fetch.
+     */
+    orderBy?: TaskRunOrderByWithRelationInput | TaskRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TaskRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaskRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaskRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TaskRuns
+    **/
+    _count?: true | TaskRunCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TaskRunMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TaskRunMaxAggregateInputType
+  }
+
+  export type GetTaskRunAggregateType<T extends TaskRunAggregateArgs> = {
+        [P in keyof T & keyof AggregateTaskRun]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTaskRun[P]>
+      : GetScalarType<T[P], AggregateTaskRun[P]>
+  }
+
+
+
+
+  export type TaskRunGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskRunWhereInput
+    orderBy?: TaskRunOrderByWithAggregationInput | TaskRunOrderByWithAggregationInput[]
+    by: TaskRunScalarFieldEnum[] | TaskRunScalarFieldEnum
+    having?: TaskRunScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TaskRunCountAggregateInputType | true
+    _min?: TaskRunMinAggregateInputType
+    _max?: TaskRunMaxAggregateInputType
+  }
+
+  export type TaskRunGroupByOutputType = {
+    id: string
+    runId: string
+    projectId: string
+    userId: string
+    status: string
+    createdAt: Date
+    _count: TaskRunCountAggregateOutputType | null
+    _min: TaskRunMinAggregateOutputType | null
+    _max: TaskRunMaxAggregateOutputType | null
+  }
+
+  type GetTaskRunGroupByPayload<T extends TaskRunGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TaskRunGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TaskRunGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TaskRunGroupByOutputType[P]>
+            : GetScalarType<T[P], TaskRunGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TaskRunSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    runId?: boolean
+    projectId?: boolean
+    userId?: boolean
+    status?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["taskRun"]>
+
+  export type TaskRunSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    runId?: boolean
+    projectId?: boolean
+    userId?: boolean
+    status?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["taskRun"]>
+
+  export type TaskRunSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    runId?: boolean
+    projectId?: boolean
+    userId?: boolean
+    status?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["taskRun"]>
+
+  export type TaskRunSelectScalar = {
+    id?: boolean
+    runId?: boolean
+    projectId?: boolean
+    userId?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }
+
+  export type TaskRunOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "runId" | "projectId" | "userId" | "status" | "createdAt", ExtArgs["result"]["taskRun"]>
+  export type TaskRunInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TaskRunIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TaskRunIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $TaskRunPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TaskRun"
+    objects: {
+      project: Prisma.$ProjectPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      runId: string
+      projectId: string
+      userId: string
+      status: string
+      createdAt: Date
+    }, ExtArgs["result"]["taskRun"]>
+    composites: {}
+  }
+
+  type TaskRunGetPayload<S extends boolean | null | undefined | TaskRunDefaultArgs> = $Result.GetResult<Prisma.$TaskRunPayload, S>
+
+  type TaskRunCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TaskRunFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TaskRunCountAggregateInputType | true
+    }
+
+  export interface TaskRunDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TaskRun'], meta: { name: 'TaskRun' } }
+    /**
+     * Find zero or one TaskRun that matches the filter.
+     * @param {TaskRunFindUniqueArgs} args - Arguments to find a TaskRun
+     * @example
+     * // Get one TaskRun
+     * const taskRun = await prisma.taskRun.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TaskRunFindUniqueArgs>(args: SelectSubset<T, TaskRunFindUniqueArgs<ExtArgs>>): Prisma__TaskRunClient<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TaskRun that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TaskRunFindUniqueOrThrowArgs} args - Arguments to find a TaskRun
+     * @example
+     * // Get one TaskRun
+     * const taskRun = await prisma.taskRun.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TaskRunFindUniqueOrThrowArgs>(args: SelectSubset<T, TaskRunFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TaskRunClient<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TaskRun that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskRunFindFirstArgs} args - Arguments to find a TaskRun
+     * @example
+     * // Get one TaskRun
+     * const taskRun = await prisma.taskRun.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TaskRunFindFirstArgs>(args?: SelectSubset<T, TaskRunFindFirstArgs<ExtArgs>>): Prisma__TaskRunClient<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TaskRun that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskRunFindFirstOrThrowArgs} args - Arguments to find a TaskRun
+     * @example
+     * // Get one TaskRun
+     * const taskRun = await prisma.taskRun.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TaskRunFindFirstOrThrowArgs>(args?: SelectSubset<T, TaskRunFindFirstOrThrowArgs<ExtArgs>>): Prisma__TaskRunClient<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TaskRuns that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskRunFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TaskRuns
+     * const taskRuns = await prisma.taskRun.findMany()
+     * 
+     * // Get first 10 TaskRuns
+     * const taskRuns = await prisma.taskRun.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const taskRunWithIdOnly = await prisma.taskRun.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TaskRunFindManyArgs>(args?: SelectSubset<T, TaskRunFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TaskRun.
+     * @param {TaskRunCreateArgs} args - Arguments to create a TaskRun.
+     * @example
+     * // Create one TaskRun
+     * const TaskRun = await prisma.taskRun.create({
+     *   data: {
+     *     // ... data to create a TaskRun
+     *   }
+     * })
+     * 
+     */
+    create<T extends TaskRunCreateArgs>(args: SelectSubset<T, TaskRunCreateArgs<ExtArgs>>): Prisma__TaskRunClient<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TaskRuns.
+     * @param {TaskRunCreateManyArgs} args - Arguments to create many TaskRuns.
+     * @example
+     * // Create many TaskRuns
+     * const taskRun = await prisma.taskRun.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TaskRunCreateManyArgs>(args?: SelectSubset<T, TaskRunCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TaskRuns and returns the data saved in the database.
+     * @param {TaskRunCreateManyAndReturnArgs} args - Arguments to create many TaskRuns.
+     * @example
+     * // Create many TaskRuns
+     * const taskRun = await prisma.taskRun.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TaskRuns and only return the `id`
+     * const taskRunWithIdOnly = await prisma.taskRun.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TaskRunCreateManyAndReturnArgs>(args?: SelectSubset<T, TaskRunCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TaskRun.
+     * @param {TaskRunDeleteArgs} args - Arguments to delete one TaskRun.
+     * @example
+     * // Delete one TaskRun
+     * const TaskRun = await prisma.taskRun.delete({
+     *   where: {
+     *     // ... filter to delete one TaskRun
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TaskRunDeleteArgs>(args: SelectSubset<T, TaskRunDeleteArgs<ExtArgs>>): Prisma__TaskRunClient<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TaskRun.
+     * @param {TaskRunUpdateArgs} args - Arguments to update one TaskRun.
+     * @example
+     * // Update one TaskRun
+     * const taskRun = await prisma.taskRun.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TaskRunUpdateArgs>(args: SelectSubset<T, TaskRunUpdateArgs<ExtArgs>>): Prisma__TaskRunClient<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TaskRuns.
+     * @param {TaskRunDeleteManyArgs} args - Arguments to filter TaskRuns to delete.
+     * @example
+     * // Delete a few TaskRuns
+     * const { count } = await prisma.taskRun.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TaskRunDeleteManyArgs>(args?: SelectSubset<T, TaskRunDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TaskRuns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskRunUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TaskRuns
+     * const taskRun = await prisma.taskRun.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TaskRunUpdateManyArgs>(args: SelectSubset<T, TaskRunUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TaskRuns and returns the data updated in the database.
+     * @param {TaskRunUpdateManyAndReturnArgs} args - Arguments to update many TaskRuns.
+     * @example
+     * // Update many TaskRuns
+     * const taskRun = await prisma.taskRun.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TaskRuns and only return the `id`
+     * const taskRunWithIdOnly = await prisma.taskRun.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TaskRunUpdateManyAndReturnArgs>(args: SelectSubset<T, TaskRunUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TaskRun.
+     * @param {TaskRunUpsertArgs} args - Arguments to update or create a TaskRun.
+     * @example
+     * // Update or create a TaskRun
+     * const taskRun = await prisma.taskRun.upsert({
+     *   create: {
+     *     // ... data to create a TaskRun
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TaskRun we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TaskRunUpsertArgs>(args: SelectSubset<T, TaskRunUpsertArgs<ExtArgs>>): Prisma__TaskRunClient<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TaskRuns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskRunCountArgs} args - Arguments to filter TaskRuns to count.
+     * @example
+     * // Count the number of TaskRuns
+     * const count = await prisma.taskRun.count({
+     *   where: {
+     *     // ... the filter for the TaskRuns we want to count
+     *   }
+     * })
+    **/
+    count<T extends TaskRunCountArgs>(
+      args?: Subset<T, TaskRunCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TaskRunCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TaskRun.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskRunAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TaskRunAggregateArgs>(args: Subset<T, TaskRunAggregateArgs>): Prisma.PrismaPromise<GetTaskRunAggregateType<T>>
+
+    /**
+     * Group by TaskRun.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskRunGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TaskRunGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TaskRunGroupByArgs['orderBy'] }
+        : { orderBy?: TaskRunGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TaskRunGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTaskRunGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TaskRun model
+   */
+  readonly fields: TaskRunFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TaskRun.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TaskRunClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TaskRun model
+   */
+  interface TaskRunFieldRefs {
+    readonly id: FieldRef<"TaskRun", 'String'>
+    readonly runId: FieldRef<"TaskRun", 'String'>
+    readonly projectId: FieldRef<"TaskRun", 'String'>
+    readonly userId: FieldRef<"TaskRun", 'String'>
+    readonly status: FieldRef<"TaskRun", 'String'>
+    readonly createdAt: FieldRef<"TaskRun", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TaskRun findUnique
+   */
+  export type TaskRunFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskRun to fetch.
+     */
+    where: TaskRunWhereUniqueInput
+  }
+
+  /**
+   * TaskRun findUniqueOrThrow
+   */
+  export type TaskRunFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskRun to fetch.
+     */
+    where: TaskRunWhereUniqueInput
+  }
+
+  /**
+   * TaskRun findFirst
+   */
+  export type TaskRunFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskRun to fetch.
+     */
+    where?: TaskRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaskRuns to fetch.
+     */
+    orderBy?: TaskRunOrderByWithRelationInput | TaskRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TaskRuns.
+     */
+    cursor?: TaskRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaskRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaskRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TaskRuns.
+     */
+    distinct?: TaskRunScalarFieldEnum | TaskRunScalarFieldEnum[]
+  }
+
+  /**
+   * TaskRun findFirstOrThrow
+   */
+  export type TaskRunFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskRun to fetch.
+     */
+    where?: TaskRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaskRuns to fetch.
+     */
+    orderBy?: TaskRunOrderByWithRelationInput | TaskRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TaskRuns.
+     */
+    cursor?: TaskRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaskRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaskRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TaskRuns.
+     */
+    distinct?: TaskRunScalarFieldEnum | TaskRunScalarFieldEnum[]
+  }
+
+  /**
+   * TaskRun findMany
+   */
+  export type TaskRunFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskRuns to fetch.
+     */
+    where?: TaskRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaskRuns to fetch.
+     */
+    orderBy?: TaskRunOrderByWithRelationInput | TaskRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TaskRuns.
+     */
+    cursor?: TaskRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaskRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaskRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TaskRuns.
+     */
+    distinct?: TaskRunScalarFieldEnum | TaskRunScalarFieldEnum[]
+  }
+
+  /**
+   * TaskRun create
+   */
+  export type TaskRunCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TaskRun.
+     */
+    data: XOR<TaskRunCreateInput, TaskRunUncheckedCreateInput>
+  }
+
+  /**
+   * TaskRun createMany
+   */
+  export type TaskRunCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TaskRuns.
+     */
+    data: TaskRunCreateManyInput | TaskRunCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TaskRun createManyAndReturn
+   */
+  export type TaskRunCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * The data used to create many TaskRuns.
+     */
+    data: TaskRunCreateManyInput | TaskRunCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TaskRun update
+   */
+  export type TaskRunUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TaskRun.
+     */
+    data: XOR<TaskRunUpdateInput, TaskRunUncheckedUpdateInput>
+    /**
+     * Choose, which TaskRun to update.
+     */
+    where: TaskRunWhereUniqueInput
+  }
+
+  /**
+   * TaskRun updateMany
+   */
+  export type TaskRunUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TaskRuns.
+     */
+    data: XOR<TaskRunUpdateManyMutationInput, TaskRunUncheckedUpdateManyInput>
+    /**
+     * Filter which TaskRuns to update
+     */
+    where?: TaskRunWhereInput
+    /**
+     * Limit how many TaskRuns to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TaskRun updateManyAndReturn
+   */
+  export type TaskRunUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * The data used to update TaskRuns.
+     */
+    data: XOR<TaskRunUpdateManyMutationInput, TaskRunUncheckedUpdateManyInput>
+    /**
+     * Filter which TaskRuns to update
+     */
+    where?: TaskRunWhereInput
+    /**
+     * Limit how many TaskRuns to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TaskRun upsert
+   */
+  export type TaskRunUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TaskRun to update in case it exists.
+     */
+    where: TaskRunWhereUniqueInput
+    /**
+     * In case the TaskRun found by the `where` argument doesn't exist, create a new TaskRun with this data.
+     */
+    create: XOR<TaskRunCreateInput, TaskRunUncheckedCreateInput>
+    /**
+     * In case the TaskRun was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TaskRunUpdateInput, TaskRunUncheckedUpdateInput>
+  }
+
+  /**
+   * TaskRun delete
+   */
+  export type TaskRunDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunInclude<ExtArgs> | null
+    /**
+     * Filter which TaskRun to delete.
+     */
+    where: TaskRunWhereUniqueInput
+  }
+
+  /**
+   * TaskRun deleteMany
+   */
+  export type TaskRunDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TaskRuns to delete
+     */
+    where?: TaskRunWhereInput
+    /**
+     * Limit how many TaskRuns to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TaskRun without action
+   */
+  export type TaskRunDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskRun
+     */
+    select?: TaskRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskRun
+     */
+    omit?: TaskRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskRunInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -8143,6 +9392,18 @@ export namespace Prisma {
   };
 
   export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+  export const TaskRunScalarFieldEnum: {
+    id: 'id',
+    runId: 'runId',
+    projectId: 'projectId',
+    userId: 'userId',
+    status: 'status',
+    createdAt: 'createdAt'
+  };
+
+  export type TaskRunScalarFieldEnum = (typeof TaskRunScalarFieldEnum)[keyof typeof TaskRunScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -8240,6 +9501,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     collaborators?: ProjectCollaboratorListRelationFilter
+    taskRuns?: TaskRunListRelationFilter
   }
 
   export type ProjectOrderByWithRelationInput = {
@@ -8253,6 +9515,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
     collaborators?: ProjectCollaboratorOrderByRelationAggregateInput
+    taskRuns?: TaskRunOrderByRelationAggregateInput
   }
 
   export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -8269,6 +9532,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     collaborators?: ProjectCollaboratorListRelationFilter
+    taskRuns?: TaskRunListRelationFilter
   }, "id">
 
   export type ProjectOrderByWithAggregationInput = {
@@ -8364,6 +9628,7 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     projects?: ProjectListRelationFilter
+    taskRuns?: TaskRunListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -8377,6 +9642,7 @@ export namespace Prisma {
     sessions?: SessionOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
     projects?: ProjectOrderByRelationAggregateInput
+    taskRuns?: TaskRunOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -8393,6 +9659,7 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     projects?: ProjectListRelationFilter
+    taskRuns?: TaskRunListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -8643,6 +9910,69 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Verification"> | Date | string
   }
 
+  export type TaskRunWhereInput = {
+    AND?: TaskRunWhereInput | TaskRunWhereInput[]
+    OR?: TaskRunWhereInput[]
+    NOT?: TaskRunWhereInput | TaskRunWhereInput[]
+    id?: StringFilter<"TaskRun"> | string
+    runId?: StringFilter<"TaskRun"> | string
+    projectId?: StringFilter<"TaskRun"> | string
+    userId?: StringFilter<"TaskRun"> | string
+    status?: StringFilter<"TaskRun"> | string
+    createdAt?: DateTimeFilter<"TaskRun"> | Date | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type TaskRunOrderByWithRelationInput = {
+    id?: SortOrder
+    runId?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    project?: ProjectOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type TaskRunWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    runId?: string
+    AND?: TaskRunWhereInput | TaskRunWhereInput[]
+    OR?: TaskRunWhereInput[]
+    NOT?: TaskRunWhereInput | TaskRunWhereInput[]
+    projectId?: StringFilter<"TaskRun"> | string
+    userId?: StringFilter<"TaskRun"> | string
+    status?: StringFilter<"TaskRun"> | string
+    createdAt?: DateTimeFilter<"TaskRun"> | Date | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "runId">
+
+  export type TaskRunOrderByWithAggregationInput = {
+    id?: SortOrder
+    runId?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    _count?: TaskRunCountOrderByAggregateInput
+    _max?: TaskRunMaxOrderByAggregateInput
+    _min?: TaskRunMinOrderByAggregateInput
+  }
+
+  export type TaskRunScalarWhereWithAggregatesInput = {
+    AND?: TaskRunScalarWhereWithAggregatesInput | TaskRunScalarWhereWithAggregatesInput[]
+    OR?: TaskRunScalarWhereWithAggregatesInput[]
+    NOT?: TaskRunScalarWhereWithAggregatesInput | TaskRunScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TaskRun"> | string
+    runId?: StringWithAggregatesFilter<"TaskRun"> | string
+    projectId?: StringWithAggregatesFilter<"TaskRun"> | string
+    userId?: StringWithAggregatesFilter<"TaskRun"> | string
+    status?: StringWithAggregatesFilter<"TaskRun"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"TaskRun"> | Date | string
+  }
+
   export type ProjectCreateInput = {
     id?: string
     name: string
@@ -8653,6 +9983,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutProjectsInput
     collaborators?: ProjectCollaboratorCreateNestedManyWithoutProjectInput
+    taskRuns?: TaskRunCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateInput = {
@@ -8665,6 +9996,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     collaborators?: ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
+    taskRuns?: TaskRunUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUpdateInput = {
@@ -8677,6 +10009,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProjectsNestedInput
     collaborators?: ProjectCollaboratorUpdateManyWithoutProjectNestedInput
+    taskRuns?: TaskRunUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateInput = {
@@ -8689,6 +10022,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     collaborators?: ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
+    taskRuns?: TaskRunUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateManyInput = {
@@ -8782,6 +10116,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     projects?: ProjectCreateNestedManyWithoutUserInput
+    taskRuns?: TaskRunCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -8795,6 +10130,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     projects?: ProjectUncheckedCreateNestedManyWithoutUserInput
+    taskRuns?: TaskRunUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -8808,6 +10144,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     projects?: ProjectUpdateManyWithoutUserNestedInput
+    taskRuns?: TaskRunUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -8821,6 +10158,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutUserNestedInput
+    taskRuns?: TaskRunUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -9103,6 +10441,67 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TaskRunCreateInput = {
+    id?: string
+    runId: string
+    status?: string
+    createdAt?: Date | string
+    project: ProjectCreateNestedOneWithoutTaskRunsInput
+    user: UserCreateNestedOneWithoutTaskRunsInput
+  }
+
+  export type TaskRunUncheckedCreateInput = {
+    id?: string
+    runId: string
+    projectId: string
+    userId: string
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type TaskRunUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneRequiredWithoutTaskRunsNestedInput
+    user?: UserUpdateOneRequiredWithoutTaskRunsNestedInput
+  }
+
+  export type TaskRunUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskRunCreateManyInput = {
+    id?: string
+    runId: string
+    projectId: string
+    userId: string
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type TaskRunUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskRunUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -9155,12 +10554,22 @@ export namespace Prisma {
     none?: ProjectCollaboratorWhereInput
   }
 
+  export type TaskRunListRelationFilter = {
+    every?: TaskRunWhereInput
+    some?: TaskRunWhereInput
+    none?: TaskRunWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
   }
 
   export type ProjectCollaboratorOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TaskRunOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -9484,6 +10893,33 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type TaskRunCountOrderByAggregateInput = {
+    id?: SortOrder
+    runId?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TaskRunMaxOrderByAggregateInput = {
+    id?: SortOrder
+    runId?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TaskRunMinOrderByAggregateInput = {
+    id?: SortOrder
+    runId?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type UserCreateNestedOneWithoutProjectsInput = {
     create?: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
     connectOrCreate?: UserCreateOrConnectWithoutProjectsInput
@@ -9497,11 +10933,25 @@ export namespace Prisma {
     connect?: ProjectCollaboratorWhereUniqueInput | ProjectCollaboratorWhereUniqueInput[]
   }
 
+  export type TaskRunCreateNestedManyWithoutProjectInput = {
+    create?: XOR<TaskRunCreateWithoutProjectInput, TaskRunUncheckedCreateWithoutProjectInput> | TaskRunCreateWithoutProjectInput[] | TaskRunUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: TaskRunCreateOrConnectWithoutProjectInput | TaskRunCreateOrConnectWithoutProjectInput[]
+    createMany?: TaskRunCreateManyProjectInputEnvelope
+    connect?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+  }
+
   export type ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput = {
     create?: XOR<ProjectCollaboratorCreateWithoutProjectInput, ProjectCollaboratorUncheckedCreateWithoutProjectInput> | ProjectCollaboratorCreateWithoutProjectInput[] | ProjectCollaboratorUncheckedCreateWithoutProjectInput[]
     connectOrCreate?: ProjectCollaboratorCreateOrConnectWithoutProjectInput | ProjectCollaboratorCreateOrConnectWithoutProjectInput[]
     createMany?: ProjectCollaboratorCreateManyProjectInputEnvelope
     connect?: ProjectCollaboratorWhereUniqueInput | ProjectCollaboratorWhereUniqueInput[]
+  }
+
+  export type TaskRunUncheckedCreateNestedManyWithoutProjectInput = {
+    create?: XOR<TaskRunCreateWithoutProjectInput, TaskRunUncheckedCreateWithoutProjectInput> | TaskRunCreateWithoutProjectInput[] | TaskRunUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: TaskRunCreateOrConnectWithoutProjectInput | TaskRunCreateOrConnectWithoutProjectInput[]
+    createMany?: TaskRunCreateManyProjectInputEnvelope
+    connect?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -9538,6 +10988,20 @@ export namespace Prisma {
     deleteMany?: ProjectCollaboratorScalarWhereInput | ProjectCollaboratorScalarWhereInput[]
   }
 
+  export type TaskRunUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<TaskRunCreateWithoutProjectInput, TaskRunUncheckedCreateWithoutProjectInput> | TaskRunCreateWithoutProjectInput[] | TaskRunUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: TaskRunCreateOrConnectWithoutProjectInput | TaskRunCreateOrConnectWithoutProjectInput[]
+    upsert?: TaskRunUpsertWithWhereUniqueWithoutProjectInput | TaskRunUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: TaskRunCreateManyProjectInputEnvelope
+    set?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    disconnect?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    delete?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    connect?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    update?: TaskRunUpdateWithWhereUniqueWithoutProjectInput | TaskRunUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: TaskRunUpdateManyWithWhereWithoutProjectInput | TaskRunUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: TaskRunScalarWhereInput | TaskRunScalarWhereInput[]
+  }
+
   export type ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput = {
     create?: XOR<ProjectCollaboratorCreateWithoutProjectInput, ProjectCollaboratorUncheckedCreateWithoutProjectInput> | ProjectCollaboratorCreateWithoutProjectInput[] | ProjectCollaboratorUncheckedCreateWithoutProjectInput[]
     connectOrCreate?: ProjectCollaboratorCreateOrConnectWithoutProjectInput | ProjectCollaboratorCreateOrConnectWithoutProjectInput[]
@@ -9550,6 +11014,20 @@ export namespace Prisma {
     update?: ProjectCollaboratorUpdateWithWhereUniqueWithoutProjectInput | ProjectCollaboratorUpdateWithWhereUniqueWithoutProjectInput[]
     updateMany?: ProjectCollaboratorUpdateManyWithWhereWithoutProjectInput | ProjectCollaboratorUpdateManyWithWhereWithoutProjectInput[]
     deleteMany?: ProjectCollaboratorScalarWhereInput | ProjectCollaboratorScalarWhereInput[]
+  }
+
+  export type TaskRunUncheckedUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<TaskRunCreateWithoutProjectInput, TaskRunUncheckedCreateWithoutProjectInput> | TaskRunCreateWithoutProjectInput[] | TaskRunUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: TaskRunCreateOrConnectWithoutProjectInput | TaskRunCreateOrConnectWithoutProjectInput[]
+    upsert?: TaskRunUpsertWithWhereUniqueWithoutProjectInput | TaskRunUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: TaskRunCreateManyProjectInputEnvelope
+    set?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    disconnect?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    delete?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    connect?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    update?: TaskRunUpdateWithWhereUniqueWithoutProjectInput | TaskRunUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: TaskRunUpdateManyWithWhereWithoutProjectInput | TaskRunUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: TaskRunScalarWhereInput | TaskRunScalarWhereInput[]
   }
 
   export type ProjectCreateNestedOneWithoutCollaboratorsInput = {
@@ -9587,6 +11065,13 @@ export namespace Prisma {
     connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
   }
 
+  export type TaskRunCreateNestedManyWithoutUserInput = {
+    create?: XOR<TaskRunCreateWithoutUserInput, TaskRunUncheckedCreateWithoutUserInput> | TaskRunCreateWithoutUserInput[] | TaskRunUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TaskRunCreateOrConnectWithoutUserInput | TaskRunCreateOrConnectWithoutUserInput[]
+    createMany?: TaskRunCreateManyUserInputEnvelope
+    connect?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -9606,6 +11091,13 @@ export namespace Prisma {
     connectOrCreate?: ProjectCreateOrConnectWithoutUserInput | ProjectCreateOrConnectWithoutUserInput[]
     createMany?: ProjectCreateManyUserInputEnvelope
     connect?: ProjectWhereUniqueInput | ProjectWhereUniqueInput[]
+  }
+
+  export type TaskRunUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TaskRunCreateWithoutUserInput, TaskRunUncheckedCreateWithoutUserInput> | TaskRunCreateWithoutUserInput[] | TaskRunUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TaskRunCreateOrConnectWithoutUserInput | TaskRunCreateOrConnectWithoutUserInput[]
+    createMany?: TaskRunCreateManyUserInputEnvelope
+    connect?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -9654,6 +11146,20 @@ export namespace Prisma {
     deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
   }
 
+  export type TaskRunUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TaskRunCreateWithoutUserInput, TaskRunUncheckedCreateWithoutUserInput> | TaskRunCreateWithoutUserInput[] | TaskRunUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TaskRunCreateOrConnectWithoutUserInput | TaskRunCreateOrConnectWithoutUserInput[]
+    upsert?: TaskRunUpsertWithWhereUniqueWithoutUserInput | TaskRunUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TaskRunCreateManyUserInputEnvelope
+    set?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    disconnect?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    delete?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    connect?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    update?: TaskRunUpdateWithWhereUniqueWithoutUserInput | TaskRunUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TaskRunUpdateManyWithWhereWithoutUserInput | TaskRunUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TaskRunScalarWhereInput | TaskRunScalarWhereInput[]
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -9696,6 +11202,20 @@ export namespace Prisma {
     deleteMany?: ProjectScalarWhereInput | ProjectScalarWhereInput[]
   }
 
+  export type TaskRunUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TaskRunCreateWithoutUserInput, TaskRunUncheckedCreateWithoutUserInput> | TaskRunCreateWithoutUserInput[] | TaskRunUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TaskRunCreateOrConnectWithoutUserInput | TaskRunCreateOrConnectWithoutUserInput[]
+    upsert?: TaskRunUpsertWithWhereUniqueWithoutUserInput | TaskRunUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TaskRunCreateManyUserInputEnvelope
+    set?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    disconnect?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    delete?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    connect?: TaskRunWhereUniqueInput | TaskRunWhereUniqueInput[]
+    update?: TaskRunUpdateWithWhereUniqueWithoutUserInput | TaskRunUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TaskRunUpdateManyWithWhereWithoutUserInput | TaskRunUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TaskRunScalarWhereInput | TaskRunScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutSessionsInput = {
     create?: XOR<UserCreateWithoutSessionsInput, UserUncheckedCreateWithoutSessionsInput>
     connectOrCreate?: UserCreateOrConnectWithoutSessionsInput
@@ -9726,6 +11246,34 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutAccountsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAccountsInput, UserUpdateWithoutAccountsInput>, UserUncheckedUpdateWithoutAccountsInput>
+  }
+
+  export type ProjectCreateNestedOneWithoutTaskRunsInput = {
+    create?: XOR<ProjectCreateWithoutTaskRunsInput, ProjectUncheckedCreateWithoutTaskRunsInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutTaskRunsInput
+    connect?: ProjectWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutTaskRunsInput = {
+    create?: XOR<UserCreateWithoutTaskRunsInput, UserUncheckedCreateWithoutTaskRunsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTaskRunsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ProjectUpdateOneRequiredWithoutTaskRunsNestedInput = {
+    create?: XOR<ProjectCreateWithoutTaskRunsInput, ProjectUncheckedCreateWithoutTaskRunsInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutTaskRunsInput
+    upsert?: ProjectUpsertWithoutTaskRunsInput
+    connect?: ProjectWhereUniqueInput
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutTaskRunsInput, ProjectUpdateWithoutTaskRunsInput>, ProjectUncheckedUpdateWithoutTaskRunsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutTaskRunsNestedInput = {
+    create?: XOR<UserCreateWithoutTaskRunsInput, UserUncheckedCreateWithoutTaskRunsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTaskRunsInput
+    upsert?: UserUpsertWithoutTaskRunsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTaskRunsInput, UserUpdateWithoutTaskRunsInput>, UserUncheckedUpdateWithoutTaskRunsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -9885,6 +11433,7 @@ export namespace Prisma {
     updatedAt: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    taskRuns?: TaskRunCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutProjectsInput = {
@@ -9897,6 +11446,7 @@ export namespace Prisma {
     updatedAt: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    taskRuns?: TaskRunUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutProjectsInput = {
@@ -9926,6 +11476,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TaskRunCreateWithoutProjectInput = {
+    id?: string
+    runId: string
+    status?: string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutTaskRunsInput
+  }
+
+  export type TaskRunUncheckedCreateWithoutProjectInput = {
+    id?: string
+    runId: string
+    userId: string
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type TaskRunCreateOrConnectWithoutProjectInput = {
+    where: TaskRunWhereUniqueInput
+    create: XOR<TaskRunCreateWithoutProjectInput, TaskRunUncheckedCreateWithoutProjectInput>
+  }
+
+  export type TaskRunCreateManyProjectInputEnvelope = {
+    data: TaskRunCreateManyProjectInput | TaskRunCreateManyProjectInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutProjectsInput = {
     update: XOR<UserUpdateWithoutProjectsInput, UserUncheckedUpdateWithoutProjectsInput>
     create: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
@@ -9947,6 +11523,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    taskRuns?: TaskRunUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -9959,6 +11536,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    taskRuns?: TaskRunUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ProjectCollaboratorUpsertWithWhereUniqueWithoutProjectInput = {
@@ -9987,6 +11565,34 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ProjectCollaborator"> | Date | string
   }
 
+  export type TaskRunUpsertWithWhereUniqueWithoutProjectInput = {
+    where: TaskRunWhereUniqueInput
+    update: XOR<TaskRunUpdateWithoutProjectInput, TaskRunUncheckedUpdateWithoutProjectInput>
+    create: XOR<TaskRunCreateWithoutProjectInput, TaskRunUncheckedCreateWithoutProjectInput>
+  }
+
+  export type TaskRunUpdateWithWhereUniqueWithoutProjectInput = {
+    where: TaskRunWhereUniqueInput
+    data: XOR<TaskRunUpdateWithoutProjectInput, TaskRunUncheckedUpdateWithoutProjectInput>
+  }
+
+  export type TaskRunUpdateManyWithWhereWithoutProjectInput = {
+    where: TaskRunScalarWhereInput
+    data: XOR<TaskRunUpdateManyMutationInput, TaskRunUncheckedUpdateManyWithoutProjectInput>
+  }
+
+  export type TaskRunScalarWhereInput = {
+    AND?: TaskRunScalarWhereInput | TaskRunScalarWhereInput[]
+    OR?: TaskRunScalarWhereInput[]
+    NOT?: TaskRunScalarWhereInput | TaskRunScalarWhereInput[]
+    id?: StringFilter<"TaskRun"> | string
+    runId?: StringFilter<"TaskRun"> | string
+    projectId?: StringFilter<"TaskRun"> | string
+    userId?: StringFilter<"TaskRun"> | string
+    status?: StringFilter<"TaskRun"> | string
+    createdAt?: DateTimeFilter<"TaskRun"> | Date | string
+  }
+
   export type ProjectCreateWithoutCollaboratorsInput = {
     id?: string
     name: string
@@ -9996,6 +11602,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutProjectsInput
+    taskRuns?: TaskRunCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutCollaboratorsInput = {
@@ -10007,6 +11614,7 @@ export namespace Prisma {
     canvasJsonPath?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    taskRuns?: TaskRunUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutCollaboratorsInput = {
@@ -10034,6 +11642,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProjectsNestedInput
+    taskRuns?: TaskRunUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutCollaboratorsInput = {
@@ -10045,6 +11654,7 @@ export namespace Prisma {
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taskRuns?: TaskRunUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -10126,6 +11736,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     collaborators?: ProjectCollaboratorCreateNestedManyWithoutProjectInput
+    taskRuns?: TaskRunCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutUserInput = {
@@ -10137,6 +11748,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     collaborators?: ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
+    taskRuns?: TaskRunUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutUserInput = {
@@ -10146,6 +11758,32 @@ export namespace Prisma {
 
   export type ProjectCreateManyUserInputEnvelope = {
     data: ProjectCreateManyUserInput | ProjectCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TaskRunCreateWithoutUserInput = {
+    id?: string
+    runId: string
+    status?: string
+    createdAt?: Date | string
+    project: ProjectCreateNestedOneWithoutTaskRunsInput
+  }
+
+  export type TaskRunUncheckedCreateWithoutUserInput = {
+    id?: string
+    runId: string
+    projectId: string
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type TaskRunCreateOrConnectWithoutUserInput = {
+    where: TaskRunWhereUniqueInput
+    create: XOR<TaskRunCreateWithoutUserInput, TaskRunUncheckedCreateWithoutUserInput>
+  }
+
+  export type TaskRunCreateManyUserInputEnvelope = {
+    data: TaskRunCreateManyUserInput | TaskRunCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -10244,6 +11882,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Project"> | Date | string
   }
 
+  export type TaskRunUpsertWithWhereUniqueWithoutUserInput = {
+    where: TaskRunWhereUniqueInput
+    update: XOR<TaskRunUpdateWithoutUserInput, TaskRunUncheckedUpdateWithoutUserInput>
+    create: XOR<TaskRunCreateWithoutUserInput, TaskRunUncheckedCreateWithoutUserInput>
+  }
+
+  export type TaskRunUpdateWithWhereUniqueWithoutUserInput = {
+    where: TaskRunWhereUniqueInput
+    data: XOR<TaskRunUpdateWithoutUserInput, TaskRunUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TaskRunUpdateManyWithWhereWithoutUserInput = {
+    where: TaskRunScalarWhereInput
+    data: XOR<TaskRunUpdateManyMutationInput, TaskRunUncheckedUpdateManyWithoutUserInput>
+  }
+
   export type UserCreateWithoutSessionsInput = {
     id: string
     name: string
@@ -10254,6 +11908,7 @@ export namespace Prisma {
     updatedAt: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
     projects?: ProjectCreateNestedManyWithoutUserInput
+    taskRuns?: TaskRunCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -10266,6 +11921,7 @@ export namespace Prisma {
     updatedAt: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     projects?: ProjectUncheckedCreateNestedManyWithoutUserInput
+    taskRuns?: TaskRunUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -10294,6 +11950,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     projects?: ProjectUpdateManyWithoutUserNestedInput
+    taskRuns?: TaskRunUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -10306,6 +11963,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutUserNestedInput
+    taskRuns?: TaskRunUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -10318,6 +11976,7 @@ export namespace Prisma {
     updatedAt: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
     projects?: ProjectCreateNestedManyWithoutUserInput
+    taskRuns?: TaskRunCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -10330,6 +11989,7 @@ export namespace Prisma {
     updatedAt: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     projects?: ProjectUncheckedCreateNestedManyWithoutUserInput
+    taskRuns?: TaskRunUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -10358,6 +12018,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
     projects?: ProjectUpdateManyWithoutUserNestedInput
+    taskRuns?: TaskRunUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -10370,11 +12031,152 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutUserNestedInput
+    taskRuns?: TaskRunUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ProjectCreateWithoutTaskRunsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    status?: string
+    canvasJsonPath?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutProjectsInput
+    collaborators?: ProjectCollaboratorCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectUncheckedCreateWithoutTaskRunsInput = {
+    id?: string
+    ownerId: string
+    name: string
+    description?: string | null
+    status?: string
+    canvasJsonPath?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    collaborators?: ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectCreateOrConnectWithoutTaskRunsInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutTaskRunsInput, ProjectUncheckedCreateWithoutTaskRunsInput>
+  }
+
+  export type UserCreateWithoutTaskRunsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified: boolean
+    image?: string | null
+    createdAt: Date | string
+    updatedAt: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    projects?: ProjectCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutTaskRunsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified: boolean
+    image?: string | null
+    createdAt: Date | string
+    updatedAt: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTaskRunsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTaskRunsInput, UserUncheckedCreateWithoutTaskRunsInput>
+  }
+
+  export type ProjectUpsertWithoutTaskRunsInput = {
+    update: XOR<ProjectUpdateWithoutTaskRunsInput, ProjectUncheckedUpdateWithoutTaskRunsInput>
+    create: XOR<ProjectCreateWithoutTaskRunsInput, ProjectUncheckedCreateWithoutTaskRunsInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutTaskRunsInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutTaskRunsInput, ProjectUncheckedUpdateWithoutTaskRunsInput>
+  }
+
+  export type ProjectUpdateWithoutTaskRunsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutProjectsNestedInput
+    collaborators?: ProjectCollaboratorUpdateManyWithoutProjectNestedInput
+  }
+
+  export type ProjectUncheckedUpdateWithoutTaskRunsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    collaborators?: ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
+  }
+
+  export type UserUpsertWithoutTaskRunsInput = {
+    update: XOR<UserUpdateWithoutTaskRunsInput, UserUncheckedUpdateWithoutTaskRunsInput>
+    create: XOR<UserCreateWithoutTaskRunsInput, UserUncheckedCreateWithoutTaskRunsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTaskRunsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTaskRunsInput, UserUncheckedUpdateWithoutTaskRunsInput>
+  }
+
+  export type UserUpdateWithoutTaskRunsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    projects?: ProjectUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTaskRunsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ProjectCollaboratorCreateManyProjectInput = {
     id?: string
     email: string
+    createdAt?: Date | string
+  }
+
+  export type TaskRunCreateManyProjectInput = {
+    id?: string
+    runId: string
+    userId: string
+    status?: string
     createdAt?: Date | string
   }
 
@@ -10393,6 +12195,30 @@ export namespace Prisma {
   export type ProjectCollaboratorUncheckedUpdateManyWithoutProjectInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskRunUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTaskRunsNestedInput
+  }
+
+  export type TaskRunUncheckedUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskRunUncheckedUpdateManyWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -10429,6 +12255,14 @@ export namespace Prisma {
     canvasJsonPath?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type TaskRunCreateManyUserInput = {
+    id?: string
+    runId: string
+    projectId: string
+    status?: string
+    createdAt?: Date | string
   }
 
   export type SessionUpdateWithoutUserInput = {
@@ -10515,6 +12349,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     collaborators?: ProjectCollaboratorUpdateManyWithoutProjectNestedInput
+    taskRuns?: TaskRunUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutUserInput = {
@@ -10526,6 +12361,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     collaborators?: ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
+    taskRuns?: TaskRunUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateManyWithoutUserInput = {
@@ -10536,6 +12372,30 @@ export namespace Prisma {
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskRunUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneRequiredWithoutTaskRunsNestedInput
+  }
+
+  export type TaskRunUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskRunUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
