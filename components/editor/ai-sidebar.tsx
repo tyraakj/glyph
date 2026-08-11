@@ -295,28 +295,171 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
           </TabsContent>
 
           <TabsContent value="specs" className="flex flex-col flex-1 overflow-hidden m-0 p-4 outline-none">
-            <div className="flex flex-col gap-4">
-              <Button className="w-full bg-accent-primary hover:bg-accent-primary/90 text-bg-base shadow-sm">
-                <FileText className="w-4 h-4 mr-2" />
-                Generate Spec
-              </Button>
-              
-              <div className="flex flex-col gap-2 bg-bg-elevated border border-border-subtle p-3 rounded-xl">
-                <div className="flex items-center gap-2 mb-1">
-                  <FileText className="w-4 h-4 text-text-muted" />
-                  <span className="text-sm font-medium text-text-primary">Architecture Spec</span>
-                </div>
-                <p className="text-xs text-text-muted line-clamp-2">
-                  This document contains the functional requirements and system architecture based on the current canvas design.
-                </p>
-                <Button variant="outline" size="sm" className="w-full mt-2 text-text-muted" disabled>
-                  Download PDF
-                </Button>
-              </div>
-            </div>
+            <SpecListTab roomId={roomId} projectId={projectId} />
           </TabsContent>
         </Tabs>
       </div>
+    </div>
+  );
+}
+
+// Subcomponent for Specs Tab to manage its own state
+function SpecListTab({ roomId, projectId }: { roomId: string, projectId: string }) {
+  const [specs, setSpecs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  
+  // Preview Modal State
+  const [previewSpec, setPreviewSpec] = useState<any | null>(null);
+  const [previewContent, setPreviewContent] = useState<string>("");
+  const [previewLoading, setPreviewLoading] = useState(false);
+
+  const fetchSpecs = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/projects/${roomId}/specs`);
+      if (res.ok) {
+        const data = await res.json();
+        setSpecs(data.specs || []);
+      }
+    } catch (e) {
+      console.error("Failed to fetch specs", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (projectId) {
+      fetchSpecs();
+    }
+  }, [projectId]);
+
+  const handleGenerate = async () => {
+    setGenerating(true);
+    try {
+      const res = await fetch("/api/ai/spec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ roomId, projectId }),
+      });
+      if (res.ok) {
+        // Here we could listen to SSE for spec generation status,
+        // but for now we just wait a bit and refresh, or let the user know it's generating.
+        // The worker will eventually save it to the DB via our internal route.
+        // We can poll or just alert the user.
+        alert("Spec generation started in the background. It will appear here shortly.");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Failed to start spec generation.");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handlePreview = async (spec: any) => {
+    setPreviewSpec(spec);
+    setPreviewLoading(true);
+    try {
+      const res = await fetch(`/api/projects/${roomId}/specs/${spec.id}/download?preview=true`);
+      if (res.ok) {
+        const text = await res.text();
+        setPreviewContent(text);
+      } else {
+        setPreviewContent("Failed to load spec content.");
+      }
+    } catch (e) {
+      setPreviewContent("Error loading spec content.");
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
+  const handleDownload = (spec: any) => {
+    window.open(`/api/projects/${roomId}/specs/${spec.id}/download`, "_blank");
+  };
+
+  return (
+    <div className="flex flex-col h-full gap-4 relative">
+      <Button 
+        onClick={handleGenerate} 
+        disabled={generating}
+        className="w-full bg-accent-primary hover:bg-accent-primary/90 text-bg-base shadow-sm shrink-0"
+      >
+        {generating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
+        Generate New Spec
+      </Button>
+
+      <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-3 scrollbar-thin">
+        {loading ? (
+          <div className="flex items-center justify-center p-8">
+            <Loader2 className="w-6 h-6 text-text-muted animate-spin" />
+          </div>
+        ) : specs.length === 0 ? (
+          <div className="text-center p-8 text-sm text-text-muted">
+            No specs generated yet.
+          </div>
+        ) : (
+          specs.map((spec) => (
+            <div key={spec.id} className="flex flex-col gap-2 bg-bg-elevated border border-border-subtle p-3 rounded-xl group hover:border-accent-primary/50 transition-colors">
+              <div className="flex items-center gap-2 mb-1">
+                <FileText className="w-4 h-4 text-text-muted group-hover:text-accent-primary transition-colors" />
+                <span className="text-sm font-medium text-text-primary truncate">{spec.filename}</span>
+              </div>
+              <p className="text-[10px] text-text-muted">
+                {new Date(spec.createdAt).toLocaleString()}
+              </p>
+              <div className="flex items-center gap-2 mt-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => handlePreview(spec)}
+                  className="flex-1 h-8 text-xs bg-bg-surface hover:bg-bg-subtle text-text-primary border-border-subtle hover:text-accent-primary"
+                >
+                  Preview
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => handleDownload(spec)}
+                  className="flex-1 h-8 text-xs bg-bg-surface hover:bg-bg-subtle text-text-primary border-border-subtle"
+                >
+                  Download
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      
+      {/* Absolute Preview Overlay inside the sidebar to avoid external modals breaking layout, or we can use a fixed full-screen modal */}
+      {previewSpec && (
+        <div className="fixed inset-0 z-50 bg-bg-base/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-bg-surface border border-border-subtle rounded-xl shadow-2xl w-full max-w-3xl h-[80vh] flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b border-border-subtle bg-bg-elevated">
+              <h3 className="font-medium text-text-primary">{previewSpec.filename}</h3>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={() => handleDownload(previewSpec)}>
+                  Download
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => setPreviewSpec(null)}>
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="flex-1 p-6 overflow-y-auto bg-bg-base prose prose-sm prose-invert max-w-none">
+              {previewLoading ? (
+                <div className="flex items-center justify-center h-full">
+                  <Loader2 className="w-8 h-8 text-text-muted animate-spin" />
+                </div>
+              ) : (
+                <pre className="whitespace-pre-wrap font-sans text-sm text-text-primary">{previewContent}</pre>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

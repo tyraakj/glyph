@@ -144,3 +144,55 @@ async def generate_design_operations(prompt: str, current_storage: dict) -> dict
     except Exception as e:
         print(f"Error generating design from Gemini: {e}")
         return {"message": f"Error: {str(e)}", "operations": []}
+
+SPEC_SYSTEM_PROMPT = """
+You are an expert software architect.
+Your job is to generate a comprehensive, well-structured Markdown technical specification based on the provided system architecture diagram (nodes and edges) and the conversation history that led to it.
+
+The output MUST be pure Markdown. Do not wrap it in ```markdown or ``` codeblocks.
+Structure the spec with the following sections:
+- **Overview**: A high-level description of the system.
+- **Architecture**: Describe the main components and how they interact.
+- **Components**: A detailed list of all components (derived from the nodes).
+- **Data Flow**: A description of data flow or relationships (derived from the edges).
+
+Be detailed, professional, and clear. Expand on the nodes and edges to explain the system's purpose and functionality.
+"""
+
+async def generate_spec(chat_history: list, nodes: list, edges: list) -> str:
+    """
+    Calls Gemini to generate a Markdown technical spec from the canvas context.
+    """
+    context_message = (
+        f"Canvas Nodes:\n{json.dumps(nodes, indent=2)}\n\n"
+        f"Canvas Edges:\n{json.dumps(edges, indent=2)}\n\n"
+        f"Chat History Context:\n{json.dumps(chat_history, indent=2)}\n\n"
+        "Please generate the technical specification based on this context."
+    )
+
+    try:
+        response = client.models.generate_content(
+            model='models/gemini-3.6-flash',
+            contents=[
+                types.Content(role="user", parts=[types.Part.from_text(text=context_message)])
+            ],
+            config=types.GenerateContentConfig(
+                system_instruction=SPEC_SYSTEM_PROMPT,
+                temperature=0.3,
+            )
+        )
+        
+        result_text = response.text
+        if result_text.startswith("```markdown"):
+            result_text = result_text[11:]
+        elif result_text.startswith("```"):
+            result_text = result_text[3:]
+        
+        if result_text.endswith("```"):
+            result_text = result_text[:-3]
+            
+        return result_text.strip()
+        
+    except Exception as e:
+        print(f"Error generating spec from Gemini: {e}")
+        raise e

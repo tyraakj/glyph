@@ -4,10 +4,11 @@ import time
 from upstash_redis.asyncio import Redis
 from config import UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN
 from liveblocks_client import liveblocks
-from agent import generate_design_operations
+from agent import generate_design_operations, generate_spec
 
 redis = Redis(url=UPSTASH_REDIS_REST_URL, token=UPSTASH_REDIS_REST_TOKEN)
 QUEUE_NAME = "design:queue"
+SPEC_QUEUE_NAME = "spec:queue"
 
 async def update_status(run_id: str, status: str, message: str):
     """Update the status of a job in Redis so the Next.js SSE endpoint can push it to the user."""
@@ -73,29 +74,101 @@ async def process_job(job_data: dict):
             
         await update_status(run_id, "error", user_msg)
 
+async def update_spec_status(run_id: str, status: str, message: str, spec_content: str = None):
+    """Update the status of a spec job in Redis."""
+    key = f"spec:status:{run_id}"
+    payload = {
+        "status": status,
+        "message": message,
+        "timestamp": int(time.time() * 1000)
+    }
+    if spec_content:
+        payload["specContent"] = spec_content
+        
+    await redis.setex(key, 3600, json.dumps(payload))
+    print(f"[SPEC {run_id}] Status -> {status}: {message}")
+
+async def process_spec_job(job_data: dict):
+    run_id = job_data.get("runId")
+    room_id = job_data.get("roomId")
+    chat_history = job_data.get("chatHistory", [])
+    nodes = job_data.get("nodes", [])
+    edges = job_data.get("edges", [])
+    
+    if not run_id or not room_id:
+        print(f"Invalid spec job payload: {job_data}")
+        return
+
+    try:
+        await update_spec_status(run_id, "processing", "AI is analyzing your canvas for the spec...")
+        
+        await update_spec_status(run_id, "generating", "Writing the Markdown specification...")
+        spec_content = await generate_spec(chat_history, nodes, edges)
+        
+        # Save the spec via the internal Next.js API
+        await update_spec_status(run_id, "saving", "Saving specification to cloud storage...")
+        import httpx
+        from config import NEXT_PUBLIC_APP_URL, LIVEBLOCKS_SECRET_KEY
+        
+        # Extract projectId from roomId (e.g. project1-1234 -> project1)
+        project_id = room_id.split('-')[0]
+        filename = f"spec-{run_id}.md"
+        
+        try:
+            async with httpx.AsyncClient() as client:
+                resp = await client.post(
+                    f"{NEXT_PUBLIC_APP_URL}/api/internal/specs",
+                    headers={"Authorization": f"Bearer {LIVEBLOCKS_SECRET_KEY}"},
+                    json={
+                        "projectId": project_id,
+                        "content": spec_content,
+                        "filename": filename
+                    }
+                )
+                if resp.status_code != 200:
+                    print(f"Failed to save spec to internal API: {resp.status_code} - {resp.text}")
+                    # We still complete the run so the UI gets the content, even if saving failed
+        except Exception as save_err:
+            print(f"Error calling internal API: {save_err}")
+
+        await update_spec_status(run_id, "complete", "Spec generation complete!", spec_content=spec_content)
+        
+    except Exception as e:
+        error_str = str(e)
+        print(f"Error processing spec job {run_id}: {error_str}")
+        
+        if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str or "Quota exceeded" in error_str:
+            user_msg = "I've hit my usage limits for now! Please wait a few minutes before trying again."
+        elif "503" in error_str or "500" in error_str:
+            user_msg = "The AI service is temporarily unavailable. Please try again later."
+        else:
+            user_msg = "An unexpected error occurred while trying to process your request."
+            
+        await update_spec_status(run_id, "error", user_msg)
 
 async def worker_loop():
     """Continuously poll the Upstash Redis queue for new jobs."""
-    print(f"Worker started. Listening on queue: {QUEUE_NAME}")
+    print(f"Worker started. Listening on queues: {QUEUE_NAME}, {SPEC_QUEUE_NAME}")
     while True:
         try:
-            # Using RPOP to get the oldest job from the list
+            # Poll design queue
             job_json = await redis.rpop(QUEUE_NAME)
             if job_json:
-                # job_json is returned as a dict by upstash-redis if it was saved as JSON
-                if isinstance(job_json, str):
-                    job_data = json.loads(job_json)
-                else:
-                    job_data = job_json
-                    
-                print(f"Picked up job: {job_data.get('runId')}")
-                
-                # In a production app, we would use asyncio.create_task to run this concurrently,
-                # but for simplicity we'll await it here.
+                job_data = json.loads(job_json) if isinstance(job_json, str) else job_json
+                print(f"Picked up design job: {job_data.get('runId')}")
                 await process_job(job_data)
-            else:
-                # No jobs, sleep to prevent spamming the REST API
-                await asyncio.sleep(2.0)
+                continue
+                
+            # Poll spec queue
+            spec_json = await redis.rpop(SPEC_QUEUE_NAME)
+            if spec_json:
+                spec_data = json.loads(spec_json) if isinstance(spec_json, str) else spec_json
+                print(f"Picked up spec job: {spec_data.get('runId')}")
+                await process_spec_job(spec_data)
+                continue
+
+            # No jobs, sleep to prevent spamming the REST API
+            await asyncio.sleep(2.0)
         except Exception as e:
             print(f"Worker loop error: {e}")
             await asyncio.sleep(5.0)

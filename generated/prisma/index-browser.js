@@ -131,6 +131,14 @@ exports.Prisma.ProjectScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ProjectSpecScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  filePath: 'filePath',
+  filename: 'filename',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ProjectCollaboratorScalarFieldEnum = {
   id: 'id',
   projectId: 'projectId',
@@ -211,6 +219,7 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   Project: 'Project',
+  ProjectSpec: 'ProjectSpec',
   ProjectCollaborator: 'ProjectCollaborator',
   User: 'User',
   Session: 'Session',
