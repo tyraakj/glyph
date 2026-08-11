@@ -7,6 +7,8 @@ import { useState, useRef, useEffect } from "react";
 import { useEventListener, useUpdateMyPresence, useSelf, useBroadcastEvent } from "@liveblocks/react/suspense";
 import { type AiStatusFeedPayload, type AiChatFeedPayload, AiChatFeedPayloadSchema } from "@/types/tasks";
 import { cn } from "@/lib/utils";
+import { useParams } from "next/navigation";
+import { useDesignStream } from "@/hooks/use-design-stream";
 
 interface AiSidebarProps {
   isOpen: boolean;
@@ -15,10 +17,16 @@ interface AiSidebarProps {
 
 export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
   const [input, setInput] = useState("");
-  const [latestStatus, setLatestStatus] = useState<AiStatusFeedPayload | null>(null);
   const [messages, setMessages] = useState<AiChatFeedPayload[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const [runId, setRunId] = useState<string | null>(null);
+  const { status: runStatus, message: runMessage, isRunning } = useDesignStream(runId);
+  
+  const params = useParams();
+  const roomId = typeof params?.roomId === 'string' ? params.roomId : '';
+  const projectId = roomId.match(/^([^-]+)-/)?.[1] || roomId;
   
   const updateMyPresence = useUpdateMyPresence();
   const broadcast = useBroadcastEvent();
@@ -26,9 +34,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
   const isThinking = me.presence.isThinking;
 
   useEventListener(({ event }) => {
-    if (event.type === "ai-status-feed") {
-      setLatestStatus(event as AiStatusFeedPayload);
-    } else if (event.type === "ai-chat") {
+    if (event.type === "ai-chat") {
       const parsed = AiChatFeedPayloadSchema.safeParse(event);
       if (parsed.success) {
         setMessages((prev) => [...prev, parsed.data]);
@@ -60,8 +66,29 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  const handleSend = () => {
-    if (!input.trim() || isThinking) return;
+  // Handle run completion
+  useEffect(() => {
+    if (runId && !isRunning && (runStatus === "complete" || runStatus === "error")) {
+      const isError = runStatus === "error";
+      
+      const finalMsg: AiChatFeedPayload = {
+        type: "ai-chat",
+        sender: "Glyph AI",
+        role: "assistant",
+        content: isError 
+          ? `Failed to process your request: ${runMessage}` 
+          : "I've completed the design updates on the canvas! Check out the changes.",
+        timestamp: new Date().toISOString(),
+      };
+      
+      setMessages((prev) => [...prev, finalMsg]);
+      broadcast(finalMsg);
+      setRunId(null);
+    }
+  }, [runId, isRunning, runStatus, runMessage, broadcast]);
+
+  const handleSend = async () => {
+    if (!input.trim() || isRunning) return;
 
     const promptText = input.trim();
     setInput("");
@@ -81,40 +108,28 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
     // Broadcast to room
     broadcast(chatMsg);
 
-    // 2. Mock local presence & status feed
-    updateMyPresence({ isThinking: true });
-
-    broadcast({
-      type: "ai-status-feed",
-      status: "processing",
-      message: "AI is analyzing your design request...",
-      text: promptText,
-      runId: null,
-    });
-
-    // 3. Simulate AI processing time
-    setTimeout(() => {
-      broadcast({
-        type: "ai-status-feed",
-        status: "complete",
-        message: "Design generated successfully!",
-        text: null,
-        runId: null,
+    try {
+      const res = await fetch("/api/ai/design", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: promptText, roomId, projectId }),
       });
-
-      const aiResponse: AiChatFeedPayload = {
+      const data = await res.json();
+      if (data.runId) {
+        setRunId(data.runId);
+      } else {
+        throw new Error(data.error || "Failed to start design run");
+      }
+    } catch (err: any) {
+      const errorMsg: AiChatFeedPayload = {
         type: "ai-chat",
-        sender: "Glyph AI",
-        role: "assistant",
-        content: "I've started building the backend architecture for you on the canvas.",
+        sender: "System",
+        role: "system",
+        content: err.message,
         timestamp: new Date().toISOString(),
       };
-      
-      setMessages((prev) => [...prev, aiResponse]);
-      broadcast(aiResponse);
-
-      updateMyPresence({ isThinking: false });
-    }, 3000);
+      setMessages((prev) => [...prev, errorMsg]);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -238,23 +253,14 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
             </div>
 
             {/* AI Status Feed (Above Input) */}
-            {latestStatus && (
+            {isRunning && (
               <div className="px-4 pb-2 shrink-0">
                 <div className="flex items-center gap-2 p-2.5 rounded-lg bg-bg-elevated border border-border-subtle shadow-sm">
-                  {latestStatus.status !== "complete" && latestStatus.status !== "error" ? (
-                    <Loader2 className="w-4 h-4 text-accent-primary animate-spin shrink-0" />
-                  ) : (
-                    <Bot className="w-4 h-4 text-accent-primary shrink-0" />
-                  )}
+                  <Loader2 className="w-4 h-4 text-accent-primary animate-spin shrink-0" />
                   <div className="flex flex-col min-w-0">
                     <span className="text-xs font-medium text-text-primary truncate">
-                      {latestStatus.message}
+                      {runMessage || "Processing..."}
                     </span>
-                    {latestStatus.text && (
-                      <span className="text-[10px] text-text-muted truncate">
-                        "{latestStatus.text}"
-                      </span>
-                    )}
                   </div>
                 </div>
               </div>
@@ -269,17 +275,17 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Ask Glyph AI..."
-                  disabled={isThinking}
+                  disabled={isRunning}
                   className="flex-1 max-h-[160px] min-h-[40px] resize-none bg-transparent outline-none text-sm text-text-primary placeholder:text-text-muted py-2 px-2 scrollbar-thin disabled:opacity-50"
                   rows={1}
                 />
                 <Button 
                   size="icon" 
                   onClick={handleSend}
-                  disabled={isThinking || !input.trim()}
+                  disabled={isRunning || !input.trim()}
                   className="h-8 w-8 rounded-lg bg-accent-primary hover:bg-accent-primary/90 text-bg-base shrink-0 mb-1 mr-1 disabled:opacity-50"
                 >
-                  {isThinking ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  {isRunning ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 </Button>
               </div>
               <div className="text-[10px] text-text-faint text-center mt-2">

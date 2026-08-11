@@ -182,7 +182,7 @@ function CanvasBoardInner() {
       onPointerLeave={handlePointerLeave}
     >
       <ReactFlow
-        nodes={nodes}
+        nodes={nodes || []}
         edges={mappedEdges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
