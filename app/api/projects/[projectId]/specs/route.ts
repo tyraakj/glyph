@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
-  props: { params: Promise<{ roomId: string }> }
+  props: { params: Promise<{ projectId: string }> }
 ) {
   try {
     const session = await auth.api.getSession({ headers: await headers() });
@@ -13,11 +13,7 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { roomId } = await props.params;
-    
-    // Extract projectId from roomId (e.g. project1-1234 -> project1)
-    const idMatch = roomId.match(/^([^-]+)-/);
-    const projectId = idMatch ? idMatch[1] : roomId;
+    const { projectId } = await props.params;
 
     // Verify project access
     const project = await prisma.project.findUnique({
