@@ -1,5 +1,5 @@
 import * as React from "react"
-import { PanelLeftClose, PanelLeftOpen, Share2, Sparkles, Library } from "lucide-react"
+import { PanelLeftClose, PanelLeftOpen, Share2, Sparkles, Library, Keyboard, Moon, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { UserMenu } from "./user-menu"
 import type { Project } from "@/generated/prisma"
@@ -12,11 +12,32 @@ interface EditorNavbarProps {
   activeProject?: Project
   isAiSidebarOpen?: boolean
   onToggleAiSidebar?: () => void
+  onToggleShortcuts?: () => void
 }
 
-export function EditorNavbar({ isSidebarOpen, onToggleSidebar, activeProject, isAiSidebarOpen, onToggleAiSidebar }: EditorNavbarProps) {
+export function EditorNavbar({ isSidebarOpen, onToggleSidebar, activeProject, isAiSidebarOpen, onToggleAiSidebar, onToggleShortcuts }: EditorNavbarProps) {
   const [showTemplates, setShowTemplates] = React.useState(false)
   const [showShare, setShowShare] = React.useState(false)
+  
+  // Theme state
+  const [isLightMode, setIsLightMode] = React.useState(false)
+
+  React.useEffect(() => {
+    setIsLightMode(document.documentElement.classList.contains('light'))
+  }, [])
+
+  const toggleTheme = () => {
+    const isLight = document.documentElement.classList.contains('light')
+    if (isLight) {
+      document.documentElement.classList.remove('light')
+      localStorage.setItem('glyph-theme', 'dark')
+      setIsLightMode(false)
+    } else {
+      document.documentElement.classList.add('light')
+      localStorage.setItem('glyph-theme', 'light')
+      setIsLightMode(true)
+    }
+  }
 
   return (
     <>
@@ -68,8 +89,27 @@ export function EditorNavbar({ isSidebarOpen, onToggleSidebar, activeProject, is
                 size="icon" 
                 className={`text-text-secondary hover:text-text-primary flex ${isAiSidebarOpen ? 'bg-accent-primary/10 text-accent-primary hover:text-accent-primary' : ''}`}
                 onClick={onToggleAiSidebar}
+                title="AI Workspace"
               >
                 <Sparkles className="h-5 w-5" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-text-secondary hover:text-text-primary flex"
+                onClick={onToggleShortcuts}
+                title="Keyboard Shortcuts"
+              >
+                <Keyboard className="h-5 w-5" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-text-secondary hover:text-text-primary flex"
+                onClick={toggleTheme}
+                title="Toggle Theme"
+              >
+                {isLightMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
               </Button>
               <div className="h-6 w-px bg-border-subtle mx-2" />
             </>

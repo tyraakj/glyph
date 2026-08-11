@@ -8,6 +8,9 @@ import { ProjectDialogs } from "./project-dialogs";
 import { SidebarProvider, useSidebar } from "@/hooks/use-sidebar";
 import type { Project } from "@/generated/prisma";
 
+import { KeyboardShortcutsDialog } from "./keyboard-shortcuts-dialog";
+import { useEffect, useState } from "react";
+
 interface EditorShellProps {
   children: React.ReactNode;
   ownedProjects?: Project[];
@@ -22,6 +25,29 @@ function EditorShellInner({ children, ownedProjects = [], sharedProjects = [] }:
   const activeProject = roomId 
     ? [...ownedProjects, ...sharedProjects].find(p => roomId.startsWith(p.id)) 
     : undefined;
+
+  const [showShortcuts, setShowShortcuts] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+
+      if (e.key === "?" || (e.key === "/" && (e.ctrlKey || e.metaKey))) {
+        e.preventDefault();
+        setShowShortcuts(prev => !prev);
+      }
+    };
+    
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <ProjectDialogsProvider>
@@ -44,6 +70,7 @@ function EditorShellInner({ children, ownedProjects = [], sharedProjects = [] }:
             activeProject={activeProject}
             isAiSidebarOpen={isAiSidebarOpen}
             onToggleAiSidebar={toggleAiSidebar}
+            onToggleShortcuts={() => setShowShortcuts(!showShortcuts)}
           />
           <main className="flex-1 relative overflow-hidden bg-bg-surface">
             {children}
@@ -53,6 +80,7 @@ function EditorShellInner({ children, ownedProjects = [], sharedProjects = [] }:
       </div>
       
       <ProjectDialogs />
+      <KeyboardShortcutsDialog isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />
     </ProjectDialogsProvider>
   );
 }

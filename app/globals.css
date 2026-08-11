@@ -44,6 +44,35 @@
   :root {
     color-scheme: dark;
   }
+  .light {
+    color-scheme: light;
+    /* Backgrounds */
+    --color-bg-base: #fafafa;
+    --color-bg-surface: #ffffff;
+    --color-bg-elevated: #f4f4f5;
+    --color-bg-subtle: #e4e4e7;
+    --color-base: #fafafa;
+    --color-surface: #ffffff;
+
+    /* Borders */
+    --color-border-default: #e4e4e7;
+    --color-border-subtle: #d4d4d8;
+    --color-surface-border: #e4e4e7;
+
+    /* Text */
+    --color-text-primary: #18181b;
+    --color-text-secondary: #3f3f46;
+    --color-text-muted: #71717a;
+    --color-text-faint: #a1a1aa;
+    
+    /* Text Aliases */
+    --color-copy-primary: #18181b;
+    --color-copy-secondary: #3f3f46;
+    --color-copy-muted: #71717a;
+
+    /* Accents stay the same */
+  }
+  
   body {
     background-color: var(--color-bg-base);
     color: var(--color-text-primary);
