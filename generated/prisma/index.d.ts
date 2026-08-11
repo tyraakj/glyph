@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Project = $Result.DefaultSelection<Prisma.$ProjectPayload>
 /**
+ * Model CanvasVersion
+ * 
+ */
+export type CanvasVersion = $Result.DefaultSelection<Prisma.$CanvasVersionPayload>
+/**
  * Model ProjectSpec
  * 
  */
@@ -184,6 +189,16 @@ export class PrismaClient<
     * ```
     */
   get project(): Prisma.ProjectDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.canvasVersion`: Exposes CRUD operations for the **CanvasVersion** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CanvasVersions
+    * const canvasVersions = await prisma.canvasVersion.findMany()
+    * ```
+    */
+  get canvasVersion(): Prisma.CanvasVersionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.projectSpec`: Exposes CRUD operations for the **ProjectSpec** model.
@@ -702,6 +717,7 @@ export namespace Prisma {
 
   export const ModelName: {
     Project: 'Project',
+    CanvasVersion: 'CanvasVersion',
     ProjectSpec: 'ProjectSpec',
     ProjectCollaborator: 'ProjectCollaborator',
     User: 'User',
@@ -724,7 +740,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "project" | "projectSpec" | "projectCollaborator" | "user" | "session" | "account" | "verification" | "taskRun"
+      modelProps: "project" | "canvasVersion" | "projectSpec" | "projectCollaborator" | "user" | "session" | "account" | "verification" | "taskRun"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -799,6 +815,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ProjectCountArgs<ExtArgs>
             result: $Utils.Optional<ProjectCountAggregateOutputType> | number
+          }
+        }
+      }
+      CanvasVersion: {
+        payload: Prisma.$CanvasVersionPayload<ExtArgs>
+        fields: Prisma.CanvasVersionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CanvasVersionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CanvasVersionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CanvasVersionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CanvasVersionPayload>
+          }
+          findFirst: {
+            args: Prisma.CanvasVersionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CanvasVersionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CanvasVersionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CanvasVersionPayload>
+          }
+          findMany: {
+            args: Prisma.CanvasVersionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CanvasVersionPayload>[]
+          }
+          create: {
+            args: Prisma.CanvasVersionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CanvasVersionPayload>
+          }
+          createMany: {
+            args: Prisma.CanvasVersionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CanvasVersionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CanvasVersionPayload>[]
+          }
+          delete: {
+            args: Prisma.CanvasVersionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CanvasVersionPayload>
+          }
+          update: {
+            args: Prisma.CanvasVersionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CanvasVersionPayload>
+          }
+          deleteMany: {
+            args: Prisma.CanvasVersionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CanvasVersionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CanvasVersionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CanvasVersionPayload>[]
+          }
+          upsert: {
+            args: Prisma.CanvasVersionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CanvasVersionPayload>
+          }
+          aggregate: {
+            args: Prisma.CanvasVersionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCanvasVersion>
+          }
+          groupBy: {
+            args: Prisma.CanvasVersionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CanvasVersionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CanvasVersionCountArgs<ExtArgs>
+            result: $Utils.Optional<CanvasVersionCountAggregateOutputType> | number
           }
         }
       }
@@ -1444,6 +1534,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     project?: ProjectOmit
+    canvasVersion?: CanvasVersionOmit
     projectSpec?: ProjectSpecOmit
     projectCollaborator?: ProjectCollaboratorOmit
     user?: UserOmit
@@ -1534,12 +1625,14 @@ export namespace Prisma {
     collaborators: number
     taskRuns: number
     specs: number
+    versions: number
   }
 
   export type ProjectCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     collaborators?: boolean | ProjectCountOutputTypeCountCollaboratorsArgs
     taskRuns?: boolean | ProjectCountOutputTypeCountTaskRunsArgs
     specs?: boolean | ProjectCountOutputTypeCountSpecsArgs
+    versions?: boolean | ProjectCountOutputTypeCountVersionsArgs
   }
 
   // Custom InputTypes
@@ -1572,6 +1665,13 @@ export namespace Prisma {
    */
   export type ProjectCountOutputTypeCountSpecsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProjectSpecWhereInput
+  }
+
+  /**
+   * ProjectCountOutputType without action
+   */
+  export type ProjectCountOutputTypeCountVersionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CanvasVersionWhereInput
   }
 
 
@@ -1829,6 +1929,7 @@ export namespace Prisma {
     collaborators?: boolean | Project$collaboratorsArgs<ExtArgs>
     taskRuns?: boolean | Project$taskRunsArgs<ExtArgs>
     specs?: boolean | Project$specsArgs<ExtArgs>
+    versions?: boolean | Project$versionsArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["project"]>
 
@@ -1873,6 +1974,7 @@ export namespace Prisma {
     collaborators?: boolean | Project$collaboratorsArgs<ExtArgs>
     taskRuns?: boolean | Project$taskRunsArgs<ExtArgs>
     specs?: boolean | Project$specsArgs<ExtArgs>
+    versions?: boolean | Project$versionsArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProjectIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1889,6 +1991,7 @@ export namespace Prisma {
       collaborators: Prisma.$ProjectCollaboratorPayload<ExtArgs>[]
       taskRuns: Prisma.$TaskRunPayload<ExtArgs>[]
       specs: Prisma.$ProjectSpecPayload<ExtArgs>[]
+      versions: Prisma.$CanvasVersionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2297,6 +2400,7 @@ export namespace Prisma {
     collaborators<T extends Project$collaboratorsArgs<ExtArgs> = {}>(args?: Subset<T, Project$collaboratorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectCollaboratorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     taskRuns<T extends Project$taskRunsArgs<ExtArgs> = {}>(args?: Subset<T, Project$taskRunsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     specs<T extends Project$specsArgs<ExtArgs> = {}>(args?: Subset<T, Project$specsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjectSpecPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    versions<T extends Project$versionsArgs<ExtArgs> = {}>(args?: Subset<T, Project$versionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CanvasVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2807,6 +2911,30 @@ export namespace Prisma {
   }
 
   /**
+   * Project.versions
+   */
+  export type Project$versionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CanvasVersion
+     */
+    select?: CanvasVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CanvasVersion
+     */
+    omit?: CanvasVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CanvasVersionInclude<ExtArgs> | null
+    where?: CanvasVersionWhereInput
+    orderBy?: CanvasVersionOrderByWithRelationInput | CanvasVersionOrderByWithRelationInput[]
+    cursor?: CanvasVersionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CanvasVersionScalarFieldEnum | CanvasVersionScalarFieldEnum[]
+  }
+
+  /**
    * Project without action
    */
   export type ProjectDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2822,6 +2950,1185 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ProjectInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CanvasVersion
+   */
+
+  export type AggregateCanvasVersion = {
+    _count: CanvasVersionCountAggregateOutputType | null
+    _avg: CanvasVersionAvgAggregateOutputType | null
+    _sum: CanvasVersionSumAggregateOutputType | null
+    _min: CanvasVersionMinAggregateOutputType | null
+    _max: CanvasVersionMaxAggregateOutputType | null
+  }
+
+  export type CanvasVersionAvgAggregateOutputType = {
+    nodeCount: number | null
+    edgeCount: number | null
+  }
+
+  export type CanvasVersionSumAggregateOutputType = {
+    nodeCount: number | null
+    edgeCount: number | null
+  }
+
+  export type CanvasVersionMinAggregateOutputType = {
+    id: string | null
+    projectId: string | null
+    userId: string | null
+    userName: string | null
+    userImage: string | null
+    blobUrl: string | null
+    nodeCount: number | null
+    edgeCount: number | null
+    label: string | null
+    source: string | null
+    createdAt: Date | null
+  }
+
+  export type CanvasVersionMaxAggregateOutputType = {
+    id: string | null
+    projectId: string | null
+    userId: string | null
+    userName: string | null
+    userImage: string | null
+    blobUrl: string | null
+    nodeCount: number | null
+    edgeCount: number | null
+    label: string | null
+    source: string | null
+    createdAt: Date | null
+  }
+
+  export type CanvasVersionCountAggregateOutputType = {
+    id: number
+    projectId: number
+    userId: number
+    userName: number
+    userImage: number
+    blobUrl: number
+    nodeCount: number
+    edgeCount: number
+    label: number
+    source: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CanvasVersionAvgAggregateInputType = {
+    nodeCount?: true
+    edgeCount?: true
+  }
+
+  export type CanvasVersionSumAggregateInputType = {
+    nodeCount?: true
+    edgeCount?: true
+  }
+
+  export type CanvasVersionMinAggregateInputType = {
+    id?: true
+    projectId?: true
+    userId?: true
+    userName?: true
+    userImage?: true
+    blobUrl?: true
+    nodeCount?: true
+    edgeCount?: true
+    label?: true
+    source?: true
+    createdAt?: true
+  }
+
+  export type CanvasVersionMaxAggregateInputType = {
+    id?: true
+    projectId?: true
+    userId?: true
+    userName?: true
+    userImage?: true
+    blobUrl?: true
+    nodeCount?: true
+    edgeCount?: true
+    label?: true
+    source?: true
+    createdAt?: true
+  }
+
+  export type CanvasVersionCountAggregateInputType = {
+    id?: true
+    projectId?: true
+    userId?: true
+    userName?: true
+    userImage?: true
+    blobUrl?: true
+    nodeCount?: true
+    edgeCount?: true
+    label?: true
+    source?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CanvasVersionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CanvasVersion to aggregate.
+     */
+    where?: CanvasVersionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CanvasVersions to fetch.
+     */
+    orderBy?: CanvasVersionOrderByWithRelationInput | CanvasVersionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CanvasVersionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CanvasVersions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CanvasVersions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CanvasVersions
+    **/
+    _count?: true | CanvasVersionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CanvasVersionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CanvasVersionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CanvasVersionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CanvasVersionMaxAggregateInputType
+  }
+
+  export type GetCanvasVersionAggregateType<T extends CanvasVersionAggregateArgs> = {
+        [P in keyof T & keyof AggregateCanvasVersion]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCanvasVersion[P]>
+      : GetScalarType<T[P], AggregateCanvasVersion[P]>
+  }
+
+
+
+
+  export type CanvasVersionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CanvasVersionWhereInput
+    orderBy?: CanvasVersionOrderByWithAggregationInput | CanvasVersionOrderByWithAggregationInput[]
+    by: CanvasVersionScalarFieldEnum[] | CanvasVersionScalarFieldEnum
+    having?: CanvasVersionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CanvasVersionCountAggregateInputType | true
+    _avg?: CanvasVersionAvgAggregateInputType
+    _sum?: CanvasVersionSumAggregateInputType
+    _min?: CanvasVersionMinAggregateInputType
+    _max?: CanvasVersionMaxAggregateInputType
+  }
+
+  export type CanvasVersionGroupByOutputType = {
+    id: string
+    projectId: string
+    userId: string
+    userName: string
+    userImage: string | null
+    blobUrl: string
+    nodeCount: number
+    edgeCount: number
+    label: string | null
+    source: string
+    createdAt: Date
+    _count: CanvasVersionCountAggregateOutputType | null
+    _avg: CanvasVersionAvgAggregateOutputType | null
+    _sum: CanvasVersionSumAggregateOutputType | null
+    _min: CanvasVersionMinAggregateOutputType | null
+    _max: CanvasVersionMaxAggregateOutputType | null
+  }
+
+  type GetCanvasVersionGroupByPayload<T extends CanvasVersionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CanvasVersionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CanvasVersionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CanvasVersionGroupByOutputType[P]>
+            : GetScalarType<T[P], CanvasVersionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CanvasVersionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    projectId?: boolean
+    userId?: boolean
+    userName?: boolean
+    userImage?: boolean
+    blobUrl?: boolean
+    nodeCount?: boolean
+    edgeCount?: boolean
+    label?: boolean
+    source?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["canvasVersion"]>
+
+  export type CanvasVersionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    projectId?: boolean
+    userId?: boolean
+    userName?: boolean
+    userImage?: boolean
+    blobUrl?: boolean
+    nodeCount?: boolean
+    edgeCount?: boolean
+    label?: boolean
+    source?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["canvasVersion"]>
+
+  export type CanvasVersionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    projectId?: boolean
+    userId?: boolean
+    userName?: boolean
+    userImage?: boolean
+    blobUrl?: boolean
+    nodeCount?: boolean
+    edgeCount?: boolean
+    label?: boolean
+    source?: boolean
+    createdAt?: boolean
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["canvasVersion"]>
+
+  export type CanvasVersionSelectScalar = {
+    id?: boolean
+    projectId?: boolean
+    userId?: boolean
+    userName?: boolean
+    userImage?: boolean
+    blobUrl?: boolean
+    nodeCount?: boolean
+    edgeCount?: boolean
+    label?: boolean
+    source?: boolean
+    createdAt?: boolean
+  }
+
+  export type CanvasVersionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "projectId" | "userId" | "userName" | "userImage" | "blobUrl" | "nodeCount" | "edgeCount" | "label" | "source" | "createdAt", ExtArgs["result"]["canvasVersion"]>
+  export type CanvasVersionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+  export type CanvasVersionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+  export type CanvasVersionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
+  }
+
+  export type $CanvasVersionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CanvasVersion"
+    objects: {
+      project: Prisma.$ProjectPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      projectId: string
+      userId: string
+      userName: string
+      userImage: string | null
+      blobUrl: string
+      nodeCount: number
+      edgeCount: number
+      label: string | null
+      source: string
+      createdAt: Date
+    }, ExtArgs["result"]["canvasVersion"]>
+    composites: {}
+  }
+
+  type CanvasVersionGetPayload<S extends boolean | null | undefined | CanvasVersionDefaultArgs> = $Result.GetResult<Prisma.$CanvasVersionPayload, S>
+
+  type CanvasVersionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CanvasVersionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CanvasVersionCountAggregateInputType | true
+    }
+
+  export interface CanvasVersionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CanvasVersion'], meta: { name: 'CanvasVersion' } }
+    /**
+     * Find zero or one CanvasVersion that matches the filter.
+     * @param {CanvasVersionFindUniqueArgs} args - Arguments to find a CanvasVersion
+     * @example
+     * // Get one CanvasVersion
+     * const canvasVersion = await prisma.canvasVersion.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CanvasVersionFindUniqueArgs>(args: SelectSubset<T, CanvasVersionFindUniqueArgs<ExtArgs>>): Prisma__CanvasVersionClient<$Result.GetResult<Prisma.$CanvasVersionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CanvasVersion that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CanvasVersionFindUniqueOrThrowArgs} args - Arguments to find a CanvasVersion
+     * @example
+     * // Get one CanvasVersion
+     * const canvasVersion = await prisma.canvasVersion.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CanvasVersionFindUniqueOrThrowArgs>(args: SelectSubset<T, CanvasVersionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CanvasVersionClient<$Result.GetResult<Prisma.$CanvasVersionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CanvasVersion that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CanvasVersionFindFirstArgs} args - Arguments to find a CanvasVersion
+     * @example
+     * // Get one CanvasVersion
+     * const canvasVersion = await prisma.canvasVersion.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CanvasVersionFindFirstArgs>(args?: SelectSubset<T, CanvasVersionFindFirstArgs<ExtArgs>>): Prisma__CanvasVersionClient<$Result.GetResult<Prisma.$CanvasVersionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CanvasVersion that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CanvasVersionFindFirstOrThrowArgs} args - Arguments to find a CanvasVersion
+     * @example
+     * // Get one CanvasVersion
+     * const canvasVersion = await prisma.canvasVersion.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CanvasVersionFindFirstOrThrowArgs>(args?: SelectSubset<T, CanvasVersionFindFirstOrThrowArgs<ExtArgs>>): Prisma__CanvasVersionClient<$Result.GetResult<Prisma.$CanvasVersionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CanvasVersions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CanvasVersionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CanvasVersions
+     * const canvasVersions = await prisma.canvasVersion.findMany()
+     * 
+     * // Get first 10 CanvasVersions
+     * const canvasVersions = await prisma.canvasVersion.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const canvasVersionWithIdOnly = await prisma.canvasVersion.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CanvasVersionFindManyArgs>(args?: SelectSubset<T, CanvasVersionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CanvasVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CanvasVersion.
+     * @param {CanvasVersionCreateArgs} args - Arguments to create a CanvasVersion.
+     * @example
+     * // Create one CanvasVersion
+     * const CanvasVersion = await prisma.canvasVersion.create({
+     *   data: {
+     *     // ... data to create a CanvasVersion
+     *   }
+     * })
+     * 
+     */
+    create<T extends CanvasVersionCreateArgs>(args: SelectSubset<T, CanvasVersionCreateArgs<ExtArgs>>): Prisma__CanvasVersionClient<$Result.GetResult<Prisma.$CanvasVersionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CanvasVersions.
+     * @param {CanvasVersionCreateManyArgs} args - Arguments to create many CanvasVersions.
+     * @example
+     * // Create many CanvasVersions
+     * const canvasVersion = await prisma.canvasVersion.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CanvasVersionCreateManyArgs>(args?: SelectSubset<T, CanvasVersionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CanvasVersions and returns the data saved in the database.
+     * @param {CanvasVersionCreateManyAndReturnArgs} args - Arguments to create many CanvasVersions.
+     * @example
+     * // Create many CanvasVersions
+     * const canvasVersion = await prisma.canvasVersion.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CanvasVersions and only return the `id`
+     * const canvasVersionWithIdOnly = await prisma.canvasVersion.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CanvasVersionCreateManyAndReturnArgs>(args?: SelectSubset<T, CanvasVersionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CanvasVersionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CanvasVersion.
+     * @param {CanvasVersionDeleteArgs} args - Arguments to delete one CanvasVersion.
+     * @example
+     * // Delete one CanvasVersion
+     * const CanvasVersion = await prisma.canvasVersion.delete({
+     *   where: {
+     *     // ... filter to delete one CanvasVersion
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CanvasVersionDeleteArgs>(args: SelectSubset<T, CanvasVersionDeleteArgs<ExtArgs>>): Prisma__CanvasVersionClient<$Result.GetResult<Prisma.$CanvasVersionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CanvasVersion.
+     * @param {CanvasVersionUpdateArgs} args - Arguments to update one CanvasVersion.
+     * @example
+     * // Update one CanvasVersion
+     * const canvasVersion = await prisma.canvasVersion.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CanvasVersionUpdateArgs>(args: SelectSubset<T, CanvasVersionUpdateArgs<ExtArgs>>): Prisma__CanvasVersionClient<$Result.GetResult<Prisma.$CanvasVersionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CanvasVersions.
+     * @param {CanvasVersionDeleteManyArgs} args - Arguments to filter CanvasVersions to delete.
+     * @example
+     * // Delete a few CanvasVersions
+     * const { count } = await prisma.canvasVersion.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CanvasVersionDeleteManyArgs>(args?: SelectSubset<T, CanvasVersionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CanvasVersions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CanvasVersionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CanvasVersions
+     * const canvasVersion = await prisma.canvasVersion.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CanvasVersionUpdateManyArgs>(args: SelectSubset<T, CanvasVersionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CanvasVersions and returns the data updated in the database.
+     * @param {CanvasVersionUpdateManyAndReturnArgs} args - Arguments to update many CanvasVersions.
+     * @example
+     * // Update many CanvasVersions
+     * const canvasVersion = await prisma.canvasVersion.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CanvasVersions and only return the `id`
+     * const canvasVersionWithIdOnly = await prisma.canvasVersion.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CanvasVersionUpdateManyAndReturnArgs>(args: SelectSubset<T, CanvasVersionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CanvasVersionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CanvasVersion.
+     * @param {CanvasVersionUpsertArgs} args - Arguments to update or create a CanvasVersion.
+     * @example
+     * // Update or create a CanvasVersion
+     * const canvasVersion = await prisma.canvasVersion.upsert({
+     *   create: {
+     *     // ... data to create a CanvasVersion
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CanvasVersion we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CanvasVersionUpsertArgs>(args: SelectSubset<T, CanvasVersionUpsertArgs<ExtArgs>>): Prisma__CanvasVersionClient<$Result.GetResult<Prisma.$CanvasVersionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CanvasVersions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CanvasVersionCountArgs} args - Arguments to filter CanvasVersions to count.
+     * @example
+     * // Count the number of CanvasVersions
+     * const count = await prisma.canvasVersion.count({
+     *   where: {
+     *     // ... the filter for the CanvasVersions we want to count
+     *   }
+     * })
+    **/
+    count<T extends CanvasVersionCountArgs>(
+      args?: Subset<T, CanvasVersionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CanvasVersionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CanvasVersion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CanvasVersionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CanvasVersionAggregateArgs>(args: Subset<T, CanvasVersionAggregateArgs>): Prisma.PrismaPromise<GetCanvasVersionAggregateType<T>>
+
+    /**
+     * Group by CanvasVersion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CanvasVersionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CanvasVersionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CanvasVersionGroupByArgs['orderBy'] }
+        : { orderBy?: CanvasVersionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CanvasVersionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCanvasVersionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CanvasVersion model
+   */
+  readonly fields: CanvasVersionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CanvasVersion.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CanvasVersionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CanvasVersion model
+   */
+  interface CanvasVersionFieldRefs {
+    readonly id: FieldRef<"CanvasVersion", 'String'>
+    readonly projectId: FieldRef<"CanvasVersion", 'String'>
+    readonly userId: FieldRef<"CanvasVersion", 'String'>
+    readonly userName: FieldRef<"CanvasVersion", 'String'>
+    readonly userImage: FieldRef<"CanvasVersion", 'String'>
+    readonly blobUrl: FieldRef<"CanvasVersion", 'String'>
+    readonly nodeCount: FieldRef<"CanvasVersion", 'Int'>
+    readonly edgeCount: FieldRef<"CanvasVersion", 'Int'>
+    readonly label: FieldRef<"CanvasVersion", 'String'>
+    readonly source: FieldRef<"CanvasVersion", 'String'>
+    readonly createdAt: FieldRef<"CanvasVersion", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CanvasVersion findUnique
+   */
+  export type CanvasVersionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CanvasVersion
+     */
+    select?: CanvasVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CanvasVersion
+     */
+    omit?: CanvasVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CanvasVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which CanvasVersion to fetch.
+     */
+    where: CanvasVersionWhereUniqueInput
+  }
+
+  /**
+   * CanvasVersion findUniqueOrThrow
+   */
+  export type CanvasVersionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CanvasVersion
+     */
+    select?: CanvasVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CanvasVersion
+     */
+    omit?: CanvasVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CanvasVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which CanvasVersion to fetch.
+     */
+    where: CanvasVersionWhereUniqueInput
+  }
+
+  /**
+   * CanvasVersion findFirst
+   */
+  export type CanvasVersionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CanvasVersion
+     */
+    select?: CanvasVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CanvasVersion
+     */
+    omit?: CanvasVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CanvasVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which CanvasVersion to fetch.
+     */
+    where?: CanvasVersionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CanvasVersions to fetch.
+     */
+    orderBy?: CanvasVersionOrderByWithRelationInput | CanvasVersionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CanvasVersions.
+     */
+    cursor?: CanvasVersionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CanvasVersions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CanvasVersions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CanvasVersions.
+     */
+    distinct?: CanvasVersionScalarFieldEnum | CanvasVersionScalarFieldEnum[]
+  }
+
+  /**
+   * CanvasVersion findFirstOrThrow
+   */
+  export type CanvasVersionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CanvasVersion
+     */
+    select?: CanvasVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CanvasVersion
+     */
+    omit?: CanvasVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CanvasVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which CanvasVersion to fetch.
+     */
+    where?: CanvasVersionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CanvasVersions to fetch.
+     */
+    orderBy?: CanvasVersionOrderByWithRelationInput | CanvasVersionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CanvasVersions.
+     */
+    cursor?: CanvasVersionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CanvasVersions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CanvasVersions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CanvasVersions.
+     */
+    distinct?: CanvasVersionScalarFieldEnum | CanvasVersionScalarFieldEnum[]
+  }
+
+  /**
+   * CanvasVersion findMany
+   */
+  export type CanvasVersionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CanvasVersion
+     */
+    select?: CanvasVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CanvasVersion
+     */
+    omit?: CanvasVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CanvasVersionInclude<ExtArgs> | null
+    /**
+     * Filter, which CanvasVersions to fetch.
+     */
+    where?: CanvasVersionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CanvasVersions to fetch.
+     */
+    orderBy?: CanvasVersionOrderByWithRelationInput | CanvasVersionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CanvasVersions.
+     */
+    cursor?: CanvasVersionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CanvasVersions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CanvasVersions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CanvasVersions.
+     */
+    distinct?: CanvasVersionScalarFieldEnum | CanvasVersionScalarFieldEnum[]
+  }
+
+  /**
+   * CanvasVersion create
+   */
+  export type CanvasVersionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CanvasVersion
+     */
+    select?: CanvasVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CanvasVersion
+     */
+    omit?: CanvasVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CanvasVersionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CanvasVersion.
+     */
+    data: XOR<CanvasVersionCreateInput, CanvasVersionUncheckedCreateInput>
+  }
+
+  /**
+   * CanvasVersion createMany
+   */
+  export type CanvasVersionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CanvasVersions.
+     */
+    data: CanvasVersionCreateManyInput | CanvasVersionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CanvasVersion createManyAndReturn
+   */
+  export type CanvasVersionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CanvasVersion
+     */
+    select?: CanvasVersionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CanvasVersion
+     */
+    omit?: CanvasVersionOmit<ExtArgs> | null
+    /**
+     * The data used to create many CanvasVersions.
+     */
+    data: CanvasVersionCreateManyInput | CanvasVersionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CanvasVersionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CanvasVersion update
+   */
+  export type CanvasVersionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CanvasVersion
+     */
+    select?: CanvasVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CanvasVersion
+     */
+    omit?: CanvasVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CanvasVersionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CanvasVersion.
+     */
+    data: XOR<CanvasVersionUpdateInput, CanvasVersionUncheckedUpdateInput>
+    /**
+     * Choose, which CanvasVersion to update.
+     */
+    where: CanvasVersionWhereUniqueInput
+  }
+
+  /**
+   * CanvasVersion updateMany
+   */
+  export type CanvasVersionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CanvasVersions.
+     */
+    data: XOR<CanvasVersionUpdateManyMutationInput, CanvasVersionUncheckedUpdateManyInput>
+    /**
+     * Filter which CanvasVersions to update
+     */
+    where?: CanvasVersionWhereInput
+    /**
+     * Limit how many CanvasVersions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CanvasVersion updateManyAndReturn
+   */
+  export type CanvasVersionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CanvasVersion
+     */
+    select?: CanvasVersionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CanvasVersion
+     */
+    omit?: CanvasVersionOmit<ExtArgs> | null
+    /**
+     * The data used to update CanvasVersions.
+     */
+    data: XOR<CanvasVersionUpdateManyMutationInput, CanvasVersionUncheckedUpdateManyInput>
+    /**
+     * Filter which CanvasVersions to update
+     */
+    where?: CanvasVersionWhereInput
+    /**
+     * Limit how many CanvasVersions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CanvasVersionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CanvasVersion upsert
+   */
+  export type CanvasVersionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CanvasVersion
+     */
+    select?: CanvasVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CanvasVersion
+     */
+    omit?: CanvasVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CanvasVersionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CanvasVersion to update in case it exists.
+     */
+    where: CanvasVersionWhereUniqueInput
+    /**
+     * In case the CanvasVersion found by the `where` argument doesn't exist, create a new CanvasVersion with this data.
+     */
+    create: XOR<CanvasVersionCreateInput, CanvasVersionUncheckedCreateInput>
+    /**
+     * In case the CanvasVersion was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CanvasVersionUpdateInput, CanvasVersionUncheckedUpdateInput>
+  }
+
+  /**
+   * CanvasVersion delete
+   */
+  export type CanvasVersionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CanvasVersion
+     */
+    select?: CanvasVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CanvasVersion
+     */
+    omit?: CanvasVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CanvasVersionInclude<ExtArgs> | null
+    /**
+     * Filter which CanvasVersion to delete.
+     */
+    where: CanvasVersionWhereUniqueInput
+  }
+
+  /**
+   * CanvasVersion deleteMany
+   */
+  export type CanvasVersionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CanvasVersions to delete
+     */
+    where?: CanvasVersionWhereInput
+    /**
+     * Limit how many CanvasVersions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CanvasVersion without action
+   */
+  export type CanvasVersionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CanvasVersion
+     */
+    select?: CanvasVersionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CanvasVersion
+     */
+    omit?: CanvasVersionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CanvasVersionInclude<ExtArgs> | null
   }
 
 
@@ -10517,6 +11824,23 @@ export namespace Prisma {
   export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
+  export const CanvasVersionScalarFieldEnum: {
+    id: 'id',
+    projectId: 'projectId',
+    userId: 'userId',
+    userName: 'userName',
+    userImage: 'userImage',
+    blobUrl: 'blobUrl',
+    nodeCount: 'nodeCount',
+    edgeCount: 'edgeCount',
+    label: 'label',
+    source: 'source',
+    createdAt: 'createdAt'
+  };
+
+  export type CanvasVersionScalarFieldEnum = (typeof CanvasVersionScalarFieldEnum)[keyof typeof CanvasVersionScalarFieldEnum]
+
+
   export const ProjectSpecScalarFieldEnum: {
     id: 'id',
     projectId: 'projectId',
@@ -10666,13 +11990,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -10683,6 +12000,27 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -10705,6 +12043,7 @@ export namespace Prisma {
     collaborators?: ProjectCollaboratorListRelationFilter
     taskRuns?: TaskRunListRelationFilter
     specs?: ProjectSpecListRelationFilter
+    versions?: CanvasVersionListRelationFilter
   }
 
   export type ProjectOrderByWithRelationInput = {
@@ -10720,6 +12059,7 @@ export namespace Prisma {
     collaborators?: ProjectCollaboratorOrderByRelationAggregateInput
     taskRuns?: TaskRunOrderByRelationAggregateInput
     specs?: ProjectSpecOrderByRelationAggregateInput
+    versions?: CanvasVersionOrderByRelationAggregateInput
   }
 
   export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -10738,6 +12078,7 @@ export namespace Prisma {
     collaborators?: ProjectCollaboratorListRelationFilter
     taskRuns?: TaskRunListRelationFilter
     specs?: ProjectSpecListRelationFilter
+    versions?: CanvasVersionListRelationFilter
   }, "id">
 
   export type ProjectOrderByWithAggregationInput = {
@@ -10766,6 +12107,93 @@ export namespace Prisma {
     canvasJsonPath?: StringNullableWithAggregatesFilter<"Project"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
+  }
+
+  export type CanvasVersionWhereInput = {
+    AND?: CanvasVersionWhereInput | CanvasVersionWhereInput[]
+    OR?: CanvasVersionWhereInput[]
+    NOT?: CanvasVersionWhereInput | CanvasVersionWhereInput[]
+    id?: StringFilter<"CanvasVersion"> | string
+    projectId?: StringFilter<"CanvasVersion"> | string
+    userId?: StringFilter<"CanvasVersion"> | string
+    userName?: StringFilter<"CanvasVersion"> | string
+    userImage?: StringNullableFilter<"CanvasVersion"> | string | null
+    blobUrl?: StringFilter<"CanvasVersion"> | string
+    nodeCount?: IntFilter<"CanvasVersion"> | number
+    edgeCount?: IntFilter<"CanvasVersion"> | number
+    label?: StringNullableFilter<"CanvasVersion"> | string | null
+    source?: StringFilter<"CanvasVersion"> | string
+    createdAt?: DateTimeFilter<"CanvasVersion"> | Date | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+  }
+
+  export type CanvasVersionOrderByWithRelationInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+    userImage?: SortOrderInput | SortOrder
+    blobUrl?: SortOrder
+    nodeCount?: SortOrder
+    edgeCount?: SortOrder
+    label?: SortOrderInput | SortOrder
+    source?: SortOrder
+    createdAt?: SortOrder
+    project?: ProjectOrderByWithRelationInput
+  }
+
+  export type CanvasVersionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CanvasVersionWhereInput | CanvasVersionWhereInput[]
+    OR?: CanvasVersionWhereInput[]
+    NOT?: CanvasVersionWhereInput | CanvasVersionWhereInput[]
+    projectId?: StringFilter<"CanvasVersion"> | string
+    userId?: StringFilter<"CanvasVersion"> | string
+    userName?: StringFilter<"CanvasVersion"> | string
+    userImage?: StringNullableFilter<"CanvasVersion"> | string | null
+    blobUrl?: StringFilter<"CanvasVersion"> | string
+    nodeCount?: IntFilter<"CanvasVersion"> | number
+    edgeCount?: IntFilter<"CanvasVersion"> | number
+    label?: StringNullableFilter<"CanvasVersion"> | string | null
+    source?: StringFilter<"CanvasVersion"> | string
+    createdAt?: DateTimeFilter<"CanvasVersion"> | Date | string
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+  }, "id">
+
+  export type CanvasVersionOrderByWithAggregationInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+    userImage?: SortOrderInput | SortOrder
+    blobUrl?: SortOrder
+    nodeCount?: SortOrder
+    edgeCount?: SortOrder
+    label?: SortOrderInput | SortOrder
+    source?: SortOrder
+    createdAt?: SortOrder
+    _count?: CanvasVersionCountOrderByAggregateInput
+    _avg?: CanvasVersionAvgOrderByAggregateInput
+    _max?: CanvasVersionMaxOrderByAggregateInput
+    _min?: CanvasVersionMinOrderByAggregateInput
+    _sum?: CanvasVersionSumOrderByAggregateInput
+  }
+
+  export type CanvasVersionScalarWhereWithAggregatesInput = {
+    AND?: CanvasVersionScalarWhereWithAggregatesInput | CanvasVersionScalarWhereWithAggregatesInput[]
+    OR?: CanvasVersionScalarWhereWithAggregatesInput[]
+    NOT?: CanvasVersionScalarWhereWithAggregatesInput | CanvasVersionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CanvasVersion"> | string
+    projectId?: StringWithAggregatesFilter<"CanvasVersion"> | string
+    userId?: StringWithAggregatesFilter<"CanvasVersion"> | string
+    userName?: StringWithAggregatesFilter<"CanvasVersion"> | string
+    userImage?: StringNullableWithAggregatesFilter<"CanvasVersion"> | string | null
+    blobUrl?: StringWithAggregatesFilter<"CanvasVersion"> | string
+    nodeCount?: IntWithAggregatesFilter<"CanvasVersion"> | number
+    edgeCount?: IntWithAggregatesFilter<"CanvasVersion"> | number
+    label?: StringNullableWithAggregatesFilter<"CanvasVersion"> | string | null
+    source?: StringWithAggregatesFilter<"CanvasVersion"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"CanvasVersion"> | Date | string
   }
 
   export type ProjectSpecWhereInput = {
@@ -11245,6 +12673,7 @@ export namespace Prisma {
     collaborators?: ProjectCollaboratorCreateNestedManyWithoutProjectInput
     taskRuns?: TaskRunCreateNestedManyWithoutProjectInput
     specs?: ProjectSpecCreateNestedManyWithoutProjectInput
+    versions?: CanvasVersionCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateInput = {
@@ -11259,6 +12688,7 @@ export namespace Prisma {
     collaborators?: ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
     taskRuns?: TaskRunUncheckedCreateNestedManyWithoutProjectInput
     specs?: ProjectSpecUncheckedCreateNestedManyWithoutProjectInput
+    versions?: CanvasVersionUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUpdateInput = {
@@ -11273,6 +12703,7 @@ export namespace Prisma {
     collaborators?: ProjectCollaboratorUpdateManyWithoutProjectNestedInput
     taskRuns?: TaskRunUpdateManyWithoutProjectNestedInput
     specs?: ProjectSpecUpdateManyWithoutProjectNestedInput
+    versions?: CanvasVersionUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateInput = {
@@ -11287,6 +12718,7 @@ export namespace Prisma {
     collaborators?: ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
     taskRuns?: TaskRunUncheckedUpdateManyWithoutProjectNestedInput
     specs?: ProjectSpecUncheckedUpdateManyWithoutProjectNestedInput
+    versions?: CanvasVersionUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateManyInput = {
@@ -11319,6 +12751,103 @@ export namespace Prisma {
     canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CanvasVersionCreateInput = {
+    id?: string
+    userId: string
+    userName: string
+    userImage?: string | null
+    blobUrl: string
+    nodeCount: number
+    edgeCount: number
+    label?: string | null
+    source?: string
+    createdAt?: Date | string
+    project: ProjectCreateNestedOneWithoutVersionsInput
+  }
+
+  export type CanvasVersionUncheckedCreateInput = {
+    id?: string
+    projectId: string
+    userId: string
+    userName: string
+    userImage?: string | null
+    blobUrl: string
+    nodeCount: number
+    edgeCount: number
+    label?: string | null
+    source?: string
+    createdAt?: Date | string
+  }
+
+  export type CanvasVersionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    userImage?: NullableStringFieldUpdateOperationsInput | string | null
+    blobUrl?: StringFieldUpdateOperationsInput | string
+    nodeCount?: IntFieldUpdateOperationsInput | number
+    edgeCount?: IntFieldUpdateOperationsInput | number
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    project?: ProjectUpdateOneRequiredWithoutVersionsNestedInput
+  }
+
+  export type CanvasVersionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    userImage?: NullableStringFieldUpdateOperationsInput | string | null
+    blobUrl?: StringFieldUpdateOperationsInput | string
+    nodeCount?: IntFieldUpdateOperationsInput | number
+    edgeCount?: IntFieldUpdateOperationsInput | number
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CanvasVersionCreateManyInput = {
+    id?: string
+    projectId: string
+    userId: string
+    userName: string
+    userImage?: string | null
+    blobUrl: string
+    nodeCount: number
+    edgeCount: number
+    label?: string | null
+    source?: string
+    createdAt?: Date | string
+  }
+
+  export type CanvasVersionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    userImage?: NullableStringFieldUpdateOperationsInput | string | null
+    blobUrl?: StringFieldUpdateOperationsInput | string
+    nodeCount?: IntFieldUpdateOperationsInput | number
+    edgeCount?: IntFieldUpdateOperationsInput | number
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CanvasVersionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    projectId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    userImage?: NullableStringFieldUpdateOperationsInput | string | null
+    blobUrl?: StringFieldUpdateOperationsInput | string
+    nodeCount?: IntFieldUpdateOperationsInput | number
+    edgeCount?: IntFieldUpdateOperationsInput | number
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProjectSpecCreateInput = {
@@ -11885,6 +13414,12 @@ export namespace Prisma {
     none?: ProjectSpecWhereInput
   }
 
+  export type CanvasVersionListRelationFilter = {
+    every?: CanvasVersionWhereInput
+    some?: CanvasVersionWhereInput
+    none?: CanvasVersionWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -11899,6 +13434,10 @@ export namespace Prisma {
   }
 
   export type ProjectSpecOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CanvasVersionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -11985,9 +13524,88 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type ProjectScalarRelationFilter = {
     is?: ProjectWhereInput
     isNot?: ProjectWhereInput
+  }
+
+  export type CanvasVersionCountOrderByAggregateInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+    userImage?: SortOrder
+    blobUrl?: SortOrder
+    nodeCount?: SortOrder
+    edgeCount?: SortOrder
+    label?: SortOrder
+    source?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CanvasVersionAvgOrderByAggregateInput = {
+    nodeCount?: SortOrder
+    edgeCount?: SortOrder
+  }
+
+  export type CanvasVersionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+    userImage?: SortOrder
+    blobUrl?: SortOrder
+    nodeCount?: SortOrder
+    edgeCount?: SortOrder
+    label?: SortOrder
+    source?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CanvasVersionMinOrderByAggregateInput = {
+    id?: SortOrder
+    projectId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+    userImage?: SortOrder
+    blobUrl?: SortOrder
+    nodeCount?: SortOrder
+    edgeCount?: SortOrder
+    label?: SortOrder
+    source?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CanvasVersionSumOrderByAggregateInput = {
+    nodeCount?: SortOrder
+    edgeCount?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type ProjectSpecCountOrderByAggregateInput = {
@@ -12300,6 +13918,13 @@ export namespace Prisma {
     connect?: ProjectSpecWhereUniqueInput | ProjectSpecWhereUniqueInput[]
   }
 
+  export type CanvasVersionCreateNestedManyWithoutProjectInput = {
+    create?: XOR<CanvasVersionCreateWithoutProjectInput, CanvasVersionUncheckedCreateWithoutProjectInput> | CanvasVersionCreateWithoutProjectInput[] | CanvasVersionUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: CanvasVersionCreateOrConnectWithoutProjectInput | CanvasVersionCreateOrConnectWithoutProjectInput[]
+    createMany?: CanvasVersionCreateManyProjectInputEnvelope
+    connect?: CanvasVersionWhereUniqueInput | CanvasVersionWhereUniqueInput[]
+  }
+
   export type ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput = {
     create?: XOR<ProjectCollaboratorCreateWithoutProjectInput, ProjectCollaboratorUncheckedCreateWithoutProjectInput> | ProjectCollaboratorCreateWithoutProjectInput[] | ProjectCollaboratorUncheckedCreateWithoutProjectInput[]
     connectOrCreate?: ProjectCollaboratorCreateOrConnectWithoutProjectInput | ProjectCollaboratorCreateOrConnectWithoutProjectInput[]
@@ -12319,6 +13944,13 @@ export namespace Prisma {
     connectOrCreate?: ProjectSpecCreateOrConnectWithoutProjectInput | ProjectSpecCreateOrConnectWithoutProjectInput[]
     createMany?: ProjectSpecCreateManyProjectInputEnvelope
     connect?: ProjectSpecWhereUniqueInput | ProjectSpecWhereUniqueInput[]
+  }
+
+  export type CanvasVersionUncheckedCreateNestedManyWithoutProjectInput = {
+    create?: XOR<CanvasVersionCreateWithoutProjectInput, CanvasVersionUncheckedCreateWithoutProjectInput> | CanvasVersionCreateWithoutProjectInput[] | CanvasVersionUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: CanvasVersionCreateOrConnectWithoutProjectInput | CanvasVersionCreateOrConnectWithoutProjectInput[]
+    createMany?: CanvasVersionCreateManyProjectInputEnvelope
+    connect?: CanvasVersionWhereUniqueInput | CanvasVersionWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -12383,6 +14015,20 @@ export namespace Prisma {
     deleteMany?: ProjectSpecScalarWhereInput | ProjectSpecScalarWhereInput[]
   }
 
+  export type CanvasVersionUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<CanvasVersionCreateWithoutProjectInput, CanvasVersionUncheckedCreateWithoutProjectInput> | CanvasVersionCreateWithoutProjectInput[] | CanvasVersionUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: CanvasVersionCreateOrConnectWithoutProjectInput | CanvasVersionCreateOrConnectWithoutProjectInput[]
+    upsert?: CanvasVersionUpsertWithWhereUniqueWithoutProjectInput | CanvasVersionUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: CanvasVersionCreateManyProjectInputEnvelope
+    set?: CanvasVersionWhereUniqueInput | CanvasVersionWhereUniqueInput[]
+    disconnect?: CanvasVersionWhereUniqueInput | CanvasVersionWhereUniqueInput[]
+    delete?: CanvasVersionWhereUniqueInput | CanvasVersionWhereUniqueInput[]
+    connect?: CanvasVersionWhereUniqueInput | CanvasVersionWhereUniqueInput[]
+    update?: CanvasVersionUpdateWithWhereUniqueWithoutProjectInput | CanvasVersionUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: CanvasVersionUpdateManyWithWhereWithoutProjectInput | CanvasVersionUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: CanvasVersionScalarWhereInput | CanvasVersionScalarWhereInput[]
+  }
+
   export type ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput = {
     create?: XOR<ProjectCollaboratorCreateWithoutProjectInput, ProjectCollaboratorUncheckedCreateWithoutProjectInput> | ProjectCollaboratorCreateWithoutProjectInput[] | ProjectCollaboratorUncheckedCreateWithoutProjectInput[]
     connectOrCreate?: ProjectCollaboratorCreateOrConnectWithoutProjectInput | ProjectCollaboratorCreateOrConnectWithoutProjectInput[]
@@ -12423,6 +14069,42 @@ export namespace Prisma {
     update?: ProjectSpecUpdateWithWhereUniqueWithoutProjectInput | ProjectSpecUpdateWithWhereUniqueWithoutProjectInput[]
     updateMany?: ProjectSpecUpdateManyWithWhereWithoutProjectInput | ProjectSpecUpdateManyWithWhereWithoutProjectInput[]
     deleteMany?: ProjectSpecScalarWhereInput | ProjectSpecScalarWhereInput[]
+  }
+
+  export type CanvasVersionUncheckedUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<CanvasVersionCreateWithoutProjectInput, CanvasVersionUncheckedCreateWithoutProjectInput> | CanvasVersionCreateWithoutProjectInput[] | CanvasVersionUncheckedCreateWithoutProjectInput[]
+    connectOrCreate?: CanvasVersionCreateOrConnectWithoutProjectInput | CanvasVersionCreateOrConnectWithoutProjectInput[]
+    upsert?: CanvasVersionUpsertWithWhereUniqueWithoutProjectInput | CanvasVersionUpsertWithWhereUniqueWithoutProjectInput[]
+    createMany?: CanvasVersionCreateManyProjectInputEnvelope
+    set?: CanvasVersionWhereUniqueInput | CanvasVersionWhereUniqueInput[]
+    disconnect?: CanvasVersionWhereUniqueInput | CanvasVersionWhereUniqueInput[]
+    delete?: CanvasVersionWhereUniqueInput | CanvasVersionWhereUniqueInput[]
+    connect?: CanvasVersionWhereUniqueInput | CanvasVersionWhereUniqueInput[]
+    update?: CanvasVersionUpdateWithWhereUniqueWithoutProjectInput | CanvasVersionUpdateWithWhereUniqueWithoutProjectInput[]
+    updateMany?: CanvasVersionUpdateManyWithWhereWithoutProjectInput | CanvasVersionUpdateManyWithWhereWithoutProjectInput[]
+    deleteMany?: CanvasVersionScalarWhereInput | CanvasVersionScalarWhereInput[]
+  }
+
+  export type ProjectCreateNestedOneWithoutVersionsInput = {
+    create?: XOR<ProjectCreateWithoutVersionsInput, ProjectUncheckedCreateWithoutVersionsInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutVersionsInput
+    connect?: ProjectWhereUniqueInput
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type ProjectUpdateOneRequiredWithoutVersionsNestedInput = {
+    create?: XOR<ProjectCreateWithoutVersionsInput, ProjectUncheckedCreateWithoutVersionsInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutVersionsInput
+    upsert?: ProjectUpsertWithoutVersionsInput
+    connect?: ProjectWhereUniqueInput
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutVersionsInput, ProjectUpdateWithoutVersionsInput>, ProjectUncheckedUpdateWithoutVersionsInput>
   }
 
   export type ProjectCreateNestedOneWithoutSpecsInput = {
@@ -12794,6 +14476,33 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -12935,6 +14644,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CanvasVersionCreateWithoutProjectInput = {
+    id?: string
+    userId: string
+    userName: string
+    userImage?: string | null
+    blobUrl: string
+    nodeCount: number
+    edgeCount: number
+    label?: string | null
+    source?: string
+    createdAt?: Date | string
+  }
+
+  export type CanvasVersionUncheckedCreateWithoutProjectInput = {
+    id?: string
+    userId: string
+    userName: string
+    userImage?: string | null
+    blobUrl: string
+    nodeCount: number
+    edgeCount: number
+    label?: string | null
+    source?: string
+    createdAt?: Date | string
+  }
+
+  export type CanvasVersionCreateOrConnectWithoutProjectInput = {
+    where: CanvasVersionWhereUniqueInput
+    create: XOR<CanvasVersionCreateWithoutProjectInput, CanvasVersionUncheckedCreateWithoutProjectInput>
+  }
+
+  export type CanvasVersionCreateManyProjectInputEnvelope = {
+    data: CanvasVersionCreateManyProjectInput | CanvasVersionCreateManyProjectInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutProjectsInput = {
     update: XOR<UserUpdateWithoutProjectsInput, UserUncheckedUpdateWithoutProjectsInput>
     create: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
@@ -13053,6 +14798,111 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ProjectSpec"> | Date | string
   }
 
+  export type CanvasVersionUpsertWithWhereUniqueWithoutProjectInput = {
+    where: CanvasVersionWhereUniqueInput
+    update: XOR<CanvasVersionUpdateWithoutProjectInput, CanvasVersionUncheckedUpdateWithoutProjectInput>
+    create: XOR<CanvasVersionCreateWithoutProjectInput, CanvasVersionUncheckedCreateWithoutProjectInput>
+  }
+
+  export type CanvasVersionUpdateWithWhereUniqueWithoutProjectInput = {
+    where: CanvasVersionWhereUniqueInput
+    data: XOR<CanvasVersionUpdateWithoutProjectInput, CanvasVersionUncheckedUpdateWithoutProjectInput>
+  }
+
+  export type CanvasVersionUpdateManyWithWhereWithoutProjectInput = {
+    where: CanvasVersionScalarWhereInput
+    data: XOR<CanvasVersionUpdateManyMutationInput, CanvasVersionUncheckedUpdateManyWithoutProjectInput>
+  }
+
+  export type CanvasVersionScalarWhereInput = {
+    AND?: CanvasVersionScalarWhereInput | CanvasVersionScalarWhereInput[]
+    OR?: CanvasVersionScalarWhereInput[]
+    NOT?: CanvasVersionScalarWhereInput | CanvasVersionScalarWhereInput[]
+    id?: StringFilter<"CanvasVersion"> | string
+    projectId?: StringFilter<"CanvasVersion"> | string
+    userId?: StringFilter<"CanvasVersion"> | string
+    userName?: StringFilter<"CanvasVersion"> | string
+    userImage?: StringNullableFilter<"CanvasVersion"> | string | null
+    blobUrl?: StringFilter<"CanvasVersion"> | string
+    nodeCount?: IntFilter<"CanvasVersion"> | number
+    edgeCount?: IntFilter<"CanvasVersion"> | number
+    label?: StringNullableFilter<"CanvasVersion"> | string | null
+    source?: StringFilter<"CanvasVersion"> | string
+    createdAt?: DateTimeFilter<"CanvasVersion"> | Date | string
+  }
+
+  export type ProjectCreateWithoutVersionsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    status?: string
+    canvasJsonPath?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutProjectsInput
+    collaborators?: ProjectCollaboratorCreateNestedManyWithoutProjectInput
+    taskRuns?: TaskRunCreateNestedManyWithoutProjectInput
+    specs?: ProjectSpecCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectUncheckedCreateWithoutVersionsInput = {
+    id?: string
+    ownerId: string
+    name: string
+    description?: string | null
+    status?: string
+    canvasJsonPath?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    collaborators?: ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
+    taskRuns?: TaskRunUncheckedCreateNestedManyWithoutProjectInput
+    specs?: ProjectSpecUncheckedCreateNestedManyWithoutProjectInput
+  }
+
+  export type ProjectCreateOrConnectWithoutVersionsInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutVersionsInput, ProjectUncheckedCreateWithoutVersionsInput>
+  }
+
+  export type ProjectUpsertWithoutVersionsInput = {
+    update: XOR<ProjectUpdateWithoutVersionsInput, ProjectUncheckedUpdateWithoutVersionsInput>
+    create: XOR<ProjectCreateWithoutVersionsInput, ProjectUncheckedCreateWithoutVersionsInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutVersionsInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutVersionsInput, ProjectUncheckedUpdateWithoutVersionsInput>
+  }
+
+  export type ProjectUpdateWithoutVersionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutProjectsNestedInput
+    collaborators?: ProjectCollaboratorUpdateManyWithoutProjectNestedInput
+    taskRuns?: TaskRunUpdateManyWithoutProjectNestedInput
+    specs?: ProjectSpecUpdateManyWithoutProjectNestedInput
+  }
+
+  export type ProjectUncheckedUpdateWithoutVersionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ownerId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    canvasJsonPath?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    collaborators?: ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
+    taskRuns?: TaskRunUncheckedUpdateManyWithoutProjectNestedInput
+    specs?: ProjectSpecUncheckedUpdateManyWithoutProjectNestedInput
+  }
+
   export type ProjectCreateWithoutSpecsInput = {
     id?: string
     name: string
@@ -13064,6 +14914,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutProjectsInput
     collaborators?: ProjectCollaboratorCreateNestedManyWithoutProjectInput
     taskRuns?: TaskRunCreateNestedManyWithoutProjectInput
+    versions?: CanvasVersionCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutSpecsInput = {
@@ -13077,6 +14928,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     collaborators?: ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
     taskRuns?: TaskRunUncheckedCreateNestedManyWithoutProjectInput
+    versions?: CanvasVersionUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutSpecsInput = {
@@ -13106,6 +14958,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutProjectsNestedInput
     collaborators?: ProjectCollaboratorUpdateManyWithoutProjectNestedInput
     taskRuns?: TaskRunUpdateManyWithoutProjectNestedInput
+    versions?: CanvasVersionUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutSpecsInput = {
@@ -13119,6 +14972,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     collaborators?: ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
     taskRuns?: TaskRunUncheckedUpdateManyWithoutProjectNestedInput
+    versions?: CanvasVersionUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateWithoutCollaboratorsInput = {
@@ -13132,6 +14986,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutProjectsInput
     taskRuns?: TaskRunCreateNestedManyWithoutProjectInput
     specs?: ProjectSpecCreateNestedManyWithoutProjectInput
+    versions?: CanvasVersionCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutCollaboratorsInput = {
@@ -13145,6 +15000,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     taskRuns?: TaskRunUncheckedCreateNestedManyWithoutProjectInput
     specs?: ProjectSpecUncheckedCreateNestedManyWithoutProjectInput
+    versions?: CanvasVersionUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutCollaboratorsInput = {
@@ -13174,6 +15030,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutProjectsNestedInput
     taskRuns?: TaskRunUpdateManyWithoutProjectNestedInput
     specs?: ProjectSpecUpdateManyWithoutProjectNestedInput
+    versions?: CanvasVersionUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutCollaboratorsInput = {
@@ -13187,6 +15044,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     taskRuns?: TaskRunUncheckedUpdateManyWithoutProjectNestedInput
     specs?: ProjectSpecUncheckedUpdateManyWithoutProjectNestedInput
+    versions?: CanvasVersionUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -13270,6 +15128,7 @@ export namespace Prisma {
     collaborators?: ProjectCollaboratorCreateNestedManyWithoutProjectInput
     taskRuns?: TaskRunCreateNestedManyWithoutProjectInput
     specs?: ProjectSpecCreateNestedManyWithoutProjectInput
+    versions?: CanvasVersionCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutUserInput = {
@@ -13283,6 +15142,7 @@ export namespace Prisma {
     collaborators?: ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
     taskRuns?: TaskRunUncheckedCreateNestedManyWithoutProjectInput
     specs?: ProjectSpecUncheckedCreateNestedManyWithoutProjectInput
+    versions?: CanvasVersionUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutUserInput = {
@@ -13579,6 +15439,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutProjectsInput
     collaborators?: ProjectCollaboratorCreateNestedManyWithoutProjectInput
     specs?: ProjectSpecCreateNestedManyWithoutProjectInput
+    versions?: CanvasVersionCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutTaskRunsInput = {
@@ -13592,6 +15453,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     collaborators?: ProjectCollaboratorUncheckedCreateNestedManyWithoutProjectInput
     specs?: ProjectSpecUncheckedCreateNestedManyWithoutProjectInput
+    versions?: CanvasVersionUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutTaskRunsInput = {
@@ -13652,6 +15514,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutProjectsNestedInput
     collaborators?: ProjectCollaboratorUpdateManyWithoutProjectNestedInput
     specs?: ProjectSpecUpdateManyWithoutProjectNestedInput
+    versions?: CanvasVersionUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutTaskRunsInput = {
@@ -13665,6 +15528,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     collaborators?: ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
     specs?: ProjectSpecUncheckedUpdateManyWithoutProjectNestedInput
+    versions?: CanvasVersionUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type UserUpsertWithoutTaskRunsInput = {
@@ -13722,6 +15586,19 @@ export namespace Prisma {
     id?: string
     filePath: string
     filename: string
+    createdAt?: Date | string
+  }
+
+  export type CanvasVersionCreateManyProjectInput = {
+    id?: string
+    userId: string
+    userName: string
+    userImage?: string | null
+    blobUrl: string
+    nodeCount: number
+    edgeCount: number
+    label?: string | null
+    source?: string
     createdAt?: Date | string
   }
 
@@ -13785,6 +15662,45 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     filePath?: StringFieldUpdateOperationsInput | string
     filename?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CanvasVersionUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    userImage?: NullableStringFieldUpdateOperationsInput | string | null
+    blobUrl?: StringFieldUpdateOperationsInput | string
+    nodeCount?: IntFieldUpdateOperationsInput | number
+    edgeCount?: IntFieldUpdateOperationsInput | number
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CanvasVersionUncheckedUpdateWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    userImage?: NullableStringFieldUpdateOperationsInput | string | null
+    blobUrl?: StringFieldUpdateOperationsInput | string
+    nodeCount?: IntFieldUpdateOperationsInput | number
+    edgeCount?: IntFieldUpdateOperationsInput | number
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CanvasVersionUncheckedUpdateManyWithoutProjectInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    userName?: StringFieldUpdateOperationsInput | string
+    userImage?: NullableStringFieldUpdateOperationsInput | string | null
+    blobUrl?: StringFieldUpdateOperationsInput | string
+    nodeCount?: IntFieldUpdateOperationsInput | number
+    edgeCount?: IntFieldUpdateOperationsInput | number
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -13917,6 +15833,7 @@ export namespace Prisma {
     collaborators?: ProjectCollaboratorUpdateManyWithoutProjectNestedInput
     taskRuns?: TaskRunUpdateManyWithoutProjectNestedInput
     specs?: ProjectSpecUpdateManyWithoutProjectNestedInput
+    versions?: CanvasVersionUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutUserInput = {
@@ -13930,6 +15847,7 @@ export namespace Prisma {
     collaborators?: ProjectCollaboratorUncheckedUpdateManyWithoutProjectNestedInput
     taskRuns?: TaskRunUncheckedUpdateManyWithoutProjectNestedInput
     specs?: ProjectSpecUncheckedUpdateManyWithoutProjectNestedInput
+    versions?: CanvasVersionUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateManyWithoutUserInput = {

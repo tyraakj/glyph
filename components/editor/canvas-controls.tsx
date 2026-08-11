@@ -1,10 +1,16 @@
 import { useReactFlow } from "@xyflow/react";
-import { ZoomIn, ZoomOut, Maximize, Undo2, Redo2, Cloud, CloudOff, Loader2, CloudAlert } from "lucide-react";
+import { ZoomIn, ZoomOut, Maximize, Undo2, Redo2, Cloud, CloudOff, Loader2, CloudAlert, History } from "lucide-react";
 import { useUndo, useRedo, useCanUndo, useCanRedo } from "@liveblocks/react/suspense";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import type { SaveStatus } from "@/hooks/use-autosave";
 
-export function CanvasControls({ saveStatus = "idle" }: { saveStatus?: SaveStatus }) {
+export function CanvasControls({ 
+  saveStatus = "idle",
+  onHistoryClick
+}: { 
+  saveStatus?: SaveStatus;
+  onHistoryClick?: () => void;
+}) {
   const { zoomIn, zoomOut, fitView } = useReactFlow();
   const undo = useUndo();
   const redo = useRedo();
@@ -68,6 +74,19 @@ export function CanvasControls({ saveStatus = "idle" }: { saveStatus?: SaveStatu
       >
         <Redo2 className="w-5 h-5" />
       </button>
+
+      {onHistoryClick && (
+        <>
+          <div className="w-[1px] h-5 bg-border-subtle mx-1" />
+          <button
+            onClick={onHistoryClick}
+            className="p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-bg-subtle transition-colors"
+            title="Version History"
+          >
+            <History className="w-5 h-5" />
+          </button>
+        </>
+      )}
     </div>
   );
 }

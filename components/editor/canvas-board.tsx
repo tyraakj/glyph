@@ -85,16 +85,50 @@ function CanvasBoardInner() {
     return idMatch ? idMatch[1] : roomId;
   }, [roomId]);
 
-  const saveStatus = useAutosave(projectId, nodes, edges);
+  const { status: saveStatus, saveCanvas } = useAutosave(projectId, nodes, edges);
   
   // Track if we've attempted to load to prevent infinite loops
   const hasAttemptedLoad = useRef(false);
+
+  // Version History State
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [previewVersion, setPreviewVersion] = useState<any | null>(null);
+
+  const handleRestoreVersion = async (versionId: string) => {
+    if (!projectId) return;
+    
+    const res = await fetch(`/api/projects/${projectId}/versions/${versionId}/restore`, {
+      method: "POST"
+    });
+    
+    if (!res.ok) {
+      throw new Error("Failed to restore version");
+    }
+    
+    const data = await res.json();
+    if (data.canvas) {
+      // 1. Clear existing nodes and edges
+      onNodesChange((nodes || []).map(n => ({ type: "remove", id: n.id })));
+      onEdgesChange((edges || []).map(e => ({ type: "remove", id: e.id })));
+
+      // 2. Add restored nodes and edges
+      onNodesChange(data.canvas.nodes.map((n: any) => ({ type: "add", item: n })));
+      onEdgesChange(data.canvas.edges.map((e: any) => ({ type: "add", item: e })));
+
+      // 3. Close preview and history
+      setPreviewVersion(null);
+      setIsHistoryOpen(false);
+      
+      // 4. Fit view
+      setTimeout(() => fitView({ duration: 500, padding: 0.2 }), 50);
+    }
+  };
 
   useEffect(() => {
     if (isLoading || hasAttemptedLoad.current || !projectId) return;
     
     // Only load if the room is completely empty
-    if ((nodes === undefined || nodes.length === 0) && (edges === undefined || edges.length === 0)) {
+    if ((!nodes || nodes.length === 0) && (!edges || edges.length === 0)) {
       hasAttemptedLoad.current = true;
       
       const loadSavedCanvas = async () => {
@@ -138,11 +172,14 @@ function CanvasBoardInner() {
 
       // 3. Fit view after slight delay to allow rendering
       setTimeout(() => fitView({ duration: 500, padding: 0.2 }), 50);
+
+      // 4. Manually trigger save with template-import source
+      saveCanvas(template.nodes as CanvasNode[], template.edges as CanvasEdge[], "template-import", `Imported ${template.name} template`);
     };
 
     window.addEventListener("import-starter-template", handleImport);
     return () => window.removeEventListener("import-starter-template", handleImport);
-  }, [nodes, edges, onNodesChange, onEdgesChange, fitView]);
+  }, [nodes, edges, onNodesChange, onEdgesChange, fitView, saveCanvas]);
 
   // Listen for AI chat to manage thinking state
   useEventListener(({ event }) => {
@@ -310,6 +347,10 @@ function CanvasBoardInner() {
         setAiCursor(null);
         setAiStatus("idle");
         fitView({ duration: 700, padding: 0.2 });
+
+        const finalNodes = [...nodes.filter(n => !deleteIds.includes(n.id)), ...newNodes];
+        const finalEdges = [...edges.filter(e => !deleteIds.includes(e.id)), ...newEdges];
+        saveCanvas(finalNodes, finalEdges, "ai-generation", "AI Generated Design");
       }, 300);
     };
 
@@ -431,17 +472,35 @@ function CanvasBoardInner() {
           <ShapePanel />
         </Panel>
         <Panel position="bottom-left" className="ml-4 mb-6">
-          <CanvasControls saveStatus={saveStatus} />
+          <CanvasControls 
+            saveStatus={saveStatus} 
+            onHistoryClick={() => setIsHistoryOpen(true)}
+          />
         </Panel>
       </ReactFlow>
+
+      {isHistoryOpen && (
+        <VersionHistoryPanel 
+          projectId={projectId}
+          onClose={() => setIsHistoryOpen(false)}
+          onSelectVersion={setPreviewVersion}
+        />
+      )}
+
+      {previewVersion && (
+        <VersionPreviewCanvas
+          version={previewVersion}
+          onClose={() => setPreviewVersion(null)}
+          onRestore={handleRestoreVersion}
+        />
+      )}
     </div>
   );
 }
 
+import { VersionHistoryPanel } from "./version-history/version-history-panel";
+import { VersionPreviewCanvas } from "./version-history/version-preview-canvas";
+
 export function CanvasBoard() {
-  return (
-    <ReactFlowProvider>
-      <CanvasBoardInner />
-    </ReactFlowProvider>
-  );
+  return <CanvasBoardInner />;
 }

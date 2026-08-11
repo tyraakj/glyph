@@ -131,6 +131,20 @@ exports.Prisma.ProjectScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CanvasVersionScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  userId: 'userId',
+  userName: 'userName',
+  userImage: 'userImage',
+  blobUrl: 'blobUrl',
+  nodeCount: 'nodeCount',
+  edgeCount: 'edgeCount',
+  label: 'label',
+  source: 'source',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ProjectSpecScalarFieldEnum = {
   id: 'id',
   projectId: 'projectId',
@@ -219,6 +233,7 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   Project: 'Project',
+  CanvasVersion: 'CanvasVersion',
   ProjectSpec: 'ProjectSpec',
   ProjectCollaborator: 'ProjectCollaborator',
   User: 'User',

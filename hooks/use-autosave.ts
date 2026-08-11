@@ -10,7 +10,7 @@ export function useAutosave(projectId: string | undefined, nodes: CanvasNode[] |
   // Track if this is the initial render to avoid saving immediately on load
   const isInitialRender = useRef(true);
   
-  const saveCanvas = useCallback(async (currentNodes: CanvasNode[], currentEdges: CanvasEdge[]) => {
+  const saveCanvas = useCallback(async (currentNodes: CanvasNode[], currentEdges: CanvasEdge[], source = "autosave", label?: string) => {
     if (!projectId) return;
 
     try {
@@ -19,7 +19,7 @@ export function useAutosave(projectId: string | undefined, nodes: CanvasNode[] |
       const res = await fetch(`/api/projects/${projectId}/canvas`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nodes: currentNodes, edges: currentEdges }),
+        body: JSON.stringify({ nodes: currentNodes, edges: currentEdges, source, label }),
       });
 
       if (!res.ok) {
@@ -48,7 +48,7 @@ export function useAutosave(projectId: string | undefined, nodes: CanvasNode[] |
     setStatus("idle");
     
     saveTimeoutRef.current = setTimeout(() => {
-      saveCanvas(nodes, edges);
+      saveCanvas(nodes, edges, "autosave");
     }, 2000); // 2 second debounce
 
     return () => {
@@ -56,5 +56,5 @@ export function useAutosave(projectId: string | undefined, nodes: CanvasNode[] |
     };
   }, [nodes, edges, projectId, saveCanvas]);
 
-  return status;
+  return { status, saveCanvas };
 }

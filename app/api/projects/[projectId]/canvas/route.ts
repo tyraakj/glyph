@@ -42,22 +42,44 @@ export async function PUT(
       return NextResponse.json({ error: "Invalid canvas payload" }, { status: 400 });
     }
 
+    // Extract metadata
+    const source = body.source || "autosave";
+    const label = body.label || null;
+    const nodeCount = body.nodes.length;
+    const edgeCount = body.edges.length;
+
     // Convert payload to string for blob upload
     const jsonString = JSON.stringify(body);
     
-    // Upload to Vercel Blob
-    const blobName = `projects/${projectId}/canvas.json`;
+    // Upload to Vercel Blob with a unique version name
+    const timestamp = Date.now();
+    const blobName = `projects/${projectId}/versions/${timestamp}.json`;
     const blob = await put(blobName, jsonString, {
       access: 'public',
       contentType: 'application/json',
-      addRandomSuffix: true // Prevents caching issues if we want new URLs, though overwriting is also fine
+      addRandomSuffix: true
     });
 
-    // Save blob URL to project
-    await prisma.project.update({
-      where: { id: projectId },
-      data: { canvasJsonPath: blob.url },
-    });
+    // Save blob URL to project and create a version record
+    await prisma.$transaction([
+      prisma.canvasVersion.create({
+        data: {
+          projectId,
+          userId: session.user.id,
+          userName: session.user.name || "Unknown User",
+          userImage: session.user.image,
+          blobUrl: blob.url,
+          nodeCount,
+          edgeCount,
+          source,
+          label
+        }
+      }),
+      prisma.project.update({
+        where: { id: projectId },
+        data: { canvasJsonPath: blob.url },
+      })
+    ]);
 
     return NextResponse.json({ success: true, url: blob.url });
   } catch (error) {
