@@ -1,9 +1,11 @@
 "use client";
 
-import { X, Bot, FileText, Send } from "lucide-react";
+import { X, Bot, FileText, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useState, useRef, useEffect } from "react";
+import { useEventListener, useUpdateMyPresence, useSelf, useBroadcastEvent } from "@liveblocks/react/suspense";
+import type { AiStatusFeedPayload } from "@/types/tasks";
 import { cn } from "@/lib/utils";
 
 interface AiSidebarProps {
@@ -13,7 +15,18 @@ interface AiSidebarProps {
 
 export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
   const [input, setInput] = useState("");
+  const [latestStatus, setLatestStatus] = useState<AiStatusFeedPayload | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  const updateMyPresence = useUpdateMyPresence();
+  const broadcast = useBroadcastEvent();
+  const isThinking = useSelf((me) => me.presence.isThinking);
+
+  useEventListener(({ event }) => {
+    if (event.type === "ai-status-feed") {
+      setLatestStatus(event as AiStatusFeedPayload);
+    }
+  });
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -33,10 +46,41 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
+  const handleSend = () => {
+    if (!input.trim() || isThinking) return;
+
+    const promptText = input.trim();
+    setInput("");
+
+    // 1. Mock local presence
+    updateMyPresence({ isThinking: true });
+
+    // 2. Mock broadcast so the room sees it
+    broadcast({
+      type: "ai-status-feed",
+      status: "processing",
+      message: "AI is analyzing your design request...",
+      text: promptText,
+      runId: null,
+    });
+
+    // 3. Simulate processing time for UI verification
+    setTimeout(() => {
+      broadcast({
+        type: "ai-status-feed",
+        status: "complete",
+        message: "Design generated successfully!",
+        text: null,
+        runId: null,
+      });
+      updateMyPresence({ isThinking: false });
+    }, 3000);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      // Handle send
+      handleSend();
     }
   };
 
@@ -125,6 +169,29 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
               </div>
             </div>
 
+            {/* AI Status Feed (Above Input) */}
+            {latestStatus && (
+              <div className="px-4 pb-2 shrink-0">
+                <div className="flex items-center gap-2 p-2.5 rounded-lg bg-bg-elevated border border-border-subtle shadow-sm">
+                  {latestStatus.status !== "complete" && latestStatus.status !== "error" ? (
+                    <Loader2 className="w-4 h-4 text-accent-primary animate-spin shrink-0" />
+                  ) : (
+                    <Bot className="w-4 h-4 text-accent-primary shrink-0" />
+                  )}
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-xs font-medium text-text-primary truncate">
+                      {latestStatus.message}
+                    </span>
+                    {latestStatus.text && (
+                      <span className="text-[10px] text-text-muted truncate">
+                        "{latestStatus.text}"
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Input Area */}
             <div className="p-4 border-t border-border-subtle shrink-0 bg-bg-surface">
               <div className="relative flex items-end gap-2 bg-bg-elevated border border-border-subtle rounded-xl p-2 focus-within:border-accent-primary/50 transition-colors">
@@ -134,14 +201,17 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Ask Glyph AI..."
-                  className="flex-1 max-h-[160px] min-h-[40px] resize-none bg-transparent outline-none text-sm text-text-primary placeholder:text-text-muted py-2 px-2 scrollbar-thin"
+                  disabled={isThinking}
+                  className="flex-1 max-h-[160px] min-h-[40px] resize-none bg-transparent outline-none text-sm text-text-primary placeholder:text-text-muted py-2 px-2 scrollbar-thin disabled:opacity-50"
                   rows={1}
                 />
                 <Button 
                   size="icon" 
-                  className="h-8 w-8 rounded-lg bg-accent-primary hover:bg-accent-primary/90 text-bg-base shrink-0 mb-1 mr-1"
+                  onClick={handleSend}
+                  disabled={isThinking || !input.trim()}
+                  className="h-8 w-8 rounded-lg bg-accent-primary hover:bg-accent-primary/90 text-bg-base shrink-0 mb-1 mr-1 disabled:opacity-50"
                 >
-                  <Send className="w-4 h-4" />
+                  {isThinking ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 </Button>
               </div>
               <div className="text-[10px] text-text-faint text-center mt-2">

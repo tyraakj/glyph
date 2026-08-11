@@ -44,18 +44,45 @@ Ensure your response is valid, parseable JSON containing ONLY the array of opera
 Do NOT wrap the response in markdown blocks like ```json.
 """
 
+import glob
+
+def load_skills() -> str:
+    """
+    Dynamically loads all .md files from the worker/skills directory
+    and concatenates them into a single context string.
+    """
+    skills_context = ""
+    skills_dir = os.path.join(os.path.dirname(__file__), "skills")
+    
+    # Ensure the directory exists
+    if not os.path.exists(skills_dir):
+        return ""
+        
+    # Find all markdown files in the skills directory
+    md_files = glob.glob(os.path.join(skills_dir, "*.md"))
+    
+    if not md_files:
+        return ""
+        
+    skills_context += "Here are your Architecture Skills & Patterns to use as reference:\n\n"
+    for file_path in md_files:
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                skill_name = os.path.basename(file_path)
+                skills_context += f"--- START SKILL: {skill_name} ---\n"
+                skills_context += f.read() + "\n"
+                skills_context += f"--- END SKILL: {skill_name} ---\n\n"
+        except Exception as e:
+            print(f"Warning: Could not load skill file {file_path}: {e}")
+            
+    return skills_context
+
 async def generate_design_operations(prompt: str, current_storage: dict) -> list[dict]:
     """
     Calls Gemini to interpret the user prompt and generate a set of canvas mutations.
     """
-    # Load architectural skills
-    skills_context = ""
-    try:
-        skills_path = os.path.join(os.path.dirname(__file__), "skills.md")
-        with open(skills_path, "r") as f:
-            skills_context = f"Here are your Architecture Skills & Patterns to use as reference:\n{f.read()}\n\n"
-    except Exception as e:
-        print(f"Warning: Could not load skills.md: {e}")
+    # Load all architectural skills dynamically
+    skills_context = load_skills()
 
     # Create the model payload
     context_message = f"{skills_context}Current canvas storage state (if any):\n{json.dumps(current_storage, indent=2)}\n\nUser Request: {prompt}"

@@ -1,3 +1,5 @@
+import type { AiStatusFeedPayload } from "./types/tasks";
+
 // Define Liveblocks types for your application
 // https://liveblocks.io/docs/api-reference/liveblocks-react#Typing-your-data
 declare global {
@@ -24,7 +26,7 @@ declare global {
     };
 
     // Custom events, for example for broadcasted messages
-    RoomEvent: {};
+    RoomEvent: AiStatusFeedPayload;
 
     // Custom metadata set on threads, for example, to note where a thread is on a canvas
     ThreadMetadata: {
