@@ -50,14 +50,24 @@
   }
 }
 
-@layer utilities {
-  /* Hide Liveblocks watermark */
-  a[href^="https://liveblocks.io"] {
-    display: none !important;
-  }
-  
-  /* Hide React Flow attribution */
-  .react-flow__attribution {
-    display: none !important;
-  }
+/* Hide Liveblocks watermark */
+div[class*="watermark"],
+a[href*="liveblocks.io"],
+a[href*="liveblocks"],
+[class*="liveblocks"],
+.lb-badge,
+.lb-watermark,
+.lb-root {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Hide React Flow attribution */
+.react-flow__attribution {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }

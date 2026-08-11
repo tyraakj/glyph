@@ -31,7 +31,7 @@ declare global {
     };
 
     // Custom events, for example for broadcasted messages
-    RoomEvent: AiStatusFeedPayload | AiChatFeedPayload | AiDesignUpdatePayload;
+    RoomEvent: AiStatusFeedPayload | AiChatFeedPayload | AiDesignUpdatePayload | import("./types/tasks").AiSpecUpdatePayload;
 
     // Custom metadata set on threads, for example, to note where a thread is on a canvas
     ThreadMetadata: {

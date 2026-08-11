@@ -94,6 +94,9 @@ function CanvasBoardInner() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [previewVersion, setPreviewVersion] = useState<any | null>(null);
 
+  // MiniMap State
+  const [showMiniMap, setShowMiniMap] = useState(true);
+
   const handleRestoreVersion = async (versionId: string) => {
     if (!projectId) return;
     
@@ -458,11 +461,13 @@ function CanvasBoardInner() {
         onDrop={onDrop}
       >
         <Background variant={BackgroundVariant.Dots} gap={24} size={2} color="var(--color-border-subtle)" />
-        <MiniMap 
-          nodeColor="var(--color-primary)" 
-          maskColor="var(--color-bg-base-alpha-80)" 
-          className="bg-bg-surface border-border-default rounded-lg shadow-sm"
-        />
+        {showMiniMap && (
+          <MiniMap 
+            nodeColor="var(--color-primary)" 
+            maskColor="var(--color-bg-base-alpha-80)" 
+            className="bg-bg-surface border-border-default rounded-lg shadow-sm"
+          />
+        )}
         <Cursors />
         <AiCursor position={aiCursor} status={aiStatus} />
         <Panel position="top-right" className="mt-4 mr-4 pointer-events-none">
@@ -475,6 +480,8 @@ function CanvasBoardInner() {
           <CanvasControls 
             saveStatus={saveStatus} 
             onHistoryClick={() => setIsHistoryOpen(true)}
+            showMiniMap={showMiniMap}
+            onToggleMiniMap={() => setShowMiniMap(!showMiniMap)}
           />
         </Panel>
       </ReactFlow>

@@ -246,6 +246,12 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
               >
                 Critique
               </TabsTrigger>
+              <TabsTrigger 
+                value="activity" 
+                className="flex-1 data-[state=active]:bg-accent-primary/10 data-[state=active]:text-accent-primary text-text-muted"
+              >
+                Activity
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -350,6 +356,10 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
           <TabsContent value="critique" className="flex flex-col flex-1 overflow-hidden m-0 p-4 outline-none">
             <CritiqueTab roomId={roomId} projectId={projectId} apiKey={apiKey} />
           </TabsContent>
+
+          <TabsContent value="activity" className="flex flex-col flex-1 overflow-hidden m-0 p-4 outline-none">
+            <ActivityTab projectId={projectId} />
+          </TabsContent>
         </Tabs>
       </div>
     </div>
@@ -388,13 +398,15 @@ function SpecListTab({ roomId, projectId, apiKey }: { roomId: string, projectId:
     }
   }, [projectId]);
 
+  const [templateId, setTemplateId] = useState<string>("simple");
+
   const handleGenerate = async () => {
     setGenerating(true);
     try {
       const res = await fetch("/api/ai/spec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ roomId, projectId, apiKey: apiKey || undefined }),
+        body: JSON.stringify({ roomId, projectId, apiKey: apiKey || undefined, templateId }),
       });
       if (res.ok) {
         alert("Spec generation started in the background. It will appear here shortly.");
@@ -431,14 +443,28 @@ function SpecListTab({ roomId, projectId, apiKey }: { roomId: string, projectId:
 
   return (
     <div className="flex flex-col h-full gap-4 relative">
-      <Button 
-        onClick={handleGenerate} 
-        disabled={generating}
-        className="w-full bg-accent-primary hover:bg-accent-primary/90 text-bg-base shadow-sm shrink-0"
-      >
-        {generating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
-        Generate New Spec
-      </Button>
+      <div className="flex flex-col gap-2 shrink-0">
+        <select 
+          value={templateId} 
+          onChange={(e) => setTemplateId(e.target.value)}
+          disabled={generating}
+          className="w-full h-9 rounded-md border border-border-subtle bg-bg-surface px-3 py-1 text-sm text-text-primary shadow-sm focus:outline-none focus:ring-1 focus:ring-accent-primary"
+        >
+          <option value="simple">Simple Summary</option>
+          <option value="rfc">RFC-2119 Style</option>
+          <option value="c4">C4 Model Structure</option>
+          <option value="aws-well-architected">AWS Well-Architected</option>
+        </select>
+
+        <Button 
+          onClick={handleGenerate} 
+          disabled={generating}
+          className="w-full bg-accent-primary hover:bg-accent-primary/90 text-bg-base shadow-sm"
+        >
+          {generating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
+          Generate New Spec
+        </Button>
+      </div>
 
       <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-3 scrollbar-thin">
         {loading ? (
@@ -657,6 +683,79 @@ function CritiqueTab({ roomId, projectId, apiKey }: { roomId: string, projectId:
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function ActivityTab({ projectId }: { projectId: string }) {
+  const [logs, setLogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchActivity = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/projects/${projectId}/activity`);
+      if (res.ok) {
+        const data = await res.json();
+        setLogs(data.activityLogs || []);
+      }
+    } catch (e) {
+      console.error("Failed to fetch activity", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (projectId) {
+      fetchActivity();
+      const interval = setInterval(fetchActivity, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [projectId]);
+
+  if (loading && logs.length === 0) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center mt-8">
+        <Loader2 className="w-8 h-8 animate-spin text-accent-primary" />
+        <p className="text-sm text-text-muted">Loading activity...</p>
+      </div>
+    );
+  }
+
+  if (logs.length === 0) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center mt-8">
+        <p className="text-sm text-text-muted">No recent activity.</p>
+      </div>
+    );
+  }
+
+  const formatAction = (action: string) => {
+    return action.split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  };
+
+  return (
+    <div className="flex-1 overflow-y-auto flex flex-col gap-4 pb-10">
+      {logs.map((log) => (
+        <div key={log.id} className="flex gap-3 text-sm p-3 rounded-lg bg-bg-elevated border border-border-subtle shadow-sm">
+          <div className="w-8 h-8 rounded-full bg-accent-primary/20 shrink-0 flex items-center justify-center overflow-hidden">
+            {log.user?.image ? (
+              <img src={log.user.image} alt={log.user.name} className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-accent-primary font-bold text-xs">{log.user?.name?.charAt(0) || '?'}</span>
+            )}
+          </div>
+          <div className="flex flex-col">
+            <span className="text-text-primary leading-tight">
+              <span className="font-semibold">{log.user?.name || 'Someone'}</span> {formatAction(log.action)}
+            </span>
+            <span className="text-[10px] text-text-muted mt-0.5">
+              {new Date(log.createdAt).toLocaleString()}
+            </span>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

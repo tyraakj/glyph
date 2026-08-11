@@ -216,6 +216,15 @@ exports.Prisma.TaskRunScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ActivityLogScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  userId: 'userId',
+  action: 'action',
+  details: 'details',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -241,7 +250,8 @@ exports.Prisma.ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
-  TaskRun: 'TaskRun'
+  TaskRun: 'TaskRun',
+  ActivityLog: 'ActivityLog'
 };
 
 /**

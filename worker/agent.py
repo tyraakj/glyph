@@ -148,21 +148,53 @@ async def generate_design_operations(prompt: str, current_storage: dict, api_key
         return {"message": "Here's what I built.", "operations": data}
     return data
 
-SPEC_SYSTEM_PROMPT = """
-You are an expert software architect.
-Your job is to generate a comprehensive, well-structured Markdown technical specification based on the provided system architecture diagram (nodes and edges) and the conversation history that led to it.
+SPEC_TEMPLATES = {
+    "simple": """You are an expert software architect.
+Your job is to generate a simple, concise Markdown summary based on the provided system architecture diagram (nodes and edges) and conversation history.
 
-The output MUST be pure Markdown. Do not wrap it in ```markdown or ``` codeblocks.
 Structure the spec with the following sections:
-- **Overview**: A high-level description of the system.
-- **Architecture**: Describe the main components and how they interact.
-- **Components**: A detailed list of all components (derived from the nodes).
-- **Data Flow**: A description of data flow or relationships (derived from the edges).
+- **Overview**: A 1-2 sentence high-level description.
+- **Key Components**: A bulleted list of all components.
+- **Interactions**: A brief summary of how the components interact.
 
-Be detailed, professional, and clear. Expand on the nodes and edges to explain the system's purpose and functionality.
-"""
+The output MUST be pure Markdown. Do not wrap it in ```markdown codeblocks.""",
 
-async def generate_spec(chat_history: list, nodes: list, edges: list, api_key: str = None) -> str:
+    "rfc": """You are an expert software architect.
+Your job is to generate a formal technical specification based on the provided system architecture diagram (nodes and edges) and conversation history.
+You MUST use RFC-2119 terminology (MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL).
+
+Structure the spec with the following sections:
+- **Abstract**: High-level description of the system.
+- **Terminology**: Define any key terms.
+- **Architecture Requirements**: Describe the components and their constraints using RFC-2119 keywords.
+- **Data Flow Specifications**: Describe the interactions and constraints using RFC-2119 keywords.
+
+The output MUST be pure Markdown. Do not wrap it in ```markdown codeblocks.""",
+
+    "c4": """You are an expert software architect.
+Your job is to generate a technical specification based on the provided system architecture diagram (nodes and edges) and conversation history, structured using the principles of the C4 model.
+
+Structure the spec with the following sections:
+- **System Context**: Describe how the system fits into the world around it (users, external systems).
+- **Containers**: Describe the high-level applications and data stores that make up the system (the nodes).
+- **Components**: Detail the key building blocks within the containers, if applicable.
+- **Code/Implementation**: Mention key implementation details or technologies inferred.
+
+The output MUST be pure Markdown. Do not wrap it in ```markdown codeblocks.""",
+
+    "aws-well-architected": """You are an expert software architect.
+Your job is to generate a technical specification based on the provided system architecture diagram (nodes and edges) and conversation history, evaluating and organizing it according to the AWS Well-Architected Framework.
+
+Structure the spec with an Overview, followed by these sections (extrapolate based on the components provided):
+- **Operational Excellence**: How the system supports operations and monitoring.
+- **Security**: Security measures, boundaries, and data protection.
+- **Reliability**: How the system prevents and quickly recovers from failures.
+- **Performance Efficiency**: How the system scales and uses computing resources efficiently.
+- **Cost Optimization**: How the system avoids unnecessary costs.
+- **Sustainability**: Environmental impacts."""
+}
+
+async def generate_spec(chat_history: list, nodes: list, edges: list, api_key: str = None, template_id: str = "simple") -> str:
     """
     Calls Gemini to generate a Markdown technical spec from the canvas context.
     """
@@ -173,6 +205,8 @@ async def generate_spec(chat_history: list, nodes: list, edges: list, api_key: s
         
     if not active_client:
         raise Exception("API key is not configured.")
+
+    system_instruction = SPEC_TEMPLATES.get(template_id, SPEC_TEMPLATES["simple"])
 
     context_message = (
         f"Canvas Nodes:\n{json.dumps(nodes, indent=2)}\n\n"
@@ -188,7 +222,7 @@ async def generate_spec(chat_history: list, nodes: list, edges: list, api_key: s
                 types.Content(role="user", parts=[types.Part.from_text(text=context_message)])
             ],
             config=types.GenerateContentConfig(
-                system_instruction=SPEC_SYSTEM_PROMPT,
+                system_instruction=system_instruction,
                 temperature=0.3,
             )
         )

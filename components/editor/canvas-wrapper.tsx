@@ -5,6 +5,7 @@ import { LiveList } from "@liveblocks/client";
 import { Loader2 } from "lucide-react";
 import { ReactNode } from "react";
 import { ReactFlowProvider } from "@xyflow/react";
+import { RoomNotifications } from "./room-notifications";
 
 interface CanvasWrapperProps {
   roomId: string;
@@ -37,6 +38,7 @@ export function CanvasWrapper({ roomId, children }: CanvasWrapperProps) {
             </div>
           }
         >
+          <RoomNotifications />
           <ReactFlowProvider>
             {children}
           </ReactFlowProvider>

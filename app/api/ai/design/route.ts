@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { redis } from "@/lib/redis";
+import { logActivity } from "@/lib/activity";
 
 export async function POST(request: NextRequest) {
   try {
@@ -70,6 +71,13 @@ export async function POST(request: NextRequest) {
       apiKey,
       chatHistory
     }));
+
+    await logActivity({
+      projectId,
+      userId: session.user.id,
+      action: "generated_design",
+      details: JSON.stringify({ prompt: prompt.substring(0, 100) }) // log part of the prompt
+    });
 
     return NextResponse.json({ success: true, runId });
   } catch (error: any) {

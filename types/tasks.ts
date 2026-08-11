@@ -42,3 +42,9 @@ export const AiDesignUpdatePayloadSchema = z.object({
 });
 
 export type AiDesignUpdatePayload = z.infer<typeof AiDesignUpdatePayloadSchema>;
+
+export const AiSpecUpdatePayloadSchema = z.object({
+  type: z.literal("spec-generation-complete"),
+});
+
+export type AiSpecUpdatePayload = z.infer<typeof AiSpecUpdatePayloadSchema>;

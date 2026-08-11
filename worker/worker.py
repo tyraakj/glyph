@@ -97,6 +97,7 @@ async def process_spec_job(job_data: dict):
     nodes = job_data.get("nodes", [])
     edges = job_data.get("edges", [])
     api_key = job_data.get("apiKey")
+    template_id = job_data.get("templateId", "simple")
     
     if not run_id or not room_id:
         print(f"Invalid spec job payload: {job_data}")
@@ -106,7 +107,7 @@ async def process_spec_job(job_data: dict):
         await update_spec_status(run_id, "processing", "Analyzing your canvas and chat history...")
         
         await update_spec_status(run_id, "generating", "Drafting your PRD...")
-        spec_content = await generate_spec(chat_history, nodes, edges, api_key=api_key)
+        spec_content = await generate_spec(chat_history, nodes, edges, api_key=api_key, template_id=template_id)
         
         # Save the spec via the internal Next.js API
         await update_spec_status(run_id, "saving", "Saving specification to cloud storage...")
@@ -134,6 +135,9 @@ async def process_spec_job(job_data: dict):
         except Exception as save_err:
             print(f"Error calling internal API: {save_err}")
 
+        await liveblocks.broadcast_event(room_id, {
+            "type": "spec-generation-complete"
+        })
         await update_spec_status(run_id, "complete", "Spec generation complete!", spec_content=spec_content)
         
     except Exception as e:

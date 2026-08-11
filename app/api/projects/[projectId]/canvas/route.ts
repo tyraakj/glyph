@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { put } from "@vercel/blob";
+import { logActivity } from "@/lib/activity";
 
 export async function PUT(
   request: NextRequest,
@@ -55,7 +56,6 @@ export async function PUT(
     const timestamp = Date.now();
     const blobName = `projects/${projectId}/versions/${timestamp}.json`;
     const blob = await put(blobName, jsonString, {
-      access: 'public',
       contentType: 'application/json',
       addRandomSuffix: true
     });
@@ -80,6 +80,13 @@ export async function PUT(
         data: { canvasJsonPath: blob.url },
       })
     ]);
+
+    await logActivity({
+      projectId,
+      userId: session.user.id,
+      action: "saved_canvas",
+      details: JSON.stringify({ nodeCount, edgeCount, source })
+    });
 
     return NextResponse.json({ success: true, url: blob.url });
   } catch (error) {

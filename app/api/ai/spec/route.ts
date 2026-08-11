@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { redis } from "@/lib/redis";
 import { getProjectAccess } from "@/lib/project-access";
+import { logActivity } from "@/lib/activity";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { roomId, chatHistory, nodes, edges, apiKey } = body;
+    const { roomId, chatHistory, nodes, edges, apiKey, templateId } = body;
 
     if (!roomId) {
       return NextResponse.json(
@@ -65,8 +66,16 @@ export async function POST(request: NextRequest) {
       chatHistory: chatHistory || [],
       nodes: nodes || [],
       edges: edges || [],
-      apiKey
+      apiKey,
+      templateId: templateId || "simple"
     }));
+
+    await logActivity({
+      projectId,
+      userId: session.user.id,
+      action: "generated_spec",
+      details: JSON.stringify({ templateId: templateId || "simple" })
+    });
 
     return NextResponse.json({ success: true, runId });
   } catch (error: any) {
