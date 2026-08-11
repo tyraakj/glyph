@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useState, useRef, useEffect } from "react";
 import { useEventListener, useUpdateMyPresence, useSelf, useBroadcastEvent } from "@liveblocks/react/suspense";
-import type { AiStatusFeedPayload } from "@/types/tasks";
+import { type AiStatusFeedPayload, type AiChatFeedPayload, AiChatFeedPayloadSchema } from "@/types/tasks";
 import { cn } from "@/lib/utils";
 
 interface AiSidebarProps {
@@ -16,17 +16,31 @@ interface AiSidebarProps {
 export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
   const [input, setInput] = useState("");
   const [latestStatus, setLatestStatus] = useState<AiStatusFeedPayload | null>(null);
+  const [messages, setMessages] = useState<AiChatFeedPayload[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const updateMyPresence = useUpdateMyPresence();
   const broadcast = useBroadcastEvent();
-  const isThinking = useSelf((me) => me.presence.isThinking);
+  const me = useSelf();
+  const isThinking = me.presence.isThinking;
 
   useEventListener(({ event }) => {
     if (event.type === "ai-status-feed") {
       setLatestStatus(event as AiStatusFeedPayload);
+    } else if (event.type === "ai-chat") {
+      const parsed = AiChatFeedPayloadSchema.safeParse(event);
+      if (parsed.success) {
+        setMessages((prev) => [...prev, parsed.data]);
+      }
     }
   });
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -52,10 +66,24 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
     const promptText = input.trim();
     setInput("");
 
-    // 1. Mock local presence
+    // 1. Create chat message
+    const chatMsg: AiChatFeedPayload = {
+      type: "ai-chat",
+      sender: me.info?.name || "User",
+      role: "user",
+      content: promptText,
+      timestamp: new Date().toISOString(),
+    };
+
+    // Add locally instantly
+    setMessages((prev) => [...prev, chatMsg]);
+    
+    // Broadcast to room
+    broadcast(chatMsg);
+
+    // 2. Mock local presence & status feed
     updateMyPresence({ isThinking: true });
 
-    // 2. Mock broadcast so the room sees it
     broadcast({
       type: "ai-status-feed",
       status: "processing",
@@ -64,7 +92,7 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
       runId: null,
     });
 
-    // 3. Simulate processing time for UI verification
+    // 3. Simulate AI processing time
     setTimeout(() => {
       broadcast({
         type: "ai-status-feed",
@@ -73,6 +101,18 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
         text: null,
         runId: null,
       });
+
+      const aiResponse: AiChatFeedPayload = {
+        type: "ai-chat",
+        sender: "Glyph AI",
+        role: "assistant",
+        content: "I've started building the backend architecture for you on the canvas.",
+        timestamp: new Date().toISOString(),
+      };
+      
+      setMessages((prev) => [...prev, aiResponse]);
+      broadcast(aiResponse);
+
       updateMyPresence({ isThinking: false });
     }, 3000);
   };
@@ -148,25 +188,53 @@ export function AiSidebar({ isOpen, onClose }: AiSidebarProps) {
           <TabsContent value="architect" className="flex flex-col flex-1 overflow-hidden m-0 outline-none">
             {/* Scrollable Chat Area */}
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-              <div className="flex flex-col items-center justify-center h-full text-center gap-4 mt-8">
-                <div className="w-12 h-12 rounded-full bg-accent-primary/10 flex items-center justify-center mb-2">
-                  <Bot className="w-6 h-6 text-accent-primary" />
+              {messages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full text-center gap-4 mt-8">
+                  <div className="w-12 h-12 rounded-full bg-accent-primary/10 flex items-center justify-center mb-2">
+                    <Bot className="w-6 h-6 text-accent-primary" />
+                  </div>
+                  <p className="text-sm text-text-primary max-w-[240px]">
+                    I can help you design architectures, suggest components, and write specifications.
+                  </p>
+                  
+                  <div className="flex flex-col gap-2 mt-4 w-full">
+                    {starterChips.map((chip, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setInput(chip)}
+                        className="text-xs text-left px-4 py-2 rounded-full bg-bg-subtle text-accent-primary hover:bg-bg-elevated transition-colors border border-border-subtle"
+                      >
+                        {chip}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <p className="text-sm text-text-primary max-w-[240px]">
-                  I can help you design architectures, suggest components, and write specifications.
-                </p>
-                
-                <div className="flex flex-col gap-2 mt-4 w-full">
-                  {starterChips.map((chip, idx) => (
-                    <button
-                      key={idx}
-                      className="text-xs text-left px-4 py-2 rounded-full bg-bg-subtle text-accent-primary hover:bg-bg-elevated transition-colors border border-border-subtle"
+              ) : (
+                <div className="flex flex-col gap-4 pb-2">
+                  {messages.map((msg, i) => (
+                    <div 
+                      key={i} 
+                      className={cn(
+                        "flex flex-col gap-1 max-w-[85%]", 
+                        msg.role === "user" ? "self-end items-end" : "self-start items-start"
+                      )}
                     >
-                      {chip}
-                    </button>
+                      <span className="text-[10px] text-text-muted">{msg.sender}</span>
+                      <div 
+                        className={cn(
+                          "px-3 py-2 rounded-2xl text-sm shadow-sm", 
+                          msg.role === "user" 
+                            ? "bg-accent-primary text-bg-base rounded-tr-sm" 
+                            : "bg-bg-elevated border border-border-subtle text-text-primary rounded-tl-sm"
+                        )}
+                      >
+                        {msg.content}
+                      </div>
+                    </div>
                   ))}
+                  <div ref={messagesEndRef} />
                 </div>
-              </div>
+              )}
             </div>
 
             {/* AI Status Feed (Above Input) */}
